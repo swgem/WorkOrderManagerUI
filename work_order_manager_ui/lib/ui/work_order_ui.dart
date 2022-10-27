@@ -34,22 +34,29 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Work Order List')),
+        appBar: _buildAppBar(),
         body: (workOrders == null)
             ? const Center(child: Text("Empty"))
-            : ListView.builder(
-                itemCount: workOrders?.length,
-                itemBuilder: (content, index) => Card(
-                      color: Colors.white,
-                      elevation: 2.0,
-                      child: ListTile(
-                        title: ListTile(
-                          title:
-                              Text(workOrders?[index].client ?? "EMPTY CLIENT"),
-                          subtitle: Text(workOrders?[index].serviceSummary ??
-                              "EMPTY SERVICE SUMMARY"),
-                        ),
-                      ),
-                    )));
+            : _buildWorkOrderList());
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(title: const Text('Work Order List'));
+  }
+
+  Widget _buildWorkOrderList() {
+    return ListView.builder(
+        itemCount: workOrders?.length,
+        itemBuilder: (content, index) => Card(
+              color: Colors.white,
+              elevation: 2.0,
+              child: ListTile(
+                title: ListTile(
+                  title: Text(workOrders?[index].client ?? "EMPTY CLIENT"),
+                  subtitle: Text(workOrders?[index].serviceSummary ??
+                      "EMPTY SERVICE SUMMARY"),
+                ),
+              ),
+            ));
   }
 }
