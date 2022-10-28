@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:work_order_manager_ui/models/work_order.dart';
 
 class ApiServices {
-  static const String ip = 'localhost';
+  static const String ip = 'localhost' /*'10.0.2.2'*/;
   static const String port = '5189';
   static const String workOrderUrl = 'http://${ip}:${port}/api/WorkOrder/';
   static const Map<String, String> headers = {
