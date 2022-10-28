@@ -13,7 +13,10 @@ class ApiServices {
   };
 
   static Future fetchAllWorkOrders() async {
-    return await http.get(Uri.parse(workOrderUrl));
+    var response = await http.get(Uri.parse(workOrderUrl));
+    Iterable list = jsonDecode(response.body);
+
+    return list.map((obj) => WorkOrder.fromJson(obj)).toList();
   }
 
   static Future<bool> postWorkOrder(WorkOrder workOrder) async {

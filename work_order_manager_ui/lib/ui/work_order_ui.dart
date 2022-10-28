@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/ui/add_work_order_ui.dart';
@@ -16,15 +14,8 @@ class WorkOrderUi extends StatefulWidget {
 class _WorkOrderUiState extends State<WorkOrderUi> {
   List<WorkOrder>? workOrders;
 
-  _getWorkOrders() {
-    ApiServices.fetchAllWorkOrders().then((response) {
-      Iterable list = jsonDecode(response.body);
-      var workOrderList = list.map((obj) => WorkOrder.fromJson(obj)).toList();
-      setState(() {
-        workOrders = workOrderList;
-      });
-    });
-  }
+  _getWorkOrders() => ApiServices.fetchAllWorkOrders()
+      .then((response) => setState(() => workOrders = response));
 
   @override
   void initState() {
