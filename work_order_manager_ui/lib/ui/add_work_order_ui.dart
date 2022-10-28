@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 
 import '../models/work_order.dart';
@@ -32,7 +31,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
 
   Widget _buildForm() {
     return Padding(
-        padding: EdgeInsets.only(top: 35.0, left: 10.0, right: 10.0),
+        padding: const EdgeInsets.only(top: 35.0, left: 10.0, right: 10.0),
         child: ListView(children: [
           TextField(
             controller: clientController,
@@ -44,7 +43,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                     borderRadius: BorderRadius.circular(5.0))),
           ),
           Padding(
-              padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+              padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: TextField(
                 controller: serviceSummaryController,
                 style: textStyle,
@@ -61,7 +60,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                 onPressed: () {
                   saveWorkOrder();
                 },
-                child: Text("Save"),
+                child: const Text("Save"),
               ),
             ],
           )
@@ -76,7 +75,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
 
     saveResponse
         ? Navigator.pop(context, true)
-        : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Connection Issue!"),
           ));
   }
