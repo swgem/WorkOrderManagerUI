@@ -63,6 +63,8 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
 
   void navigateToWorkOrder() async {
     await Navigator.push(context,
-        MaterialPageRoute(builder: ((context) => const AddWorkOrderUi())));
+            MaterialPageRoute(builder: ((context) => const AddWorkOrderUi())))
+        .then((value) => ApiServices.fetchAllWorkOrders()
+            .then((response) => setState(() => workOrders = response)));
   }
 }
