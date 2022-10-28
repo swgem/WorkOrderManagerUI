@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
+import 'package:work_order_manager_ui/ui/add_work_order_ui.dart';
 
 import '../models/work_order.dart';
 
@@ -16,9 +17,9 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
   List<WorkOrder>? workOrders;
 
   _getWorkOrders() {
-    ApiServices.fetchWorkOrder().then((response) {
+    ApiServices.fetchAllWorkOrders().then((response) {
       Iterable list = jsonDecode(response.body);
-      var workOrderList = list.map((obj) => WorkOrder.fromObject(obj)).toList();
+      var workOrderList = list.map((obj) => WorkOrder.fromJson(obj)).toList();
       setState(() {
         workOrders = workOrderList;
       });
@@ -35,6 +36,7 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: _buildAppBar(),
+        floatingActionButton: _buildFloatingActionButton(),
         body: (workOrders == null)
             ? const Center(child: Text("Empty"))
             : _buildWorkOrderList());
@@ -58,5 +60,18 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
                 ),
               ),
             ));
+  }
+
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton(
+        onPressed: () {
+          navigateToWorkOrder();
+        },
+        child: const Icon(Icons.add));
+  }
+
+  void navigateToWorkOrder() async {
+    await Navigator.push(context,
+        MaterialPageRoute(builder: ((context) => const AddWorkOrderUi())));
   }
 }

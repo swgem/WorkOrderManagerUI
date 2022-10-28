@@ -1,11 +1,26 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+import 'package:work_order_manager_ui/models/work_order.dart';
 
 class ApiServices {
   static const String ip = 'localhost';
   static const String port = '5189';
-  static const String workOrderUrl = 'http://${ip}:${port}/api/WorkOrder';
+  static const String workOrderUrl = 'http://${ip}:${port}/api/WorkOrder/';
+  static const Map<String, String> headers = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    //'Accept': '*/*'
+  };
 
-  static Future fetchWorkOrder() async {
+  static Future fetchAllWorkOrders() async {
     return await http.get(Uri.parse(workOrderUrl));
+  }
+
+  static Future<bool> postWorkOrder(WorkOrder workOrder) async {
+    var workOrderMap = workOrder.toJson();
+    var workOrderBody = json.encode(workOrderMap);
+    var response = await http.post(Uri.parse(workOrderUrl),
+        headers: headers, body: workOrderBody);
+    return Future.value(response.statusCode == 200 ? true : false);
   }
 }

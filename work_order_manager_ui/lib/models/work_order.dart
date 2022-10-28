@@ -1,23 +1,18 @@
+import 'package:json_annotation/json_annotation.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+part 'work_order.g.dart';
+
+@JsonSerializable()
 class WorkOrder {
-  int _id;
-  String _client;
-  String _serviceSummary;
+  final int id;
+  final String? client;
+  final String? serviceSummary;
 
-  WorkOrder(this._id, this._client, this._serviceSummary);
-  WorkOrder.fromObject(dynamic o)
-      : _id = o["id"],
-        _client = o["client"],
-        _serviceSummary = o["serviceSummary"];
+  WorkOrder({this.id = 0, this.client, this.serviceSummary});
+  factory WorkOrder.fromJson(Map<String, dynamic> json) =>
+      _$WorkOrderFromJson(json);
 
-  int get id => _id;
-  String get client => _client;
-  String get serviceSummary => _serviceSummary;
-
-  Map<String, dynamic> toMap() {
-    var map = Map<String, dynamic>();
-    map["client"] = _client;
-    map["id"] = _id;
-    map["serviceSummary"] = _serviceSummary;
-    return map;
-  }
+  Map<String, dynamic> toJson() => _$WorkOrderToJson(this);
 }
