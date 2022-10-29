@@ -29,12 +29,12 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
         appBar: _buildAppBar(),
         floatingActionButton: _buildFloatingActionButton(),
         body: (workOrders == null)
-            ? const Center(child: Text("Empty"))
+            ? const Center(child: Text('Nenhuma ordem de serviço'))
             : _buildWorkOrderList());
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Work Order List'));
+    return AppBar(title: const Text('Lista de Ordens de Serviço'));
   }
 
   Widget _buildWorkOrderList() {
@@ -45,9 +45,8 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
               elevation: 2.0,
               child: ListTile(
                 title: ListTile(
-                  title: Text(workOrders?[index].client ?? "EMPTY CLIENT"),
-                  subtitle: Text(workOrders?[index].clientRequest ??
-                      "EMPTY SERVICE SUMMARY"),
+                  title: Text(workOrders?[index].client ?? ''),
+                  subtitle: Text(workOrders?[index].clientRequest ?? ''),
                 ),
               ),
             ));

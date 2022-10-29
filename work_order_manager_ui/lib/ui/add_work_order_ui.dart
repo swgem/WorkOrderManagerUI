@@ -26,7 +26,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Work Order List'));
+    return AppBar(title: const Text('Nova Ordem de Serviço'));
   }
 
   Widget _buildForm() {
@@ -37,8 +37,8 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
             controller: clientController,
             style: textStyle,
             decoration: InputDecoration(
-                labelText: "Client",
                 labelStyle: textStyle,
+                labelText: "Cliente",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0))),
           ),
@@ -48,8 +48,8 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                 controller: serviceSummaryController,
                 style: textStyle,
                 decoration: InputDecoration(
-                    labelText: "Service Summary",
                     labelStyle: textStyle,
+                    labelText: "Descrição do serviço",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0))),
               )),
@@ -60,7 +60,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                 onPressed: () {
                   saveWorkOrder();
                 },
-                child: const Text("Save"),
+                child: const Text("Salvar"),
               ),
             ],
           )
@@ -80,7 +80,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
     saveResponse
         ? Navigator.pop(context, true)
         : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Connection Issue!"),
+            content: Text("Problema de conexão!"),
           ));
   }
 }
