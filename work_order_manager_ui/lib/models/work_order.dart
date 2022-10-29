@@ -7,10 +7,35 @@ part 'work_order.g.dart';
 @JsonSerializable()
 class WorkOrder {
   final int id;
-  final String? client;
-  final String? serviceSummary;
+  final int dayId;
+  final int status;
+  final int priority;
+  final String orderOpeningDatetime;
+  final String? orderClosingDatetime;
+  final String client;
+  final String? telephone;
+  final String vehicle;
+  final String? vehiclePlate;
+  final String clientRequest;
+  final String? pendencies;
+  final String? deadline;
+  final String? remarks;
 
-  WorkOrder({this.id = 0, this.client, this.serviceSummary});
+  WorkOrder(
+      {this.id = 0,
+      required this.dayId,
+      this.status = 0,
+      required this.priority,
+      required this.orderOpeningDatetime,
+      this.orderClosingDatetime,
+      required this.client,
+      this.telephone,
+      required this.vehicle,
+      this.vehiclePlate,
+      required this.clientRequest,
+      this.pendencies,
+      this.deadline,
+      this.remarks});
   factory WorkOrder.fromJson(Map<String, dynamic> json) =>
       _$WorkOrderFromJson(json);
 

@@ -46,7 +46,7 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
               child: ListTile(
                 title: ListTile(
                   title: Text(workOrders?[index].client ?? "EMPTY CLIENT"),
-                  subtitle: Text(workOrders?[index].serviceSummary ??
+                  subtitle: Text(workOrders?[index].clientRequest ??
                       "EMPTY SERVICE SUMMARY"),
                 ),
               ),

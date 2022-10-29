@@ -70,7 +70,11 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
   void saveWorkOrder() async {
     var workOrder = WorkOrder(
         client: clientController.text,
-        serviceSummary: serviceSummaryController.text);
+        clientRequest: serviceSummaryController.text,
+        dayId: 0,
+        orderOpeningDatetime: '',
+        priority: 0,
+        vehicle: '');
     var saveResponse = await ApiServices.postWorkOrder(workOrder);
 
     saveResponse
