@@ -14,11 +14,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sevencar Organizador',
       theme: ThemeData(
-          colorSchemeSeed: Color.fromARGB(255, 11, 163, 87),
-          scaffoldBackgroundColor: Color.fromARGB(255, 226, 226, 226)),
+          inputDecorationTheme: const InputDecorationTheme(
+              filled: true, fillColor: Color.fromARGB(255, 255, 255, 255)),
+          colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 226, 226, 226)),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
-          colorSchemeSeed: Color.fromARGB(255, 11, 163, 87)),
+          colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87)),
       themeMode: ThemeMode.system,
       home: const WorkOrderUi(),
     );

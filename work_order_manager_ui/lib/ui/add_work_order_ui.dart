@@ -11,17 +11,17 @@ class AddWorkOrderUi extends StatefulWidget {
 }
 
 class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
-  TextEditingController clientController;
-  TextEditingController serviceSummaryController;
-  TextStyle? textStyle;
-
-  _AddWorkOrderUiState()
-      : clientController = TextEditingController(),
-        serviceSummaryController = TextEditingController();
+  late TextEditingController clientController;
+  late TextEditingController requestedServiceController;
+  late TextStyle textFormFieldStyle;
+  late InputDecorationTheme textFormFieldDecoration;
 
   @override
   Widget build(BuildContext context) {
-    textStyle = Theme.of(context).textTheme.titleLarge;
+    clientController = TextEditingController();
+    requestedServiceController = TextEditingController();
+    textFormFieldStyle = Theme.of(context).textTheme.titleLarge!;
+    textFormFieldDecoration = Theme.of(context).inputDecorationTheme!;
     return Scaffold(appBar: _buildAppBar(), body: _buildForm());
   }
 
@@ -33,23 +33,23 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
     return Padding(
         padding: const EdgeInsets.only(top: 35.0, left: 10.0, right: 10.0),
         child: ListView(children: [
-          TextField(
+          TextFormField(
             controller: clientController,
-            style: textStyle,
+            style: textFormFieldStyle,
             decoration: InputDecoration(
-                labelStyle: textStyle,
                 labelText: "Cliente",
+                labelStyle: textFormFieldStyle,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0))),
           ),
           Padding(
               padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-              child: TextField(
-                controller: serviceSummaryController,
-                style: textStyle,
+              child: TextFormField(
+                controller: requestedServiceController,
+                style: textFormFieldStyle,
                 decoration: InputDecoration(
-                    labelStyle: textStyle,
                     labelText: "Descrição do serviço",
+                    labelStyle: textFormFieldStyle,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0))),
               )),
@@ -67,10 +67,10 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
         ]));
   }
 
-  void saveWorkOrder() async {
+  Future saveWorkOrder() async {
     var workOrder = WorkOrder(
         client: clientController.text,
-        clientRequest: serviceSummaryController.text,
+        clientRequest: requestedServiceController.text,
         dayId: 0,
         orderOpeningDatetime: '',
         priority: 0,
