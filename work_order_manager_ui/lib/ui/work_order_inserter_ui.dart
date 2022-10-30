@@ -15,7 +15,11 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
 
   late TextEditingController clientController;
   late TextEditingController telephoneController;
+  late TextEditingController vehicleController;
+  late TextEditingController vehiclePlateController;
   late TextEditingController requestedServiceController;
+  late TextEditingController deadlineController;
+  late TextEditingController remarksController;
   late TextStyle textFieldTextStyle;
   late TextStyle textFieldLabelStyle;
   late TextStyle textFieldLabelAsteriskStyle;
@@ -26,7 +30,11 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
     formKey = GlobalKey<FormState>();
     clientController = TextEditingController();
     telephoneController = TextEditingController();
+    vehicleController = TextEditingController();
+    vehiclePlateController = TextEditingController();
     requestedServiceController = TextEditingController();
+    deadlineController = TextEditingController();
+    remarksController = TextEditingController();
     textFieldTextStyle = Theme.of(context).textTheme.titleLarge!;
     textFieldLabelStyle = Theme.of(context)
         .textTheme
@@ -54,7 +62,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                   textCapitalization: TextCapitalization.words,
                   style: textFieldTextStyle,
                   validator: (value) =>
-                      (value!.isEmpty) ? "Insira um cliente" : null,
+                      (value!.isEmpty) ? "Insira o cliente" : null,
                   decoration: InputDecoration(
                       label: Row(mainAxisSize: MainAxisSize.min, children: [
                         Text("Cliente", style: textFieldLabelStyle),
@@ -67,6 +75,7 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                 padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
                 child: TextFormField(
                   controller: telephoneController,
+                  keyboardType: TextInputType.phone,
                   textCapitalization: TextCapitalization.words,
                   style: textFieldTextStyle,
                   decoration: InputDecoration(
@@ -77,7 +86,39 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
               child: TextFormField(
+                controller: vehicleController,
+                textCapitalization: TextCapitalization.sentences,
+                style: textFieldTextStyle,
+                validator: (value) =>
+                    (value!.isEmpty) ? "Insira o veículo" : null,
+                decoration: InputDecoration(
+                    label: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Text("Veículo", style: textFieldLabelStyle),
+                      Text("*", style: textFieldLabelAsteriskStyle)
+                    ]),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0))),
+              ),
+            ),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                child: TextFormField(
+                  controller: vehiclePlateController,
+                  textCapitalization: TextCapitalization.characters,
+                  style: textFieldTextStyle,
+                  decoration: InputDecoration(
+                      label:
+                          Text("Placa do veículo", style: textFieldLabelStyle),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0))),
+                )),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+              child: TextFormField(
                 controller: requestedServiceController,
+                keyboardType: TextInputType.multiline,
+                minLines: 3,
+                maxLines: null,
                 textCapitalization: TextCapitalization.sentences,
                 style: textFieldTextStyle,
                 validator: (value) =>
@@ -92,6 +133,33 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
               ),
             ),
             Padding(
+                padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                child: TextFormField(
+                  controller: deadlineController,
+                  keyboardType: TextInputType.datetime,
+                  maxLines: null,
+                  textCapitalization: TextCapitalization.characters,
+                  style: textFieldTextStyle,
+                  decoration: InputDecoration(
+                      label: Text("Prazo", style: textFieldLabelStyle),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0))),
+                )),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                child: TextFormField(
+                  controller: remarksController,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 3,
+                  maxLines: null,
+                  textCapitalization: TextCapitalization.characters,
+                  style: textFieldTextStyle,
+                  decoration: InputDecoration(
+                      label: Text("Observações", style: textFieldLabelStyle),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0))),
+                )),
+            Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 25.0, 15.0, 0.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -104,7 +172,8 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
                 },
                 child: const Text("SALVAR"),
               ),
-            )
+            ),
+            const SizedBox(height: 25.0)
           ]),
         ));
   }
@@ -114,9 +183,12 @@ class _AddWorkOrderUiState extends State<AddWorkOrderUi> {
         client: clientController.text,
         clientRequest: requestedServiceController.text,
         telephone: telephoneController.text,
+        vehicle: vehicleController.text,
+        vehiclePlate: vehiclePlateController.text,
+        deadline: deadlineController.text,
+        remarks: remarksController.text,
         orderOpeningDatetime: '',
-        priority: 0,
-        vehicle: '');
+        priority: 0);
     var saveResponse = await ApiServices.postWorkOrder(workOrder);
 
     saveResponse
