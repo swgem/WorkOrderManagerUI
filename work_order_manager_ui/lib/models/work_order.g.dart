@@ -8,7 +8,7 @@ part of 'work_order.dart';
 
 WorkOrder _$WorkOrderFromJson(Map<String, dynamic> json) => WorkOrder(
       id: json['id'] as int? ?? 0,
-      dayId: json['dayId'] as int,
+      dayId: json['dayId'] as int?,
       status: json['status'] as int? ?? 0,
       priority: json['priority'] as int,
       orderOpeningDatetime: json['orderOpeningDatetime'] as String,

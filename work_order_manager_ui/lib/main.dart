@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:work_order_manager_ui/ui/work_order_ui.dart';
+import 'package:work_order_manager_ui/ui/home_ui.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,12 +12,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sevencar Organizador',
+      title: 'SEVENCAR ORGANIZADOR',
       theme: ThemeData(
-          inputDecorationTheme: const InputDecorationTheme(
-              filled: true, fillColor: Color.fromARGB(255, 255, 255, 255)),
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
-          scaffoldBackgroundColor: const Color.fromARGB(255, 226, 226, 226)),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 226, 226, 226),
+          inputDecorationTheme: const InputDecorationTheme(
+              filled: true, fillColor: Color.fromARGB(255, 255, 255, 255))),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87)),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
-import 'package:work_order_manager_ui/ui/add_work_order_ui.dart';
+import 'package:work_order_manager_ui/ui/work_order_inserter_ui.dart';
 
 import '../models/work_order.dart';
 
@@ -34,7 +34,7 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Lista de Ordens de Serviço'));
+    return AppBar(title: const Text('LISTA DE ORDENS DE SERVIÇO'));
   }
 
   Widget _buildWorkOrderList() {
