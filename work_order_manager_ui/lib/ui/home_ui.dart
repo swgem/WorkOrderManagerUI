@@ -4,14 +4,14 @@ import 'package:work_order_manager_ui/ui/work_order_inserter_ui.dart';
 
 import '../models/work_order.dart';
 
-class WorkOrderUi extends StatefulWidget {
-  const WorkOrderUi({super.key});
+class HomeUi extends StatefulWidget {
+  const HomeUi({super.key});
 
   @override
-  State<WorkOrderUi> createState() => _WorkOrderUiState();
+  State<HomeUi> createState() => _HomeUiState();
 }
 
-class _WorkOrderUiState extends State<WorkOrderUi> {
+class _HomeUiState extends State<HomeUi> {
   List<WorkOrder>? workOrders;
 
   _getWorkOrders() => ApiServices.fetchAllWorkOrders()
@@ -61,9 +61,11 @@ class _WorkOrderUiState extends State<WorkOrderUi> {
   }
 
   void navigateToWorkOrder() async {
-    await Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => const AddWorkOrderUi())))
-        .then((value) => ApiServices.fetchAllWorkOrders()
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => const WorkOrderInserterUi()))).then(
+        (value) => ApiServices.fetchAllWorkOrders()
             .then((response) => setState(() => workOrders = response)));
   }
 }

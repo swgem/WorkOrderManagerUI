@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87)),
       themeMode: ThemeMode.system,
-      home: const WorkOrderUi(),
+      home: const HomeUi(),
     );
   }
 }
