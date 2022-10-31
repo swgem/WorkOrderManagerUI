@@ -17,7 +17,11 @@ class MyApp extends StatelessWidget {
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
           scaffoldBackgroundColor: const Color.fromARGB(255, 226, 226, 226),
           inputDecorationTheme: const InputDecorationTheme(
-              filled: true, fillColor: Color.fromARGB(255, 255, 255, 255))),
+              filled: true, fillColor: Color.fromARGB(255, 255, 255, 255)),
+          expansionTileTheme: const ExpansionTileThemeData(
+              collapsedBackgroundColor: Colors.white,
+              backgroundColor: Colors.white),
+          dividerColor: Colors.transparent),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87)),
