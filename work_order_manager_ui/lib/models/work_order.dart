@@ -8,7 +8,7 @@ part 'work_order.g.dart';
 class WorkOrder {
   final int id;
   final int? dayId;
-  final int status;
+  final String status;
   final int priority;
   final String orderOpeningDatetime;
   final String? orderClosingDatetime;
@@ -24,7 +24,7 @@ class WorkOrder {
   WorkOrder(
       {this.id = 0,
       this.dayId,
-      this.status = 0,
+      required this.status,
       required this.priority,
       required this.orderOpeningDatetime,
       this.orderClosingDatetime,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 
 import '../models/work_order.dart';
@@ -37,10 +38,10 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
     requestedServiceController = TextEditingController();
     deadlineController = TextEditingController();
     remarksController = TextEditingController();
-    textFieldTextStyle = Theme.of(context).textTheme.titleLarge!;
+    textFieldTextStyle = Theme.of(context).textTheme.titleMedium!;
     textFieldLabelStyle = Theme.of(context)
         .textTheme
-        .titleLarge!
+        .titleMedium!
         .copyWith(color: Theme.of(context).hintColor);
     textFieldLabelAsteriskStyle =
         Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red);
@@ -187,16 +188,21 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
   }
 
   Future saveWorkOrder() async {
+    var currentDateTime =
+        DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
+
     var workOrder = WorkOrder(
-        client: clientController.text,
-        clientRequest: requestedServiceController.text,
-        telephone: telephoneController.text,
-        vehicle: vehicleController.text,
-        vehiclePlate: vehiclePlateController.text,
-        deadline: deadlineController.text,
-        remarks: remarksController.text,
-        orderOpeningDatetime: '',
-        priority: 0);
+      status: 'waiting',
+      priority: 0,
+      orderOpeningDatetime: currentDateTime,
+      client: clientController.text,
+      clientRequest: requestedServiceController.text,
+      telephone: telephoneController.text,
+      vehicle: vehicleController.text,
+      vehiclePlate: vehiclePlateController.text,
+      deadline: deadlineController.text,
+      remarks: remarksController.text,
+    );
     var saveResponse = await ApiServices.postWorkOrder(workOrder);
 
     saveResponse

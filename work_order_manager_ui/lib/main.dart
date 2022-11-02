@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SEVENCAR ORGANIZADOR',
+      themeMode: ThemeMode.system,
       theme: ThemeData(
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
           scaffoldBackgroundColor: const Color.fromARGB(255, 226, 226, 226),
@@ -24,8 +25,11 @@ class MyApp extends StatelessWidget {
           dividerColor: Colors.transparent),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
-          colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87)),
-      themeMode: ThemeMode.system,
+          colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
+          expansionTileTheme: ExpansionTileThemeData(
+              collapsedBackgroundColor: Theme.of(context).highlightColor,
+              backgroundColor: Theme.of(context).highlightColor),
+          dividerColor: Colors.transparent),
       home: const HomeUi(),
     );
   }

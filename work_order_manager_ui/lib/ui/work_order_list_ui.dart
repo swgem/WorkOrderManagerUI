@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/events/work_order_list_event_type.dart';
 
 import 'package:work_order_manager_ui/models/api_services.dart';
@@ -55,86 +56,137 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
 
     return (_workOrders == null)
         ? const Center(child: Text('Nenhuma ordem de serviço'))
-        : _buildWorkOrderList();
+        : _buildWorkOrderList(context);
   }
 
-  Widget _buildWorkOrderList() {
+  Widget _buildWorkOrderList(BuildContext context) {
     return ListView.builder(
         padding: const EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 15.0),
         itemCount: _workOrders?.length,
         itemBuilder: (content, index) => Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 0.0),
             child: ExpansionTile(
-              title: Row(children: [
-                Expanded(
-                    flex: 0,
-                    child: Text(
-                        "#${_workOrders![index].dayId?.toString().padLeft(2, '0') ?? ""}",
-                        style: _expTileTitleStyle)),
-                const SizedBox(width: 6),
-                Expanded(
-                    flex: 2,
-                    child: Text(_workOrders![index].client,
-                        style: _expTileTitleStyle)),
-                const SizedBox(width: 6),
-                Expanded(
-                    flex: 3,
-                    child: Text(_workOrders![index].vehicle,
-                        style: _expTileTitleStyle))
-              ]),
-              children: [
-                Table(
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: IntrinsicColumnWidth(),
-                    1: FlexColumnWidth()
-                  },
-                  children: [
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Descrição:",
-                          style: _expTileChildKeyStyle,
-                        ),
-                      ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: Text(_workOrders![index].clientRequest,
-                              style: _expTileChildValueStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Telefone:",
-                          style: _expTileChildKeyStyle,
-                        ),
-                      ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: Text(
-                              _workOrders![index].telephone ?? "Sem telefone",
-                              style: _expTileChildValueStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                          child: Text("Observações:",
-                              style: _expTileChildKeyStyle)),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                        child: Text(
-                          _workOrders![index].remarks ?? "Sem observações",
-                          style: _expTileChildValueStyle,
-                        ),
-                      ),
-                    ]),
-                  ],
-                )
-              ],
+              title: _buildExpTileTitle(index, context),
+              children: [_buildExpTitleChild(index)],
             )));
+  }
+
+  Widget _buildExpTileTitle(int workOrderIndex, BuildContext context) {
+    return Row(children: [
+      Expanded(
+          flex: 0,
+          child: Text(
+              "#${_workOrders![workOrderIndex].dayId?.toString().padLeft(2, '0') ?? "-"}",
+              style: _expTileTitleStyle)),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - 130),
+              padding: const EdgeInsets.fromLTRB(15, 5, 8, 0),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Icon(Icons.person, color: _expTileTitleStyle.color),
+                const SizedBox(width: 5),
+                Expanded(
+                    child: Text(_workOrders![workOrderIndex].client,
+                        style: _expTileTitleStyle)),
+              ])),
+          Container(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - 130),
+              padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
+              child: Row(children: [
+                Icon(const IconData(0xe1d7, fontFamily: 'MaterialIcons'),
+                    color: _expTileTitleStyle.color),
+                const SizedBox(width: 5),
+                Expanded(
+                    child: Text(_workOrders![workOrderIndex].vehicle,
+                        style: _expTileTitleStyle)),
+              ])),
+        ],
+      ),
+    ]);
+  }
+
+  Widget _buildExpTitleChild(int workOrderIndex) {
+    return Table(
+      columnWidths: const <int, TableColumnWidth>{
+        0: IntrinsicColumnWidth(),
+        1: FlexColumnWidth()
+      },
+      children: [
+        TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+            child: Text(
+              "Descrição:",
+              style: _expTileChildKeyStyle,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+              child: Text(_workOrders![workOrderIndex].clientRequest,
+                  style: _expTileChildValueStyle)),
+        ]),
+        TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+            child: Text(
+              "Telefone:",
+              style: _expTileChildKeyStyle,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+              child: Text(
+                  (_workOrders![workOrderIndex].telephone?.isNotEmpty ?? false)
+                      ? _workOrders![workOrderIndex].telephone!
+                      : "-",
+                  style: _expTileChildValueStyle)),
+        ]),
+        TableRow(children: [
+          Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+              child: Text("Observações:", style: _expTileChildKeyStyle)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+            child: Text(
+              (_workOrders![workOrderIndex].remarks?.isNotEmpty ?? false)
+                  ? _workOrders![workOrderIndex].remarks!
+                  : "-",
+              style: _expTileChildValueStyle,
+            ),
+          ),
+        ]),
+        TableRow(children: [
+          Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+              child: Text("Criado em:", style: _expTileChildKeyStyle)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+            child: Text(
+              _workOrders![workOrderIndex].orderOpeningDatetime,
+              style: _expTileChildValueStyle,
+            ),
+          ),
+        ]),
+        TableRow(children: [
+          Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+              child: Text("Prazo:", style: _expTileChildKeyStyle)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+            child: Text(
+              (_workOrders![workOrderIndex].deadline?.isNotEmpty ?? false)
+                  ? _workOrders![workOrderIndex].deadline!
+                  : "-",
+              style: _expTileChildValueStyle,
+            ),
+          ),
+        ]),
+      ],
+    );
   }
 }
