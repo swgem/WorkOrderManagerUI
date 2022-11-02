@@ -46,11 +46,25 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
     textFieldLabelAsteriskStyle =
         Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red);
     textFormFieldDecoration = Theme.of(context).inputDecorationTheme;
-    return Scaffold(appBar: _buildAppBar(), body: _buildForm());
+    return Scaffold(
+      appBar: _buildAppBar(),
+      floatingActionButton: _buildFloatingActionButton(),
+      body: _buildForm(),
+    );
   }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(title: const Text('NOVA ORDEM DE SERVIÇO'));
+  }
+
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton(
+        onPressed: () {
+          if (formKey.currentState!.validate()) {
+            saveWorkOrder();
+          }
+        },
+        child: const Icon(Icons.save));
   }
 
   Widget _buildForm() {
@@ -168,20 +182,6 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
                     )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 25.0, 15.0, 0.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 24),
-                        minimumSize: const Size.fromHeight(50)),
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        saveWorkOrder();
-                      }
-                    },
-                    child: const Text("SALVAR"),
-                  ),
-                ),
                 const SizedBox(height: 25.0)
               ]),
             )));
