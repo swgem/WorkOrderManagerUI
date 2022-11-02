@@ -54,7 +54,7 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('NOVA ORDEM DE SERVIÇO'));
+    return AppBar(title: const Text('Nova ordem de serviço'));
   }
 
   Widget _buildFloatingActionButton() {

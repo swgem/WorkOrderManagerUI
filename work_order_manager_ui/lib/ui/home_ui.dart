@@ -33,7 +33,7 @@ class _HomeUiState extends State<HomeUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('LISTA DE ORDENS DE SERVIÇO'));
+    return AppBar(title: const Text('Ordens de serviço'));
   }
 
   Widget _buildFloatingActionButton() {
