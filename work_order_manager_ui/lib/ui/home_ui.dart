@@ -18,8 +18,8 @@ class _HomeUiState extends State<HomeUi> {
 
   @override
   void dispose() {
-    workOrderListEventController.close();
     super.dispose();
+    workOrderListEventController.close();
   }
 
   @override

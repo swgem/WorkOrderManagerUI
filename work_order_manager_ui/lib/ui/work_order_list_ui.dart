@@ -27,23 +27,44 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   _getWorkOrders() => ApiServices.fetchAllWorkOrders()
       .then((response) => setState(() => _workOrders = response));
 
+  // _getWorkOrders() => setState(() => _workOrders = [
+  //       WorkOrder(
+  //         client: 'Claudinelson',
+  //         status: 'waiting',
+  //         dayId: 1,
+  //         priority: 0,
+  //         telephone: '15 3127 1543',
+  //         clientRequest: 'Alinhamento e balanceamento',
+  //         orderOpeningDatetime: '01/11/2022 7:51:37',
+  //         vehicle: 'Porsche',
+  //       ),
+  //       WorkOrder(
+  //           client: 'Elton da marmoraria Henriques',
+  //           status: 'ongoing',
+  //           dayId: 2,
+  //           priority: 1,
+  //           telephone: '+12 47 95471 3150',
+  //           clientRequest:
+  //               'Troca dos amortecedores. Vazamento de óleo. Ventoinha não está ligando',
+  //           orderOpeningDatetime: '01/11/2022 9:35:10',
+  //           vehicle: 'Strada Endurance cabine dupla',
+  //           remarks: 'Bateu o carro em um poste')
+  //     ]);
+
   @override
   void initState() {
+    super.initState();
+
     _subscription = widget.parentEvent.asBroadcastStream().listen((event) {
       if (event == WorkOrderListEventType.refetchList) _getWorkOrders();
     });
     _getWorkOrders();
-    super.initState();
   }
 
   @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  @override
-  Widget build(BuildContext context) {
     _expTileTitleStyle = Theme.of(context)
         .textTheme
         .titleMedium!
@@ -53,7 +74,16 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
         .bodyMedium!
         .copyWith(fontWeight: FontWeight.bold);
     _expTileChildValueStyle = Theme.of(context).textTheme.bodyMedium!;
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return (_workOrders == null)
         ? const Center(child: Text('Nenhuma ordem de serviço'))
         : _buildWorkOrderList(context);
@@ -177,7 +207,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
               padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
               child: Text("Prazo:", style: _expTileChildKeyStyle)),
           Padding(
-            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 15.0),
             child: Text(
               (_workOrders![workOrderIndex].deadline?.isNotEmpty ?? false)
                   ? _workOrders![workOrderIndex].deadline!
