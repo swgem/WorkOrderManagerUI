@@ -203,7 +203,15 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
       deadline: deadlineController.text,
       remarks: remarksController.text,
     );
-    var saveResponse = await ApiServices.postWorkOrder(workOrder);
+
+    bool saveResponse =
+        await ApiServices.postWorkOrder(workOrder).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+        duration: const Duration(seconds: 10),
+      ));
+      return false;
+    });
 
     saveResponse
         ? Navigator.pop(context, true)

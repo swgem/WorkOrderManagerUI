@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/events/work_order_list_event_type.dart';
 
 import 'package:work_order_manager_ui/models/api_services.dart';
@@ -25,7 +24,11 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   late TextStyle _expTileChildValueStyle;
 
   _getWorkOrders() => ApiServices.fetchAllWorkOrders()
-      .then((response) => setState(() => _workOrders = response));
+      .then((response) => setState(() => _workOrders = response))
+      .catchError((e) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(e.toString()),
+            duration: const Duration(seconds: 10),
+          )));
 
   // _getWorkOrders() => setState(() => _workOrders = [
   //       WorkOrder(
@@ -84,9 +87,9 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
 
   @override
   Widget build(BuildContext context) {
-    return (_workOrders == null)
-        ? const Center(child: Text('Nenhuma ordem de serviço'))
-        : _buildWorkOrderList(context);
+    return (_workOrders?.isNotEmpty ?? false)
+        ? _buildWorkOrderList(context)
+        : const Center(child: Text('Nenhuma ordem de serviço'));
   }
 
   Widget _buildWorkOrderList(BuildContext context) {

@@ -7,7 +7,7 @@ part 'work_order.g.dart';
 @JsonSerializable()
 class WorkOrder {
   final int id;
-  final int? dayId;
+  final int dayId;
   final String status;
   final int priority;
   final String orderOpeningDatetime;
@@ -23,7 +23,7 @@ class WorkOrder {
 
   WorkOrder(
       {this.id = 0,
-      this.dayId,
+      this.dayId = 0,
       required this.status,
       required this.priority,
       required this.orderOpeningDatetime,
