@@ -54,4 +54,25 @@ class ApiServices {
 
     return Future.value(response.statusCode == 200 ? true : false);
   }
+
+  static Future<bool> putWorkOrder(WorkOrder workOrder) async {
+    var workOrderMap = workOrder.toJson();
+    var workOrderBody = json.encode(workOrderMap);
+
+    Response response;
+
+    try {
+      response = await http
+          .put(Uri.parse(workOrderUrl), headers: headers, body: workOrderBody)
+          .timeout(const Duration(seconds: requestTimeoutSeconds));
+    } on SocketException {
+      throw Exception("Problema com a conexão");
+    } on TimeoutException {
+      throw Exception("Requisição ao servidor resultou em timeout");
+    } on Error catch (e) {
+      throw Exception(e);
+    }
+
+    return Future.value(response.statusCode == 200 ? true : false);
+  }
 }
