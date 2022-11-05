@@ -122,6 +122,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
                       ? Theme.of(context).disabledColor
                       : Colors.green,
                   child: ExpansionTile(
+                    key: GlobalKey(),
                     title: _buildExpTileTitle(index, context),
                     children: [_buildExpTileChild(index)],
                   )))),
