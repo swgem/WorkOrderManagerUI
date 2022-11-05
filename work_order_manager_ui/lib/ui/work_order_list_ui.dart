@@ -110,15 +110,22 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   }
 
   Widget _buildWorkOrderList(BuildContext context) {
-    return ListView.builder(
-        padding: const EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 15.0),
-        itemCount: _workOrders?.length,
-        itemBuilder: (content, index) => Padding(
-            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 0.0),
-            child: ExpansionTile(
-              title: _buildExpTileTitle(index, context),
-              children: [_buildExpTitleChild(index)],
-            )));
+    return RefreshIndicator(
+      onRefresh: () => _refreshWorkOrderList(),
+      child: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 15.0),
+          itemCount: _workOrders?.length,
+          itemBuilder: (content, index) => Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 0.0),
+              child: Material(
+                  color: (_workOrders![index].status == "waiting")
+                      ? Theme.of(context).disabledColor
+                      : Colors.green,
+                  child: ExpansionTile(
+                    title: _buildExpTileTitle(index, context),
+                    children: [_buildExpTileChild(index)],
+                  )))),
+    );
   }
 
   Widget _buildExpTileTitle(int workOrderIndex, BuildContext context) {
@@ -160,13 +167,12 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
     ]);
   }
 
-  Widget _buildExpTitleChild(int workOrderIndex) {
-    return Table(
-      columnWidths: const <int, TableColumnWidth>{
+  Widget _buildExpTileChild(int workOrderIndex) {
+    return Column(children: [
+      Table(columnWidths: const <int, TableColumnWidth>{
         0: IntrinsicColumnWidth(),
         1: FlexColumnWidth()
-      },
-      children: [
+      }, children: [
         TableRow(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
@@ -236,7 +242,135 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
             ),
           ),
         ]),
-      ],
-    );
+      ]),
+      Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 15.0),
+          child: (_workOrders![workOrderIndex].status == "waiting")
+              ? _buildExpTileWaitingButton(workOrderIndex)
+              : _buildExpTileOngoingButtons(workOrderIndex))
+    ]);
+  }
+
+  Widget _buildExpTileWaitingButton(workOrderIndex) {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            minimumSize: const Size(175, 0), backgroundColor: Colors.green),
+        onPressed: () {
+          var workOrder = WorkOrder(
+            id: _workOrders![workOrderIndex].id,
+            dayId: _workOrders![workOrderIndex].dayId,
+            status: 'onGoing',
+            priority: _workOrders![workOrderIndex].priority,
+            orderOpeningDatetime:
+                _workOrders![workOrderIndex].orderOpeningDatetime,
+            orderClosingDatetime:
+                _workOrders![workOrderIndex].orderClosingDatetime,
+            client: _workOrders![workOrderIndex].client,
+            telephone: _workOrders![workOrderIndex].telephone,
+            vehicle: _workOrders![workOrderIndex].vehicle,
+            vehiclePlate: _workOrders![workOrderIndex].vehiclePlate,
+            clientRequest: _workOrders![workOrderIndex].clientRequest,
+            pendencies: _workOrders![workOrderIndex].pendencies,
+            deadline: _workOrders![workOrderIndex].deadline,
+            remarks: _workOrders![workOrderIndex].remarks,
+          );
+          saveWorkOrder(workOrder);
+        },
+        child: const Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+            child: Text("Iniciar serviço",
+                style: TextStyle(fontSize: 15, color: Colors.white))));
+  }
+
+  Widget _buildExpTileOngoingButtons(workOrderIndex) {
+    return (MediaQuery.of(context).size.width > 500)
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _buildExpTileOngoingButtonChildren(workOrderIndex),
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _buildExpTileOngoingButtonChildren(workOrderIndex),
+          );
+  }
+
+  List<Widget> _buildExpTileOngoingButtonChildren(int workOrderIndex) {
+    return [
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, minimumSize: const Size(175, 0)),
+          onPressed: () {
+            var workOrder = WorkOrder(
+              id: _workOrders![workOrderIndex].id,
+              dayId: _workOrders![workOrderIndex].dayId,
+              status: 'cancelled',
+              priority: _workOrders![workOrderIndex].priority,
+              orderOpeningDatetime:
+                  _workOrders![workOrderIndex].orderOpeningDatetime,
+              orderClosingDatetime:
+                  _workOrders![workOrderIndex].orderClosingDatetime,
+              client: _workOrders![workOrderIndex].client,
+              telephone: _workOrders![workOrderIndex].telephone,
+              vehicle: _workOrders![workOrderIndex].vehicle,
+              vehiclePlate: _workOrders![workOrderIndex].vehiclePlate,
+              clientRequest: _workOrders![workOrderIndex].clientRequest,
+              pendencies: _workOrders![workOrderIndex].pendencies,
+              deadline: _workOrders![workOrderIndex].deadline,
+              remarks: _workOrders![workOrderIndex].remarks,
+            );
+            saveWorkOrder(workOrder);
+          },
+          child: const Padding(
+              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+              child: Text("Cancelar",
+                  style: TextStyle(fontSize: 15, color: Colors.white)))),
+      const SizedBox(width: 25, height: 12),
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey, minimumSize: const Size(175, 0)),
+          onPressed: () {
+            var workOrder = WorkOrder(
+              id: _workOrders![workOrderIndex].id,
+              dayId: _workOrders![workOrderIndex].dayId,
+              status: 'waiting',
+              priority: _workOrders![workOrderIndex].priority,
+              orderOpeningDatetime:
+                  _workOrders![workOrderIndex].orderOpeningDatetime,
+              orderClosingDatetime:
+                  _workOrders![workOrderIndex].orderClosingDatetime,
+              client: _workOrders![workOrderIndex].client,
+              telephone: _workOrders![workOrderIndex].telephone,
+              vehicle: _workOrders![workOrderIndex].vehicle,
+              vehiclePlate: _workOrders![workOrderIndex].vehiclePlate,
+              clientRequest: _workOrders![workOrderIndex].clientRequest,
+              pendencies: _workOrders![workOrderIndex].pendencies,
+              deadline: _workOrders![workOrderIndex].deadline,
+              remarks: _workOrders![workOrderIndex].remarks,
+            );
+            saveWorkOrder(workOrder);
+          },
+          child: const Padding(
+              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+              child: Text("Retornar à espera",
+                  style: TextStyle(fontSize: 15, color: Colors.white))))
+    ];
+  }
+
+  Future saveWorkOrder(WorkOrder workOrder) async {
+    bool saveResponse =
+        await ApiServices.putWorkOrder(workOrder).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+        duration: const Duration(seconds: 5),
+      ));
+      return false;
+    });
+    _refreshWorkOrderList();
+
+    if (!saveResponse) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Problema de conexão!"),
+      ));
+    }
   }
 }

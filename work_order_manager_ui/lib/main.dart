@@ -20,16 +20,18 @@ class MyApp extends StatelessWidget {
           inputDecorationTheme: const InputDecorationTheme(
               filled: true, fillColor: Color.fromARGB(255, 255, 255, 255)),
           expansionTileTheme: const ExpansionTileThemeData(
-              collapsedBackgroundColor: Colors.white,
-              backgroundColor: Colors.white),
-          dividerColor: Colors.transparent),
+              collapsedBackgroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent),
+          dividerColor: Colors.transparent,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
-          expansionTileTheme: ExpansionTileThemeData(
-              collapsedBackgroundColor: Theme.of(context).highlightColor,
-              backgroundColor: Theme.of(context).highlightColor),
-          dividerColor: Colors.transparent),
+          expansionTileTheme: const ExpansionTileThemeData(
+              collapsedBackgroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent),
+          dividerColor: Colors.transparent,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
       home: const HomeUi(),
     );
   }
