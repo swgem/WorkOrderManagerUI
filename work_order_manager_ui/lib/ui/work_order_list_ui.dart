@@ -23,14 +23,31 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   late TextStyle _expTileChildKeyStyle;
   late TextStyle _expTileChildValueStyle;
 
-  _getWorkOrders() => ApiServices.fetchAllWorkOrders()
-      .then((response) => setState(() => _workOrders = response))
-      .catchError((e) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(e.toString()),
-            duration: const Duration(seconds: 10),
-          )));
+  int _sortWorkOrdersByStatus(WorkOrder a, WorkOrder b) {
+    if (a.status == "waiting" && b.status == "onGoing") {
+      return -1;
+    } else if (a.status == "onGoing" && b.status == "waiting") {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 
-  // _getWorkOrders() => setState(() => _workOrders = [
+  Future<void> _refreshWorkOrderList() async {
+    ApiServices.fetchAllWorkOrders().then((response) {
+      _workOrders = response;
+      setState(() {
+        if (_workOrders != null) {
+          _workOrders!.sort(_sortWorkOrdersByStatus);
+        }
+      });
+    }).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(e.toString()),
+          duration: const Duration(seconds: 5),
+        )));
+  }
+
+  // Future<void> _refreshWorkOrderList() async => setState(() => _workOrders = [
   //       WorkOrder(
   //         client: 'Claudinelson',
   //         status: 'waiting',
@@ -43,7 +60,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   //       ),
   //       WorkOrder(
   //           client: 'Elton da marmoraria Henriques',
-  //           status: 'ongoing',
+  //           status: 'onGoing',
   //           dayId: 2,
   //           priority: 1,
   //           telephone: '+12 47 95471 3150',
@@ -59,9 +76,9 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
     super.initState();
 
     _subscription = widget.parentEvent.asBroadcastStream().listen((event) {
-      if (event == WorkOrderListEventType.refetchList) _getWorkOrders();
+      if (event == WorkOrderListEventType.refetchList) _refreshWorkOrderList();
     });
-    _getWorkOrders();
+    _refreshWorkOrderList();
   }
 
   @override
@@ -109,7 +126,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
       Expanded(
           flex: 0,
           child: Text(
-              "#${_workOrders![workOrderIndex].dayId?.toString().padLeft(2, '0') ?? "-"}",
+              "#${_workOrders![workOrderIndex].dayId.toString().padLeft(2, '0')}",
               style: _expTileTitleStyle)),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

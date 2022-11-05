@@ -208,7 +208,7 @@ class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
         await ApiServices.postWorkOrder(workOrder).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
-        duration: const Duration(seconds: 10),
+        duration: const Duration(seconds: 5),
       ));
       return false;
     });
