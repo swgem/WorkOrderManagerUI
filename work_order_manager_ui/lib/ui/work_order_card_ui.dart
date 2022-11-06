@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import "package:flutter/material.dart";
-import 'package:work_order_manager_ui/events/work_order_list_event_type.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderCardUi extends StatefulWidget {
   final WorkOrder workOrder;
-  final StreamController<WorkOrderListEventType> workOrderListEventController =
-      StreamController<WorkOrderListEventType>.broadcast();
 
   WorkOrderCardUi({super.key, required this.workOrder});
 
@@ -305,12 +305,13 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
       ));
       return false;
     });
-    // _refreshWorkOrderList();
 
     if (!saveResponse) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Problema de conexão!"),
       ));
     }
+
+    BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
   }
 }

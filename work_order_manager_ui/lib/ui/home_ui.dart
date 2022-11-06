@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:work_order_manager_ui/events/work_order_list_event_type.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/ui/work_order_editor_ui.dart';
 import 'package:work_order_manager_ui/ui/work_order_list_ui.dart';
 
@@ -13,13 +16,9 @@ class HomeUi extends StatefulWidget {
 }
 
 class _HomeUiState extends State<HomeUi> {
-  final StreamController<WorkOrderListEventType> workOrderListEventController =
-      StreamController<WorkOrderListEventType>.broadcast();
-
   @override
   void dispose() {
     super.dispose();
-    workOrderListEventController.close();
   }
 
   @override
@@ -27,9 +26,7 @@ class _HomeUiState extends State<HomeUi> {
     return Scaffold(
         appBar: _buildAppBar(),
         floatingActionButton: _buildFloatingActionButton(),
-        body: WorkOrderListUi(
-          parentEvent: workOrderListEventController.stream,
-        ));
+        body: _buildBody());
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -45,12 +42,25 @@ class _HomeUiState extends State<HomeUi> {
         child: const Icon(Icons.add));
   }
 
+  Widget _buildBody() {
+    return BlocListener(
+        bloc: BlocProvider.of<WorkOrderListBloc>(context),
+        listener: (context, state) {
+          if (state is WorkOrderListErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.message.toString()),
+                duration: const Duration(seconds: 5)));
+          }
+        },
+        child: const WorkOrderListUi());
+  }
+
   Future navigateToWorkOrderInserter() async {
     await Navigator.push(
         context,
         MaterialPageRoute(
             builder: ((context) => const WorkOrderEditorUi()))).then((value) =>
-        workOrderListEventController.sink
-            .add(WorkOrderListEventType.refetchList));
+        BlocProvider.of<WorkOrderListBloc>(context)
+            .add(WorkOrderListFetchEvent()));
   }
 }

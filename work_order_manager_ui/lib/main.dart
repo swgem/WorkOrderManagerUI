@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/ui/home_ui.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider<WorkOrderListBloc>(
+        create: (context) =>
+            WorkOrderListBloc()..add(WorkOrderListFetchEvent()))
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
