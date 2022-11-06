@@ -214,25 +214,28 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         style: ElevatedButton.styleFrom(
             minimumSize: const Size(175, 0),
             backgroundColor: Theme.of(context).highlightColor),
-        onPressed: () {
-          var workOrder = WorkOrder(
-            id: widget.workOrder.id,
-            dayId: widget.workOrder.dayId,
-            status: 'waiting',
-            priority: widget.workOrder.priority,
-            orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
-            orderClosingDatetime: widget.workOrder.orderClosingDatetime,
-            client: widget.workOrder.client,
-            telephone: widget.workOrder.telephone,
-            vehicle: widget.workOrder.vehicle,
-            vehiclePlate: widget.workOrder.vehiclePlate,
-            clientRequest: widget.workOrder.clientRequest,
-            pendencies: widget.workOrder.pendencies,
-            deadline: widget.workOrder.deadline,
-            remarks: widget.workOrder.remarks,
-          );
-          saveWorkOrder(workOrder);
-        },
+        onPressed: () => showDialog<String>(
+            context: context,
+            builder: ((context) => _buildButtonAlertDialog(
+                    "Retornar ordem de serviço à espera?", () {
+                  var workOrder = WorkOrder(
+                    id: widget.workOrder.id,
+                    dayId: widget.workOrder.dayId,
+                    status: 'waiting',
+                    priority: widget.workOrder.priority,
+                    orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
+                    orderClosingDatetime: widget.workOrder.orderClosingDatetime,
+                    client: widget.workOrder.client,
+                    telephone: widget.workOrder.telephone,
+                    vehicle: widget.workOrder.vehicle,
+                    vehiclePlate: widget.workOrder.vehiclePlate,
+                    clientRequest: widget.workOrder.clientRequest,
+                    pendencies: widget.workOrder.pendencies,
+                    deadline: widget.workOrder.deadline,
+                    remarks: widget.workOrder.remarks,
+                  );
+                  saveWorkOrder(workOrder);
+                }))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Retornar à espera", style: _expTileButtonStyle)));
@@ -243,25 +246,28 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         style: ElevatedButton.styleFrom(
             minimumSize: const Size(175, 0),
             backgroundColor: Theme.of(context).highlightColor),
-        onPressed: () {
-          var workOrder = WorkOrder(
-            id: widget.workOrder.id,
-            dayId: widget.workOrder.dayId,
-            status: 'ongoing',
-            priority: widget.workOrder.priority,
-            orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
-            orderClosingDatetime: widget.workOrder.orderClosingDatetime,
-            client: widget.workOrder.client,
-            telephone: widget.workOrder.telephone,
-            vehicle: widget.workOrder.vehicle,
-            vehiclePlate: widget.workOrder.vehiclePlate,
-            clientRequest: widget.workOrder.clientRequest,
-            pendencies: widget.workOrder.pendencies,
-            deadline: widget.workOrder.deadline,
-            remarks: widget.workOrder.remarks,
-          );
-          saveWorkOrder(workOrder);
-        },
+        onPressed: () => showDialog<String>(
+            context: context,
+            builder: ((context) =>
+                _buildButtonAlertDialog("Iniciar ordem de serviço?", () {
+                  var workOrder = WorkOrder(
+                    id: widget.workOrder.id,
+                    dayId: widget.workOrder.dayId,
+                    status: 'ongoing',
+                    priority: widget.workOrder.priority,
+                    orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
+                    orderClosingDatetime: widget.workOrder.orderClosingDatetime,
+                    client: widget.workOrder.client,
+                    telephone: widget.workOrder.telephone,
+                    vehicle: widget.workOrder.vehicle,
+                    vehiclePlate: widget.workOrder.vehiclePlate,
+                    clientRequest: widget.workOrder.clientRequest,
+                    pendencies: widget.workOrder.pendencies,
+                    deadline: widget.workOrder.deadline,
+                    remarks: widget.workOrder.remarks,
+                  );
+                  saveWorkOrder(workOrder);
+                }))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Iniciar serviço", style: _expTileButtonStyle)));
@@ -272,28 +278,50 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         style: ElevatedButton.styleFrom(
             minimumSize: const Size(175, 0),
             backgroundColor: Theme.of(context).highlightColor),
-        onPressed: () {
-          var workOrder = WorkOrder(
-            id: widget.workOrder.id,
-            dayId: widget.workOrder.dayId,
-            status: 'cancelled',
-            priority: widget.workOrder.priority,
-            orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
-            orderClosingDatetime: widget.workOrder.orderClosingDatetime,
-            client: widget.workOrder.client,
-            telephone: widget.workOrder.telephone,
-            vehicle: widget.workOrder.vehicle,
-            vehiclePlate: widget.workOrder.vehiclePlate,
-            clientRequest: widget.workOrder.clientRequest,
-            pendencies: widget.workOrder.pendencies,
-            deadline: widget.workOrder.deadline,
-            remarks: widget.workOrder.remarks,
-          );
-          saveWorkOrder(workOrder);
-        },
+        onPressed: () => showDialog<String>(
+            context: context,
+            builder: ((context) =>
+                _buildButtonAlertDialog("Cancelar ordem de serviço?", () {
+                  var workOrder = WorkOrder(
+                    id: widget.workOrder.id,
+                    dayId: widget.workOrder.dayId,
+                    status: 'cancelled',
+                    priority: widget.workOrder.priority,
+                    orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
+                    orderClosingDatetime: widget.workOrder.orderClosingDatetime,
+                    client: widget.workOrder.client,
+                    telephone: widget.workOrder.telephone,
+                    vehicle: widget.workOrder.vehicle,
+                    vehiclePlate: widget.workOrder.vehiclePlate,
+                    clientRequest: widget.workOrder.clientRequest,
+                    pendencies: widget.workOrder.pendencies,
+                    deadline: widget.workOrder.deadline,
+                    remarks: widget.workOrder.remarks,
+                  );
+                  saveWorkOrder(workOrder);
+                }))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Cancelar", style: _expTileButtonStyle)));
+  }
+
+  Widget _buildButtonAlertDialog(
+      String titleText, void Function() yesCallback) {
+    return AlertDialog(
+        title: Text(titleText),
+        content: const Text(
+            "Tem certeza que deseja alterar o status da ordem de serviço?"),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, "Não"),
+              child: const Text("Não")),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context, "Sim");
+                yesCallback();
+              },
+              child: const Text("Sim"))
+        ]);
   }
 
   Future saveWorkOrder(WorkOrder workOrder) async {
