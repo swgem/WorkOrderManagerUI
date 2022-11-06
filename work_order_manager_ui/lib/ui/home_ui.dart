@@ -41,6 +41,7 @@ class _HomeUiState extends State<HomeUi> {
         onPressed: () {
           navigateToWorkOrderInserter();
         },
+        tooltip: "Adicionar ordem de serviço",
         child: const Icon(Icons.add));
   }
 

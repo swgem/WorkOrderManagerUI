@@ -64,6 +64,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
             saveWorkOrder();
           }
         },
+        tooltip: "Salvar ordem de serviço",
         child: const Icon(Icons.save));
   }
 
