@@ -4,14 +4,14 @@ import 'package:work_order_manager_ui/models/api_services.dart';
 
 import '../models/work_order.dart';
 
-class WorkOrderInserterUi extends StatefulWidget {
-  const WorkOrderInserterUi({super.key});
+class WorkOrderEditorUi extends StatefulWidget {
+  const WorkOrderEditorUi({super.key});
 
   @override
-  State<WorkOrderInserterUi> createState() => _WorkOrderInserterUiState();
+  State<WorkOrderEditorUi> createState() => _WorkOrderEditorUiState();
 }
 
-class _WorkOrderInserterUiState extends State<WorkOrderInserterUi> {
+class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late GlobalKey<FormState> formKey;
 
   late ScrollController scrollController;

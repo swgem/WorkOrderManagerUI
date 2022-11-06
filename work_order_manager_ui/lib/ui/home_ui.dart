@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/events/work_order_list_event_type.dart';
-import 'package:work_order_manager_ui/ui/work_order_inserter_ui.dart';
+import 'package:work_order_manager_ui/ui/work_order_editor_ui.dart';
 import 'package:work_order_manager_ui/ui/work_order_list_ui.dart';
 
 class HomeUi extends StatefulWidget {
@@ -48,8 +48,8 @@ class _HomeUiState extends State<HomeUi> {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: ((context) => const WorkOrderInserterUi()))).then(
-        (value) => workOrderListEventController.sink
+            builder: ((context) => const WorkOrderEditorUi()))).then((value) =>
+        workOrderListEventController.sink
             .add(WorkOrderListEventType.refetchList));
   }
 }
