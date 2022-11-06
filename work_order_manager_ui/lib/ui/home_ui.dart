@@ -30,7 +30,15 @@ class _HomeUiState extends State<HomeUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Ordens de serviço'));
+    return AppBar(
+        title:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      const Text('Ordens de serviço'),
+      IconButton(
+          onPressed: () => BlocProvider.of<WorkOrderListBloc>(context)
+              .add(WorkOrderListFetchEvent()),
+          icon: const Icon(Icons.refresh))
+    ]));
   }
 
   Widget _buildFloatingActionButton() {
