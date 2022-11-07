@@ -5,7 +5,8 @@ import 'package:work_order_manager_ui/models/api_services.dart';
 import '../models/work_order.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
-  const WorkOrderEditorUi({super.key});
+  final WorkOrder? workOrder;
+  const WorkOrderEditorUi({super.key, this.workOrder});
 
   @override
   State<WorkOrderEditorUi> createState() => _WorkOrderEditorUiState();
@@ -31,13 +32,17 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   Widget build(BuildContext context) {
     formKey = GlobalKey<FormState>();
     scrollController = ScrollController();
-    clientController = TextEditingController();
-    telephoneController = TextEditingController();
-    vehicleController = TextEditingController();
-    vehiclePlateController = TextEditingController();
-    requestedServiceController = TextEditingController();
-    deadlineController = TextEditingController();
-    remarksController = TextEditingController();
+    clientController = TextEditingController(text: widget.workOrder?.client);
+    telephoneController =
+        TextEditingController(text: widget.workOrder?.telephone);
+    vehicleController = TextEditingController(text: widget.workOrder?.vehicle);
+    vehiclePlateController =
+        TextEditingController(text: widget.workOrder?.vehiclePlate);
+    requestedServiceController =
+        TextEditingController(text: widget.workOrder?.clientRequest);
+    deadlineController =
+        TextEditingController(text: widget.workOrder?.deadline);
+    remarksController = TextEditingController(text: widget.workOrder?.remarks);
     textFieldTextStyle = Theme.of(context).textTheme.titleMedium!;
     textFieldLabelStyle = Theme.of(context)
         .textTheme
@@ -192,29 +197,39 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     var currentDateTime =
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
 
-    var workOrder = WorkOrder(
-      status: 'waiting',
-      priority: 0,
-      orderOpeningDatetime: currentDateTime,
+    var newWorkOrder = WorkOrder(
+      id: widget.workOrder?.id ?? 0,
+      dayId: widget.workOrder?.id ?? 0,
+      status: widget.workOrder?.status ?? "waiting",
+      priority: widget.workOrder?.priority ?? 0,
+      orderOpeningDatetime:
+          widget.workOrder?.orderOpeningDatetime ?? currentDateTime,
       client: clientController.text,
-      clientRequest: requestedServiceController.text,
       telephone: telephoneController.text,
       vehicle: vehicleController.text,
       vehiclePlate: vehiclePlateController.text,
+      clientRequest: requestedServiceController.text,
       deadline: deadlineController.text,
       remarks: remarksController.text,
     );
 
-    bool saveResponse =
-        await ApiServices.postWorkOrder(workOrder).catchError((e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.toString()),
-        duration: const Duration(seconds: 5),
-      ));
-      return false;
-    });
+    bool responseOk = (widget.workOrder == null)
+        ? await ApiServices.postWorkOrder(newWorkOrder).catchError((e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(e.toString()),
+              duration: const Duration(seconds: 5),
+            ));
+            return false;
+          })
+        : await ApiServices.putWorkOrder(newWorkOrder).catchError((e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(e.toString()),
+              duration: const Duration(seconds: 5),
+            ));
+            return false;
+          });
 
-    saveResponse
+    responseOk
         ? Navigator.pop(context, true)
         : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Problema de conexão!"),

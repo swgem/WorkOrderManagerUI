@@ -30,7 +30,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
           builder: (context, state) {
             if (state is WorkOrderListSucessState) {
               return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 15.0),
+                  padding: const EdgeInsets.only(top: 7.0, bottom: 75.0),
                   itemCount: state.workOrders.length,
                   itemBuilder: (content, index) {
                     return Padding(

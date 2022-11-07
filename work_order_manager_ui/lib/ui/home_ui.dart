@@ -44,7 +44,7 @@ class _HomeUiState extends State<HomeUi> {
   Widget _buildFloatingActionButton() {
     return FloatingActionButton(
         onPressed: () {
-          navigateToWorkOrderInserter();
+          _navigateToWorkOrderInserter();
         },
         tooltip: "Adicionar ordem de serviço",
         child: const Icon(Icons.add));
@@ -63,7 +63,7 @@ class _HomeUiState extends State<HomeUi> {
         child: const WorkOrderListUi());
   }
 
-  Future navigateToWorkOrderInserter() async {
+  Future _navigateToWorkOrderInserter() async {
     await Navigator.push(
         context,
         MaterialPageRoute(

@@ -6,6 +6,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/ui/work_order_editor_ui.dart';
 
 class WorkOrderCardUi extends StatefulWidget {
   final WorkOrder workOrder;
@@ -171,8 +172,27 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         ]),
       ]),
       Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 15.0),
-          child: _buildExpTileButtons())
+        padding: const EdgeInsets.only(bottom: 15.0),
+        child: Stack(
+            fit: StackFit.loose,
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              const SizedBox(width: double.infinity),
+              Align(alignment: Alignment.center, child: _buildExpTileButtons()),
+              Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: ElevatedButton(
+                      onPressed: () => _navigateToWorkOrderEditor(),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 95, 95, 95),
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(15)),
+                      child: const Icon(Icons.edit))),
+            ]),
+      ),
     ]);
   }
 
@@ -180,10 +200,12 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     return (MediaQuery.of(context).size.width > 500)
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: _buildExpTileButtonChildren(),
           )
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: _buildExpTileButtonChildren(),
           );
   }
@@ -234,7 +256,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     deadline: widget.workOrder.deadline,
                     remarks: widget.workOrder.remarks,
                   );
-                  saveWorkOrder(workOrder);
+                  _saveWorkOrder(workOrder);
                 }))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -266,7 +288,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     deadline: widget.workOrder.deadline,
                     remarks: widget.workOrder.remarks,
                   );
-                  saveWorkOrder(workOrder);
+                  _saveWorkOrder(workOrder);
                 }))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -298,7 +320,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     deadline: widget.workOrder.deadline,
                     remarks: widget.workOrder.remarks,
                   );
-                  saveWorkOrder(workOrder);
+                  _saveWorkOrder(workOrder);
                 }))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -324,7 +346,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         ]);
   }
 
-  Future saveWorkOrder(WorkOrder workOrder) async {
+  Future _saveWorkOrder(WorkOrder workOrder) async {
     bool saveResponse =
         await ApiServices.putWorkOrder(workOrder).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -341,5 +363,15 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     }
 
     BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
+  }
+
+  Future _navigateToWorkOrderEditor() async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => WorkOrderEditorUi(
+                  workOrder: widget.workOrder,
+                )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
+        .add(WorkOrderListFetchEvent()));
   }
 }
