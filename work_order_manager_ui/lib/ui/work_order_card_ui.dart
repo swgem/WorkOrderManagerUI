@@ -188,40 +188,17 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
       ]),
       Padding(
         padding: const EdgeInsets.only(bottom: 15.0),
-        child: Stack(
-            fit: StackFit.loose,
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              const SizedBox(width: double.infinity),
-              Align(alignment: Alignment.center, child: _buildExpTileButtons()),
-              Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: ElevatedButton(
-                      onPressed: () => _navigateToWorkOrderEditor(),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).hintColor,
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(15)),
-                      child: const Icon(Icons.edit))),
-            ]),
+        child: _buildExpTileButtons(),
       ),
     ]);
   }
 
   Widget _buildExpTileButtons() {
-    return (MediaQuery.of(context).size.width > 500)
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: _buildExpTileButtonChildren(),
-          )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: _buildExpTileButtonChildren(),
-          );
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: _buildExpTileButtonChildren(),
+    );
   }
 
   List<Widget> _buildExpTileButtonChildren() {
@@ -230,14 +207,26 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     if (widget.workOrder.status == "waiting") {
       buttonList = [
         _buildToOngoingButton(),
+        const SizedBox(width: 25, height: 12),
+        _buildToCancelledButton(),
+        const SizedBox(width: 25, height: 12),
+        _buildEditButton(),
       ];
     } else if (widget.workOrder.status == "ongoing") {
       buttonList = [
         _buildToCancelledButton(),
         const SizedBox(width: 25, height: 12),
         _buildToWaitingButton(),
+        const SizedBox(width: 25, height: 12),
+        _buildToFinishedButton(),
+        const SizedBox(width: 25, height: 12),
+        _buildEditButton(),
       ];
-    } else {
+    } else if (widget.workOrder.status == "finished") {
+      buttonList = [
+        _buildToCancelledButton(),
+      ];
+    } else /*if (widget.workOrder.status == "cancelled")*/ {
       buttonList = [
         _buildToWaitingButton(),
       ];
@@ -248,8 +237,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   Widget _buildToWaitingButton() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            minimumSize: const Size(175, 0),
-            backgroundColor: Theme.of(context).highlightColor),
+            minimumSize: const Size(190, 0),
+            backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
             context: context,
             builder: ((context) => _buildButtonAlertDialog(
@@ -280,8 +269,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   Widget _buildToOngoingButton() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            minimumSize: const Size(175, 0),
-            backgroundColor: Theme.of(context).highlightColor),
+            minimumSize: const Size(190, 0),
+            backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
             context: context,
             builder: ((context) =>
@@ -309,11 +298,43 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             child: Text("Iniciar serviço", style: _expTileButtonStyle)));
   }
 
+  Widget _buildToFinishedButton() {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            minimumSize: const Size(190, 0),
+            backgroundColor: Theme.of(context).hoverColor),
+        onPressed: () => showDialog<String>(
+            context: context,
+            builder: ((context) =>
+                _buildButtonAlertDialog("Finalizar ordem de serviço?", () {
+                  var workOrder = WorkOrder(
+                    id: widget.workOrder.id,
+                    dayId: widget.workOrder.dayId,
+                    status: 'finished',
+                    priority: widget.workOrder.priority,
+                    orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
+                    orderClosingDatetime: widget.workOrder.orderClosingDatetime,
+                    client: widget.workOrder.client,
+                    telephone: widget.workOrder.telephone,
+                    vehicle: widget.workOrder.vehicle,
+                    vehiclePlate: widget.workOrder.vehiclePlate,
+                    clientRequest: widget.workOrder.clientRequest,
+                    pendencies: widget.workOrder.pendencies,
+                    deadline: widget.workOrder.deadline,
+                    remarks: widget.workOrder.remarks,
+                  );
+                  _saveWorkOrder(workOrder);
+                }))),
+        child: Padding(
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+            child: Text("Finalizar", style: _expTileButtonStyle)));
+  }
+
   Widget _buildToCancelledButton() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            minimumSize: const Size(175, 0),
-            backgroundColor: Theme.of(context).highlightColor),
+            minimumSize: const Size(190, 0),
+            backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
             context: context,
             builder: ((context) =>
@@ -339,6 +360,17 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Cancelar", style: _expTileButtonStyle)));
+  }
+
+  Widget _buildEditButton() {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            minimumSize: const Size(190, 0),
+            backgroundColor: Theme.of(context).highlightColor),
+        onPressed: () => _navigateToWorkOrderEditor(),
+        child: Padding(
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+            child: Text("Editar", style: _expTileButtonStyle)));
   }
 
   Widget _buildButtonAlertDialog(
