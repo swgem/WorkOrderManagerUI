@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
@@ -18,13 +19,6 @@ class WorkOrderCardUi extends StatefulWidget {
 }
 
 class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
-  final Map<String, Color> _statusColor = {
-    "waiting": Colors.yellow,
-    "ongoing": Colors.green,
-    "finished": Colors.grey,
-    "cancelled": Colors.red
-  };
-
   late TextStyle _expTileTitleStyle;
   late TextStyle _expTileChildKeyStyle;
   late TextStyle _expTileChildValueStyle;
@@ -49,12 +43,33 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   @override
   Widget build(BuildContext context) {
     return Material(
-        color: _statusColor[widget.workOrder.status],
+        color: _getColorByStatus(widget.workOrder.status),
         child: ExpansionTile(
           key: GlobalKey(),
           title: _buildExpTileTitle(context),
           children: [_buildExpTileChild()],
         ));
+  }
+
+  Color _getColorByStatus(String status) {
+    var currentThemeMode = AdaptiveTheme.of(context).brightness;
+
+    final Map<String, Color> statusColor = {
+      "waiting": (currentThemeMode == Brightness.light)
+          ? const Color.fromARGB(255, 255, 242, 121)
+          : const Color.fromARGB(255, 128, 118, 31),
+      "ongoing": (currentThemeMode == Brightness.light)
+          ? const Color.fromARGB(255, 123, 199, 125)
+          : const Color.fromARGB(255, 67, 112, 69),
+      "finished": (currentThemeMode == Brightness.light)
+          ? const Color.fromARGB(255, 185, 185, 185)
+          : const Color.fromARGB(255, 97, 97, 97),
+      "cancelled": (currentThemeMode == Brightness.light)
+          ? const Color.fromARGB(255, 255, 129, 120)
+          : const Color.fromARGB(255, 159, 70, 64)
+    };
+
+    return statusColor[status]!;
   }
 
   Widget _buildExpTileTitle(BuildContext context) {
@@ -186,8 +201,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                   child: ElevatedButton(
                       onPressed: () => _navigateToWorkOrderEditor(),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 95, 95, 95),
+                          backgroundColor: Theme.of(context).hintColor,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(15)),
                       child: const Icon(Icons.edit))),
