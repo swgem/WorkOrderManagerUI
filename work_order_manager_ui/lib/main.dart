@@ -2,14 +2,14 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
-import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/ui/pages/home_page_ui.dart';
+import 'package:work_order_manager_ui/ui/pages/routes.dart';
+import 'package:work_order_manager_ui/ui/pages/settings_page_ui.dart';
+import 'package:work_order_manager_ui/ui/pages/work_orders_page_ui.dart';
 
 void main() {
   runApp(MultiBlocProvider(providers: [
-    BlocProvider<WorkOrderListBloc>(
-        create: (context) =>
-            WorkOrderListBloc()..add(WorkOrderListFetchEvent()))
+    BlocProvider<WorkOrderListBloc>(create: (context) => WorkOrderListBloc())
   ], child: const MyApp()));
 }
 
@@ -42,7 +42,12 @@ class MyApp extends StatelessWidget {
               title: 'SEVENCAR ORGANIZADOR',
               theme: theme,
               darkTheme: darkTheme,
-              home: const HomePageUi(),
+              routes: {
+                Routes.home: (context) => const HomePageUi(),
+                Routes.workOrders: (context) => const WorkOrdersPageUi(),
+                Routes.settings: (context) => const SettingsPageUi()
+              },
+              initialRoute: Routes.home,
             ));
   }
 }

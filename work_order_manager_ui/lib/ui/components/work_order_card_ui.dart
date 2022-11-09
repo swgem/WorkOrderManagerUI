@@ -11,8 +11,10 @@ import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 
 class WorkOrderCardUi extends StatefulWidget {
   final WorkOrder workOrder;
+  final List<String>? workOrderListFilterStatus;
 
-  WorkOrderCardUi({super.key, required this.workOrder});
+  const WorkOrderCardUi(
+      {super.key, required this.workOrder, this.workOrderListFilterStatus});
 
   @override
   State<WorkOrderCardUi> createState() => _WorkOrderCardUiState();
@@ -408,7 +410,9 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
       ));
     }
 
-    BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
+    BlocProvider.of<WorkOrderListBloc>(context).add(
+        WorkOrderListFetchByStatusEvent(
+            status: widget.workOrderListFilterStatus));
   }
 
   Future _navigateToWorkOrderEditor() async {
@@ -418,6 +422,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             builder: ((context) => WorkOrderEditorPageUi(
                   workOrder: widget.workOrder,
                 )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
-        .add(WorkOrderListFetchEvent()));
+        .add(WorkOrderListFetchByStatusEvent(
+            status: widget.workOrderListFilterStatus)));
   }
 }

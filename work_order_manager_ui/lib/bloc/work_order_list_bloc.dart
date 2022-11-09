@@ -32,7 +32,13 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
   WorkOrderListBloc() : super(WorkOrderListLoadingState()) {
     on<WorkOrderListFetchEvent>((event, emit) async {
       emit(WorkOrderListLoadingState());
+      await Future.delayed(const Duration(milliseconds: 300));
       emit(await _fetchWorkOrders());
+    });
+    on<WorkOrderListFetchByStatusEvent>((event, emit) async {
+      emit(WorkOrderListLoadingState());
+      await Future.delayed(const Duration(milliseconds: 300));
+      emit(await _fetchWorkOrderByStatus(event.status));
     });
   }
 
@@ -60,6 +66,29 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
       // List<WorkOrder> workOrders =
       //     await Future.delayed(Duration(seconds: 5), () => _workOrdersMock);
 
+      workOrders.sort(_sortWorkOrdersByStatus);
+
+      if (workOrders.isEmpty) {
+        return WorkOrderListEmptyState();
+      } else {
+        return WorkOrderListSucessState(workOrders: workOrders);
+      }
+    } catch (e) {
+      return WorkOrderListErrorState(message: e.toString());
+    }
+  }
+
+  Future<WorkOrderListState> _fetchWorkOrderByStatus(
+      List<String>? status) async {
+    if (status == null || status.isEmpty) {
+      return _fetchWorkOrders();
+    }
+    try {
+      List<WorkOrder> workOrders = await ApiServices.fetchAllWorkOrders();
+      // List<WorkOrder> workOrders =
+      //     await Future.delayed(Duration(seconds: 5), () => _workOrdersMock);
+
+      workOrders.removeWhere((element) => !status.contains(element.status));
       workOrders.sort(_sortWorkOrdersByStatus);
 
       if (workOrders.isEmpty) {

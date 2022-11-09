@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:work_order_manager_ui/ui/pages/routes.dart';
 
 class DrawerUi extends StatelessWidget {
   const DrawerUi({super.key});
@@ -14,19 +15,30 @@ class DrawerUi extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        const ListTile(
-          leading: Icon(Icons.home),
-          title: Text("Início"),
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text("Início"),
+          onTap: () => _onTap(context, Routes.home),
         ),
-        const ListTile(
-          leading: Icon(Icons.list),
-          title: Text("Ordens de serviço"),
+        ListTile(
+          leading: const Icon(Icons.list),
+          title: const Text("Ordens de serviço"),
+          onTap: () => _onTap(context, Routes.workOrders),
         ),
-        const ListTile(
-          leading: Icon(Icons.settings),
-          title: Text("Preferências"),
+        ListTile(
+          leading: const Icon(Icons.settings),
+          title: const Text("Preferências"),
+          onTap: () => _onTap(context, Routes.settings),
         )
       ],
     ));
+  }
+
+  void _onTap(BuildContext context, String route) {
+    if (ModalRoute.of(context)!.settings.name != route) {
+      Navigator.pushReplacementNamed(context, route);
+    } else {
+      Navigator.pop(context);
+    }
   }
 }

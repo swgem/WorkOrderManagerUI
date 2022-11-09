@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
@@ -7,25 +5,22 @@ import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_list_ui.dart';
-import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 
-class HomePageUi extends StatefulWidget {
-  static const String routeName = '/homePage';
-  const HomePageUi({super.key});
+class WorkOrdersPageUi extends StatefulWidget {
+  static const routeName = '/workOrders';
+  const WorkOrdersPageUi({super.key});
 
   @override
-  State<HomePageUi> createState() => _HomePageUiState();
+  State<WorkOrdersPageUi> createState() => _WorkOrdersPageUiState();
 }
 
-class _HomePageUiState extends State<HomePageUi> {
-  final List<String> _workOrderStatus = ["waiting", "ongoing"];
-
+class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
   @override
   void initState() {
     super.initState();
 
     BlocProvider.of<WorkOrderListBloc>(context)
-        .add(WorkOrderListFetchByStatusEvent(status: _workOrderStatus));
+        .add(WorkOrderListFetchByStatusEvent());
   }
 
   @override
@@ -36,31 +31,19 @@ class _HomePageUiState extends State<HomePageUi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _buildAppBar(),
-        drawer: const DrawerUi(),
-        floatingActionButton: _buildFloatingActionButton(),
-        body: _buildBody());
+        appBar: _buildAppBar(), drawer: const DrawerUi(), body: _buildBody());
   }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
         title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      const Text('Início'),
+      const Text('Ordens de serviço'),
       const Spacer(),
       IconButton(
           onPressed: () => BlocProvider.of<WorkOrderListBloc>(context)
-              .add(WorkOrderListFetchByStatusEvent(status: _workOrderStatus)),
+              .add(WorkOrderListFetchByStatusEvent()),
           icon: const Icon(Icons.refresh))
     ]));
-  }
-
-  Widget _buildFloatingActionButton() {
-    return FloatingActionButton(
-        onPressed: () {
-          _navigateToWorkOrderInserter();
-        },
-        tooltip: "Adicionar ordem de serviço",
-        child: const Icon(Icons.add));
   }
 
   Widget _buildBody() {
@@ -73,17 +56,6 @@ class _HomePageUiState extends State<HomePageUi> {
                 duration: const Duration(seconds: 5)));
           }
         },
-        child: WorkOrderListUi(
-          workOrderStatus: _workOrderStatus,
-        ));
-  }
-
-  Future _navigateToWorkOrderInserter() async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: ((context) => const WorkOrderEditorPageUi()))).then(
-        (value) => BlocProvider.of<WorkOrderListBloc>(context)
-            .add(WorkOrderListFetchByStatusEvent(status: _workOrderStatus)));
+        child: const WorkOrderListUi());
   }
 }
