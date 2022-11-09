@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
-import 'package:work_order_manager_ui/ui/home_ui.dart';
+import 'package:work_order_manager_ui/ui/pages/home_page_ui.dart';
 
 void main() {
   runApp(MultiBlocProvider(providers: [
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
               title: 'SEVENCAR ORGANIZADOR',
               theme: theme,
               darkTheme: darkTheme,
-              home: const HomeUi(),
+              home: const HomePageUi(),
             ));
   }
 }

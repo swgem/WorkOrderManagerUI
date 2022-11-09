@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
+import 'package:work_order_manager_ui/stream/work_order_editor_event.dart';
 
-import '../models/work_order.dart';
+import '../../models/work_order.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
+  final Stream<WorkOrderEditorEvent> parentEvent;
   final WorkOrder? workOrder;
-  const WorkOrderEditorUi({super.key, this.workOrder});
+
+  const WorkOrderEditorUi(
+      {super.key, required this.parentEvent, this.workOrder});
 
   @override
   State<WorkOrderEditorUi> createState() => _WorkOrderEditorUiState();
@@ -14,6 +20,8 @@ class WorkOrderEditorUi extends StatefulWidget {
 
 class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late GlobalKey<FormState> formKey;
+
+  late StreamSubscription<WorkOrderEditorEvent> _eventSubscription;
 
   late ScrollController scrollController;
   late TextEditingController clientController;
@@ -29,7 +37,29 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late InputDecorationTheme textFormFieldDecoration;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
+    _eventSubscription = widget.parentEvent.asBroadcastStream().listen((event) {
+      if (event == WorkOrderEditorEvent.saveWorkOrder) {
+        if (formKey.currentState!.validate()) {
+          saveWorkOrder();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _eventSubscription.cancel();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     formKey = GlobalKey<FormState>();
     scrollController = ScrollController();
     clientController = TextEditingController(text: widget.workOrder?.client);
@@ -51,26 +81,13 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     textFieldLabelAsteriskStyle =
         Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red);
     textFormFieldDecoration = Theme.of(context).inputDecorationTheme;
-    return Scaffold(
-      appBar: _buildAppBar(),
-      floatingActionButton: _buildFloatingActionButton(),
-      body: _buildForm(),
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: _buildForm(),
     );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Nova ordem de serviço'));
-  }
-
-  Widget _buildFloatingActionButton() {
-    return FloatingActionButton(
-        onPressed: () {
-          if (formKey.currentState!.validate()) {
-            saveWorkOrder();
-          }
-        },
-        tooltip: "Salvar ordem de serviço",
-        child: const Icon(Icons.save));
   }
 
   Widget _buildForm() {

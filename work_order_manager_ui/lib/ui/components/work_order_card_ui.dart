@@ -7,7 +7,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
-import 'package:work_order_manager_ui/ui/work_order_editor_ui.dart';
+import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 
 class WorkOrderCardUi extends StatefulWidget {
   final WorkOrder workOrder;
@@ -415,7 +415,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: ((context) => WorkOrderEditorUi(
+            builder: ((context) => WorkOrderEditorPageUi(
                   workOrder: widget.workOrder,
                 )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
         .add(WorkOrderListFetchEvent()));

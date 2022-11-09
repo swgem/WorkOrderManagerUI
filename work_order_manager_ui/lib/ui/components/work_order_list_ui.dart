@@ -6,7 +6,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 
-import 'package:work_order_manager_ui/ui/work_order_card_ui.dart';
+import 'package:work_order_manager_ui/ui/components/work_order_card_ui.dart';
 
 class WorkOrderListUi extends StatefulWidget {
   const WorkOrderListUi({super.key});
