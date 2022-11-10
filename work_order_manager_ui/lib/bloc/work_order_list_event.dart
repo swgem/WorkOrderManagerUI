@@ -2,7 +2,7 @@ abstract class WorkOrderListEvent {}
 
 class WorkOrderListFetchEvent extends WorkOrderListEvent {}
 
-class WorkOrderListFetchByStatusEvent extends WorkOrderListEvent {
+class WorkOrderListLoadStatusFilterEvent extends WorkOrderListEvent {
   final List<String>? status;
-  WorkOrderListFetchByStatusEvent({this.status});
+  WorkOrderListLoadStatusFilterEvent({this.status});
 }

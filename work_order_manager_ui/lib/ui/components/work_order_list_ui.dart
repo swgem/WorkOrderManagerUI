@@ -8,9 +8,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_card_ui.dart';
 
 class WorkOrderListUi extends StatefulWidget {
-  final List<String>? workOrderStatus;
-
-  const WorkOrderListUi({super.key, this.workOrderStatus});
+  const WorkOrderListUi({super.key});
 
   @override
   State<WorkOrderListUi> createState() => _WorkOrderListUiState();
@@ -24,16 +22,8 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
 
   Widget _buildWorkOrderList(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () {
-        if (widget.workOrderStatus != null &&
-            widget.workOrderStatus!.isNotEmpty) {
-          return Future(() => BlocProvider.of<WorkOrderListBloc>(context).add(
-              WorkOrderListFetchByStatusEvent(status: widget.workOrderStatus)));
-        } else {
-          return Future(() => BlocProvider.of<WorkOrderListBloc>(context).add(
-              WorkOrderListFetchByStatusEvent(status: widget.workOrderStatus)));
-        }
-      },
+      onRefresh: () => Future(() => BlocProvider.of<WorkOrderListBloc>(context)
+          .add(WorkOrderListFetchEvent())),
       child: BlocBuilder<WorkOrderListBloc, WorkOrderListState>(
           bloc: BlocProvider.of(context),
           builder: (context, state) {
@@ -46,8 +36,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
                         padding:
                             const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 0.0),
                         child: WorkOrderCardUi(
-                            workOrder: state.workOrders[index],
-                            workOrderListFilterStatus: widget.workOrderStatus));
+                            workOrder: state.workOrders[index]));
                   });
             } else if (state is WorkOrderListEmptyState) {
               return const Center(child: Text("Não há ordens de serviço"));

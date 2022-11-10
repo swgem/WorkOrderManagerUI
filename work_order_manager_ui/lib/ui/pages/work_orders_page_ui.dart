@@ -27,6 +27,8 @@ class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
   void initState() {
     super.initState();
 
+    BlocProvider.of<WorkOrderListBloc>(context)
+        .add(WorkOrderListLoadStatusFilterEvent(status: null));
     BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
     eventController = StreamController<WorkOrderEditorEvent>.broadcast();
   }

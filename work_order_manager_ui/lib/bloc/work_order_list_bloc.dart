@@ -5,6 +5,8 @@ import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
+  List<String>? workOrderStatusFilter;
+
   // final _workOrdersMock = [
   //   WorkOrder(
   //     client: 'Claudinelson',
@@ -33,13 +35,11 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
     on<WorkOrderListFetchEvent>((event, emit) async {
       emit(WorkOrderListLoadingState());
       await Future.delayed(const Duration(milliseconds: 300));
-      emit(await _fetchWorkOrders());
+      emit(await _fetchWorkOrdersFilteredByStatus());
     });
-    on<WorkOrderListFetchByStatusEvent>((event, emit) async {
-      emit(WorkOrderListLoadingState());
-      await Future.delayed(const Duration(milliseconds: 300));
-      emit(await _fetchWorkOrderByStatus(event.status));
-    });
+
+    on<WorkOrderListLoadStatusFilterEvent>(
+        (event, emit) => workOrderStatusFilter = event.status);
   }
 
   int _sortWorkOrdersByStatus(WorkOrder a, WorkOrder b) {
@@ -60,35 +60,17 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
     }
   }
 
-  Future<WorkOrderListState> _fetchWorkOrders() async {
+  Future<WorkOrderListState> _fetchWorkOrdersFilteredByStatus() async {
     try {
       List<WorkOrder> workOrders = await ApiServices.fetchAllWorkOrders();
       // List<WorkOrder> workOrders =
-      //     await Future.delayed(Duration(seconds: 5), () => _workOrdersMock);
+      //     await Future.delayed(Duration(seconds: 2), () => _workOrdersMock);
 
-      workOrders.sort(_sortWorkOrdersByStatus);
-
-      if (workOrders.isEmpty) {
-        return WorkOrderListEmptyState();
-      } else {
-        return WorkOrderListSucessState(workOrders: workOrders);
+      if (workOrderStatusFilter != null && workOrderStatusFilter!.isNotEmpty) {
+        workOrders.removeWhere(
+            (element) => !workOrderStatusFilter!.contains(element.status));
       }
-    } catch (e) {
-      return WorkOrderListErrorState(message: e.toString());
-    }
-  }
 
-  Future<WorkOrderListState> _fetchWorkOrderByStatus(
-      List<String>? status) async {
-    if (status == null || status.isEmpty) {
-      return _fetchWorkOrders();
-    }
-    try {
-      List<WorkOrder> workOrders = await ApiServices.fetchAllWorkOrders();
-      // List<WorkOrder> workOrders =
-      //     await Future.delayed(Duration(seconds: 5), () => _workOrdersMock);
-
-      workOrders.removeWhere((element) => !status.contains(element.status));
       workOrders.sort(_sortWorkOrdersByStatus);
 
       if (workOrders.isEmpty) {

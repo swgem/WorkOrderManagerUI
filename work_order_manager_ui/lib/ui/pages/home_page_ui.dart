@@ -22,14 +22,14 @@ class HomePageUi extends StatefulWidget {
 
 class _HomePageUiState extends State<HomePageUi> {
   late final StreamController<WorkOrderEditorEvent> eventController;
-  final List<String> _workOrderStatus = ["waiting", "ongoing"];
 
   @override
   void initState() {
     super.initState();
 
-    BlocProvider.of<WorkOrderListBloc>(context)
-        .add(WorkOrderListFetchByStatusEvent(status: _workOrderStatus));
+    BlocProvider.of<WorkOrderListBloc>(context).add(
+        WorkOrderListLoadStatusFilterEvent(status: ["waiting", "ongoing"]));
+    BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
     eventController = StreamController<WorkOrderEditorEvent>.broadcast();
   }
 
@@ -63,7 +63,7 @@ class _HomePageUiState extends State<HomePageUi> {
       const Spacer(),
       IconButton(
           onPressed: () => BlocProvider.of<WorkOrderListBloc>(context)
-              .add(WorkOrderListFetchByStatusEvent(status: _workOrderStatus)),
+              .add(WorkOrderListFetchEvent()),
           icon: const Icon(Icons.refresh))
     ]));
   }
@@ -156,9 +156,7 @@ class _HomePageUiState extends State<HomePageUi> {
                 duration: const Duration(seconds: 5)));
           }
         },
-        child: WorkOrderListUi(
-          workOrderStatus: _workOrderStatus,
-        ));
+        child: const WorkOrderListUi());
   }
 
   Widget _buildTabletBody() {
@@ -176,9 +174,7 @@ class _HomePageUiState extends State<HomePageUi> {
                       duration: const Duration(seconds: 5)));
                 }
               },
-              child: WorkOrderListUi(
-                workOrderStatus: _workOrderStatus,
-              )),
+              child: const WorkOrderListUi()),
         ),
         Expanded(
             flex: 1,
@@ -203,9 +199,7 @@ class _HomePageUiState extends State<HomePageUi> {
                         duration: const Duration(seconds: 5)));
                   }
                 },
-                child: WorkOrderListUi(
-                  workOrderStatus: _workOrderStatus,
-                )),
+                child: const WorkOrderListUi()),
           ),
           Expanded(
               flex: 1,
@@ -221,6 +215,6 @@ class _HomePageUiState extends State<HomePageUi> {
         MaterialPageRoute(
             builder: ((context) => const WorkOrderEditorPageUi()))).then(
         (value) => BlocProvider.of<WorkOrderListBloc>(context)
-            .add(WorkOrderListFetchByStatusEvent(status: _workOrderStatus)));
+            .add(WorkOrderListFetchEvent()));
   }
 }
