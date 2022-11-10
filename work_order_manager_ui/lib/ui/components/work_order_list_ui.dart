@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
-
 import 'package:work_order_manager_ui/ui/components/work_order_card_ui.dart';
 
 class WorkOrderListUi extends StatefulWidget {
@@ -40,7 +39,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
           builder: (context, state) {
             if (state is WorkOrderListSucessState) {
               return ListView.builder(
-                  padding: const EdgeInsets.only(top: 7.0, bottom: 75.0),
+                  padding: const EdgeInsets.only(top: 7.0, bottom: 150.0),
                   itemCount: state.workOrders.length,
                   itemBuilder: (content, index) {
                     return Padding(

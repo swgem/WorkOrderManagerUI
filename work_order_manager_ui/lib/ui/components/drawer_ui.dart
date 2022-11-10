@@ -38,7 +38,7 @@ class DrawerUi extends StatelessWidget {
     if (ModalRoute.of(context)!.settings.name != route) {
       Navigator.pushReplacementNamed(context, route);
     } else {
-      Navigator.pop(context);
+      Navigator.maybePop(context);
     }
   }
 }

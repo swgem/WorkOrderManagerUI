@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
+import 'package:work_order_manager_ui/ui/pages/responsive_page_ui.dart';
 
 class SettingsPageUi extends StatelessWidget {
   static const String routeName = '/settings';
@@ -7,8 +8,18 @@ class SettingsPageUi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: _buildAppBar(), drawer: const DrawerUi(), body: _buildBody());
+    return ResponsivePageUi(
+      appBar: _buildAppBar(),
+      mobileBody: _buildBody(),
+      tabletBody: _buildBody(),
+      desktopBody: _buildBody(),
+      mobileFloatingActionButton: _buildFloatingActionButton(),
+      tabletFloatingActionButton: _buildFloatingActionButton(),
+      desktopFloatingActionButton: _buildFloatingActionButton(),
+      mobileDrawer: const DrawerUi(),
+      tabletDrawer: const DrawerUi(),
+      desktopDrawer: const DrawerUi(),
+    );
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -21,5 +32,10 @@ class SettingsPageUi extends StatelessWidget {
 
   Widget _buildBody() {
     return Container();
+  }
+
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton(
+        onPressed: () {}, tooltip: "Salvar", child: const Icon(Icons.save));
   }
 }
