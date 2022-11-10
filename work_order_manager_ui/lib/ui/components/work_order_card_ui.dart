@@ -80,35 +80,34 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
           flex: 0,
           child: Text("#${widget.workOrder.dayId.toString().padLeft(2, '0')}",
               style: _expTileTitleStyle)),
-      Column(
+      Expanded(
+          child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-              constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width - 130),
-              padding: const EdgeInsets.fromLTRB(15, 5, 8, 0),
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Icon(Icons.person, color: _expTileTitleStyle.color),
-                const SizedBox(width: 5),
-                Expanded(
-                    child: Text(widget.workOrder.client,
-                        style: _expTileTitleStyle)),
-              ])),
-          Container(
-              constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width - 130),
-              padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
-              child: Row(children: [
-                Icon(const IconData(0xe1d7, fontFamily: 'MaterialIcons'),
-                    color: _expTileTitleStyle.color),
-                const SizedBox(width: 5),
-                Expanded(
-                    child: Text(widget.workOrder.vehicle,
-                        style: _expTileTitleStyle)),
-              ])),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Icon(Icons.person, color: _expTileTitleStyle.color),
+              const SizedBox(width: 5),
+              Expanded(
+                  child:
+                      Text(widget.workOrder.client, style: _expTileTitleStyle)),
+            ]),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
+            child: Row(children: [
+              Icon(const IconData(0xe1d7, fontFamily: 'MaterialIcons'),
+                  color: _expTileTitleStyle.color),
+              const SizedBox(width: 5),
+              Expanded(
+                  child: Text(widget.workOrder.vehicle,
+                      style: _expTileTitleStyle)),
+            ]),
+          ),
         ],
-      ),
+      )),
     ]);
   }
 
