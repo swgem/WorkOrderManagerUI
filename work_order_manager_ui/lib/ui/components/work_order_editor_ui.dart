@@ -43,7 +43,10 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     _eventSubscription = widget.parentEvent.asBroadcastStream().listen((event) {
       if (event == WorkOrderEditorEvent.saveWorkOrder) {
         if (formKey.currentState!.validate()) {
-          saveWorkOrder();
+          showDialog<String>(
+              context: context,
+              builder: (context) => _buildButtonAlertDialog(
+                  "Salvar ordem de serviço", () => saveWorkOrder()));
         }
       }
     });
@@ -210,6 +213,25 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
             )));
   }
 
+  Widget _buildButtonAlertDialog(
+      String titleText, void Function() yesCallback) {
+    return AlertDialog(
+        title: Text(titleText),
+        content:
+            const Text("Tem certeza que deseja salvar a ordem de serviço?"),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, "Não"),
+              child: const Text("Não")),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context, "Sim");
+                yesCallback();
+              },
+              child: const Text("Sim"))
+        ]);
+  }
+
   Future saveWorkOrder() async {
     var currentDateTime =
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
@@ -230,7 +252,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       remarks: remarksController.text,
     );
 
-    bool responseOk = (widget.workOrder == null)
+    bool isResponseOk = (widget.workOrder == null)
         ? await ApiServices.postWorkOrder(newWorkOrder).catchError((e) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(e.toString()),
@@ -246,10 +268,11 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
             return false;
           });
 
-    responseOk
-        ? Navigator.pop(context, true)
-        : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Problema de conexão!"),
-          ));
+    if (isResponseOk) {
+      Navigator.pop(context, true);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Problema de conexão!")));
+    }
   }
 }

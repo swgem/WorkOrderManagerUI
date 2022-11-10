@@ -242,7 +242,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
             context: context,
-            builder: ((context) => _buildButtonAlertDialog(
+            builder: (context) => _buildButtonAlertDialog(
                     "Retornar ordem de serviço à espera?", () {
                   var workOrder = WorkOrder(
                     id: widget.workOrder.id,
@@ -261,7 +261,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     remarks: widget.workOrder.remarks,
                   );
                   _saveWorkOrder(workOrder);
-                }))),
+                })),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Retornar à espera", style: _expTileButtonStyle)));
@@ -274,7 +274,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
             context: context,
-            builder: ((context) =>
+            builder: (context) =>
                 _buildButtonAlertDialog("Iniciar ordem de serviço?", () {
                   var workOrder = WorkOrder(
                     id: widget.workOrder.id,
@@ -293,7 +293,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     remarks: widget.workOrder.remarks,
                   );
                   _saveWorkOrder(workOrder);
-                }))),
+                })),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Iniciar serviço", style: _expTileButtonStyle)));
@@ -306,7 +306,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
             context: context,
-            builder: ((context) =>
+            builder: (context) =>
                 _buildButtonAlertDialog("Finalizar ordem de serviço?", () {
                   var workOrder = WorkOrder(
                     id: widget.workOrder.id,
@@ -325,7 +325,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     remarks: widget.workOrder.remarks,
                   );
                   _saveWorkOrder(workOrder);
-                }))),
+                })),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Finalizar", style: _expTileButtonStyle)));
@@ -394,7 +394,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Future _saveWorkOrder(WorkOrder workOrder) async {
-    bool saveResponse =
+    bool isResponseOk =
         await ApiServices.putWorkOrder(workOrder).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
@@ -403,7 +403,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
       return false;
     });
 
-    if (!saveResponse) {
+    if (!isResponseOk) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Problema de conexão!"),
       ));
