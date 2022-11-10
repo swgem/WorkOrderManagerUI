@@ -107,6 +107,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                     child: TextFormField(
                       controller: clientController,
                       textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
                       style: textFieldTextStyle,
                       validator: (value) =>
                           (value!.isEmpty) ? "Insira o cliente" : null,
@@ -124,6 +125,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                       controller: telephoneController,
                       keyboardType: TextInputType.phone,
                       textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
                       style: textFieldTextStyle,
                       decoration: InputDecoration(
                           label: Text("Telefone", style: textFieldLabelStyle),
@@ -135,6 +137,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   child: TextFormField(
                     controller: vehicleController,
                     textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.next,
                     style: textFieldTextStyle,
                     validator: (value) =>
                         (value!.isEmpty) ? "Insira o veículo" : null,
@@ -152,6 +155,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                     child: TextFormField(
                       controller: vehiclePlateController,
                       textCapitalization: TextCapitalization.characters,
+                      textInputAction: TextInputAction.next,
                       style: textFieldTextStyle,
                       decoration: InputDecoration(
                           label: Text("Placa do veículo",
@@ -187,6 +191,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                       keyboardType: TextInputType.datetime,
                       maxLines: null,
                       textCapitalization: TextCapitalization.characters,
+                      textInputAction: TextInputAction.next,
                       style: textFieldTextStyle,
                       decoration: InputDecoration(
                           label: Text("Prazo", style: textFieldLabelStyle),
