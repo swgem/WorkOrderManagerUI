@@ -1,8 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
-import 'package:work_order_manager_ui/stream/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_editor_ui.dart';
 
 class WorkOrderEditorPageUi extends StatefulWidget {
@@ -15,29 +16,27 @@ class WorkOrderEditorPageUi extends StatefulWidget {
 }
 
 class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
-  late final StreamController<WorkOrderEditorEvent> eventController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    eventController = StreamController<WorkOrderEditorEvent>.broadcast();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    eventController.close();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      floatingActionButton: _buildFloatingActionButton(),
-      body: _buildForm(),
-    );
+    return BlocListener<WorkOrderEditorBloc, WorkOrderEditorState>(
+        bloc: BlocProvider.of(context),
+        listener: (context, state) {
+          if (state is WorkOrderEditorSavedState) {
+            Navigator.pop(context);
+            BlocProvider.of<WorkOrderEditorBloc>(context)
+                .add(WorkOrderEditorClearEvent());
+          } else if (state is WorkOrderEditorErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(state.error),
+              duration: const Duration(seconds: 5),
+            ));
+          }
+        },
+        child: Scaffold(
+          appBar: _buildAppBar(),
+          floatingActionButton: _buildFloatingActionButton(),
+          body: _buildForm(),
+        ));
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -46,14 +45,13 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
 
   Widget _buildFloatingActionButton() {
     return FloatingActionButton(
-        onPressed: () =>
-            eventController.sink.add(WorkOrderEditorEvent.saveWorkOrder),
+        onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
+            .add(WorkOrderEditorSaveEvent()),
         tooltip: "Salvar ordem de serviço",
         child: const Icon(Icons.save));
   }
 
   Widget _buildForm() {
-    return WorkOrderEditorUi(
-        parentEvent: eventController.stream, workOrder: widget.workOrder);
+    return const WorkOrderEditorUi();
   }
 }

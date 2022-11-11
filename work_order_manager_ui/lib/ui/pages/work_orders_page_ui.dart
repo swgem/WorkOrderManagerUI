@@ -1,16 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
-import 'package:work_order_manager_ui/stream/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_editor_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_list_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/responsive_page_ui.dart';
-import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 
 class WorkOrdersPageUi extends StatefulWidget {
   static const routeName = '/workOrders';
@@ -21,8 +17,6 @@ class WorkOrdersPageUi extends StatefulWidget {
 }
 
 class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
-  late final StreamController<WorkOrderEditorEvent> eventController;
-
   @override
   void initState() {
     super.initState();
@@ -30,14 +24,6 @@ class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
     BlocProvider.of<WorkOrderListBloc>(context)
         .add(WorkOrderListLoadStatusFilterEvent(status: null));
     BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
-    eventController = StreamController<WorkOrderEditorEvent>.broadcast();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    eventController.close();
   }
 
   @override
@@ -141,9 +127,7 @@ class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
               },
               child: const WorkOrderListUi()),
         ),
-        Expanded(
-            flex: 1,
-            child: WorkOrderEditorUi(parentEvent: eventController.stream))
+        const Expanded(flex: 1, child: WorkOrderEditorUi())
       ],
     );
   }
@@ -166,20 +150,9 @@ class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
                 },
                 child: const WorkOrderListUi()),
           ),
-          Expanded(
-              flex: 1,
-              child: WorkOrderEditorUi(parentEvent: eventController.stream))
+          const Expanded(flex: 1, child: WorkOrderEditorUi())
         ],
       ),
     );
-  }
-
-  Future _navigateToWorkOrderInserter() async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: ((context) => const WorkOrderEditorPageUi()))).then(
-        (value) => BlocProvider.of<WorkOrderListBloc>(context)
-            .add(WorkOrderListFetchEvent()));
   }
 }

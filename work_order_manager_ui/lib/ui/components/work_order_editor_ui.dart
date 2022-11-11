@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
-import 'package:work_order_manager_ui/stream/work_order_editor_event.dart';
-
-import '../../models/work_order.dart';
+import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
-  final Stream<WorkOrderEditorEvent> parentEvent;
-  final WorkOrder? workOrder;
-
-  const WorkOrderEditorUi(
-      {super.key, required this.parentEvent, this.workOrder});
+  const WorkOrderEditorUi({super.key});
 
   @override
   State<WorkOrderEditorUi> createState() => _WorkOrderEditorUiState();
@@ -21,7 +21,7 @@ class WorkOrderEditorUi extends StatefulWidget {
 class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late GlobalKey<FormState> formKey;
 
-  late StreamSubscription<WorkOrderEditorEvent> _eventSubscription;
+  WorkOrder? workOrder;
 
   late ScrollController scrollController;
   late TextEditingController clientController;
@@ -37,45 +37,18 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late InputDecorationTheme textFormFieldDecoration;
 
   @override
-  void initState() {
-    super.initState();
-
-    _eventSubscription = widget.parentEvent.asBroadcastStream().listen((event) {
-      if (event == WorkOrderEditorEvent.saveWorkOrder) {
-        if (formKey.currentState!.validate()) {
-          showDialog<String>(
-              context: context,
-              builder: (context) => _buildButtonAlertDialog(
-                  "Salvar ordem de serviço", () => saveWorkOrder()));
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    _eventSubscription.cancel();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     formKey = GlobalKey<FormState>();
     scrollController = ScrollController();
-    clientController = TextEditingController(text: widget.workOrder?.client);
-    telephoneController =
-        TextEditingController(text: widget.workOrder?.telephone);
-    vehicleController = TextEditingController(text: widget.workOrder?.vehicle);
-    vehiclePlateController =
-        TextEditingController(text: widget.workOrder?.vehiclePlate);
-    requestedServiceController =
-        TextEditingController(text: widget.workOrder?.clientRequest);
-    deadlineController =
-        TextEditingController(text: widget.workOrder?.deadline);
-    remarksController = TextEditingController(text: widget.workOrder?.remarks);
+    clientController = TextEditingController();
+    telephoneController = TextEditingController();
+    vehicleController = TextEditingController();
+    vehiclePlateController = TextEditingController();
+    requestedServiceController = TextEditingController();
+    deadlineController = TextEditingController();
+    remarksController = TextEditingController();
     textFieldTextStyle = Theme.of(context).textTheme.titleMedium!;
     textFieldLabelStyle = Theme.of(context)
         .textTheme
@@ -88,9 +61,46 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _buildForm(),
+    return BlocListener<WorkOrderEditorBloc, WorkOrderEditorState>(
+      bloc: BlocProvider.of(context),
+      listener: (context, state) {
+        if (state is WorkOrderEditorSavingState) {
+          if (formKey.currentState!.validate()) {
+            showDialog<String>(
+                context: context,
+                builder: (context) => _buildButtonAlertDialog(
+                    "Salvar ordem de serviço", () => saveWorkOrder()));
+          }
+        }
+      },
+      child: BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
+        bloc: BlocProvider.of(context),
+        buildWhen: (previous, current) =>
+            (current != previous) &&
+            (current is! WorkOrderEditorSavingState) &&
+            (current is! WorkOrderEditorSavedState) &&
+            (current is! WorkOrderEditorErrorState),
+        builder: ((context, state) {
+          if (state is WorkOrderEditorEditingState) {
+            workOrder = state.workOrder;
+            _inputInitialValues();
+            return _buildForm();
+          } else {
+            return Container();
+          }
+        }),
+      ),
     );
+  }
+
+  void _inputInitialValues() {
+    clientController.text = workOrder?.client ?? "";
+    telephoneController.text = workOrder?.telephone ?? "";
+    vehicleController.text = workOrder?.vehicle ?? "";
+    vehiclePlateController.text = workOrder?.vehiclePlate ?? "";
+    requestedServiceController.text = workOrder?.clientRequest ?? "";
+    deadlineController.text = workOrder?.deadline ?? "";
+    remarksController.text = workOrder?.remarks ?? "";
   }
 
   Widget _buildForm() {
@@ -242,12 +252,11 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
 
     var newWorkOrder = WorkOrder(
-      id: widget.workOrder?.id ?? 0,
-      dayId: widget.workOrder?.id ?? 0,
-      status: widget.workOrder?.status ?? "waiting",
-      priority: widget.workOrder?.priority ?? 0,
-      orderOpeningDatetime:
-          widget.workOrder?.orderOpeningDatetime ?? currentDateTime,
+      id: workOrder?.id ?? 0,
+      dayId: workOrder?.id ?? 0,
+      status: workOrder?.status ?? "waiting",
+      priority: workOrder?.priority ?? 0,
+      orderOpeningDatetime: workOrder?.orderOpeningDatetime ?? currentDateTime,
       client: clientController.text,
       telephone: telephoneController.text,
       vehicle: vehicleController.text,
@@ -257,27 +266,17 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       remarks: remarksController.text,
     );
 
-    bool isResponseOk = (widget.workOrder == null)
-        ? await ApiServices.postWorkOrder(newWorkOrder).catchError((e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.toString()),
-              duration: const Duration(seconds: 5),
-            ));
-            return false;
-          })
-        : await ApiServices.putWorkOrder(newWorkOrder).catchError((e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.toString()),
-              duration: const Duration(seconds: 5),
-            ));
-            return false;
-          });
-
-    if (isResponseOk) {
-      Navigator.pop(context, true);
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Problema de conexão!")));
+    try {
+      if (workOrder == null) {
+        await ApiServices.postWorkOrder(newWorkOrder);
+      } else {
+        await ApiServices.putWorkOrder(newWorkOrder);
+      }
+      BlocProvider.of<WorkOrderEditorBloc>(context)
+          .add(WorkOrderEditorSavedEvent());
+    } catch (e) {
+      BlocProvider.of<WorkOrderEditorBloc>(context)
+          .add(WorkOrderEditorErrorEvent(error: e.toString()));
     }
   }
 }

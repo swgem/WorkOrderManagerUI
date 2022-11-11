@@ -1,11 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
-import 'package:work_order_manager_ui/stream/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_editor_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_list_ui.dart';
@@ -21,8 +21,6 @@ class HomePageUi extends StatefulWidget {
 }
 
 class _HomePageUiState extends State<HomePageUi> {
-  late final StreamController<WorkOrderEditorEvent> eventController;
-
   @override
   void initState() {
     super.initState();
@@ -30,14 +28,6 @@ class _HomePageUiState extends State<HomePageUi> {
     BlocProvider.of<WorkOrderListBloc>(context).add(
         WorkOrderListLoadStatusFilterEvent(status: ["waiting", "ongoing"]));
     BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
-    eventController = StreamController<WorkOrderEditorEvent>.broadcast();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    eventController.close();
   }
 
   @override
@@ -45,8 +35,8 @@ class _HomePageUiState extends State<HomePageUi> {
     return ResponsivePageUi(
       appBar: _buildAppBar(),
       mobileBody: _buildMobileBody(),
-      tabletBody: _buildTabletBody(),
-      desktopBody: _buildDesktopBody(),
+      tabletBody: _buildTabletDesktopBody(),
+      desktopBody: _buildTabletDesktopBody(),
       mobileFloatingActionButton: _buildMobileFloatingActionButton(),
       tabletFloatingActionButton: _buildTabletFloatingActionButton(),
       desktopFloatingActionButton: _buildDesktopFloatingActionButton(),
@@ -70,7 +60,11 @@ class _HomePageUiState extends State<HomePageUi> {
 
   Widget _buildMobileFloatingActionButton() {
     return FloatingActionButton(
-        onPressed: () => _navigateToWorkOrderInserter(),
+        onPressed: () {
+          BlocProvider.of<WorkOrderEditorBloc>(context)
+              .add(WorkOrderEditorAddEvent());
+          _navigateToWorkOrderEditorPage();
+        },
         tooltip: "Adicionar ordem de serviço",
         child: const Icon(Icons.add));
   }
@@ -81,7 +75,8 @@ class _HomePageUiState extends State<HomePageUi> {
           flex: 1,
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             FloatingActionButton.extended(
-                onPressed: () => _navigateToWorkOrderInserter(),
+                onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
+                    .add(WorkOrderEditorAddEvent()),
                 tooltip: "Adicionar ordem de serviço",
                 heroTag: "addButton",
                 label: Row(children: const [
@@ -93,20 +88,9 @@ class _HomePageUiState extends State<HomePageUi> {
                 ]))
           ])),
       Expanded(
-          flex: 1,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            FloatingActionButton.extended(
-                onPressed: () {},
-                tooltip: "Salvar ordem de serviço",
-                heroTag: "saveButton",
-                label: Row(children: const [
-                  Icon(Icons.save),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text('Salvar')
-                ]))
-          ])),
+        flex: 1,
+        child: _buildEditorButtons(),
+      )
     ]);
   }
 
@@ -117,22 +101,46 @@ class _HomePageUiState extends State<HomePageUi> {
           flex: 1,
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             FloatingActionButton.extended(
-                onPressed: () => _navigateToWorkOrderInserter(),
+                onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
+                    .add(WorkOrderEditorAddEvent()),
                 tooltip: "Adicionar ordem de serviço",
                 heroTag: "addButton",
                 label: Row(children: const [
                   Icon(Icons.add),
-                  SizedBox(
-                    width: 8,
-                  ),
+                  SizedBox(width: 8),
                   Text('Adicionar')
                 ]))
           ])),
       Expanded(
-          flex: 1,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        flex: 1,
+        child: _buildEditorButtons(),
+      )
+    ]);
+  }
+
+  Widget _buildEditorButtons() {
+    return BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
+      bloc: BlocProvider.of(context),
+      builder: ((context, state) {
+        if (state is WorkOrderListEmptyState) {
+          return const SizedBox();
+        } else if (state is WorkOrderEditorEditingState) {
+          return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             FloatingActionButton.extended(
-                onPressed: () {},
+                onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
+                    .add(WorkOrderEditorClearEvent()),
+                tooltip: "Descartar alterações",
+                heroTag: "discardButton",
+                label: Row(children: [
+                  Icon(
+                      (state.workOrder == null) ? Icons.delete : Icons.restore),
+                  const SizedBox(width: 8),
+                  const Text('Descartar')
+                ])),
+            const SizedBox(width: 8),
+            FloatingActionButton.extended(
+                onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
+                    .add(WorkOrderEditorSaveEvent()),
                 tooltip: "Salvar ordem de serviço",
                 heroTag: "saveButton",
                 label: Row(children: const [
@@ -142,8 +150,12 @@ class _HomePageUiState extends State<HomePageUi> {
                   ),
                   Text('Salvar')
                 ]))
-          ])),
-    ]);
+          ]);
+        } else {
+          return const SizedBox();
+        }
+      }),
+    );
   }
 
   Widget _buildMobileBody() {
@@ -159,7 +171,7 @@ class _HomePageUiState extends State<HomePageUi> {
         child: const WorkOrderListUi());
   }
 
-  Widget _buildTabletBody() {
+  Widget _buildTabletDesktopBody() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -178,38 +190,28 @@ class _HomePageUiState extends State<HomePageUi> {
         ),
         Expanded(
             flex: 1,
-            child: WorkOrderEditorUi(parentEvent: eventController.stream))
+            child: BlocListener<WorkOrderEditorBloc, WorkOrderEditorState>(
+              bloc: BlocProvider.of(context),
+              listener: (context, state) {
+                if (state is WorkOrderEditorSavedState) {
+                  BlocProvider.of<WorkOrderEditorBloc>(context)
+                      .add(WorkOrderEditorClearEvent());
+                  BlocProvider.of<WorkOrderListBloc>(context)
+                      .add(WorkOrderListFetchEvent());
+                } else if (state is WorkOrderEditorErrorState) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(state.error),
+                    duration: const Duration(seconds: 5),
+                  ));
+                }
+              },
+              child: const WorkOrderEditorUi(),
+            ))
       ],
     );
   }
 
-  Widget _buildDesktopBody() {
-    return Expanded(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 1,
-            child: BlocListener(
-                bloc: BlocProvider.of<WorkOrderListBloc>(context),
-                listener: (context, state) {
-                  if (state is WorkOrderListErrorState) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(state.message.toString()),
-                        duration: const Duration(seconds: 5)));
-                  }
-                },
-                child: const WorkOrderListUi()),
-          ),
-          Expanded(
-              flex: 1,
-              child: WorkOrderEditorUi(parentEvent: eventController.stream))
-        ],
-      ),
-    );
-  }
-
-  Future _navigateToWorkOrderInserter() async {
+  Future _navigateToWorkOrderEditorPage() async {
     await Navigator.push(
         context,
         MaterialPageRoute(

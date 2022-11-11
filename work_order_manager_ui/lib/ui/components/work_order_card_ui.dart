@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
+import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class WorkOrderCardUi extends StatefulWidget {
   final WorkOrder workOrder;
@@ -366,7 +369,13 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         style: ElevatedButton.styleFrom(
             minimumSize: const Size(190, 0),
             backgroundColor: Theme.of(context).highlightColor),
-        onPressed: () => _navigateToWorkOrderEditor(),
+        onPressed: () {
+          BlocProvider.of<WorkOrderEditorBloc>(context)
+              .add(WorkOrderEditorAddEvent(workOrder: widget.workOrder));
+          if (Responsive.platform(context) == Platform.mobile) {
+            _navigateToWorkOrderEditor();
+          }
+        },
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Text("Editar", style: _expTileButtonStyle)));
@@ -392,22 +401,14 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Future _saveWorkOrder(WorkOrder workOrder) async {
-    bool isResponseOk =
-        await ApiServices.putWorkOrder(workOrder).catchError((e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.toString()),
-        duration: const Duration(seconds: 5),
-      ));
-      return false;
-    });
-
-    if (!isResponseOk) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Problema de conexão!"),
-      ));
+    try {
+      await ApiServices.putWorkOrder(workOrder);
+      BlocProvider.of<WorkOrderListBloc>(context)
+          .add(WorkOrderListFetchEvent());
+    } catch (e) {
+      BlocProvider.of<WorkOrderEditorBloc>(context)
+          .add(WorkOrderEditorErrorEvent(error: e.toString()));
     }
-
-    BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
   }
 
   Future _navigateToWorkOrderEditor() async {

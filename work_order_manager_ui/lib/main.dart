@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/ui/pages/home_page_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/routes.dart';
@@ -9,7 +10,9 @@ import 'package:work_order_manager_ui/ui/pages/work_orders_page_ui.dart';
 
 void main() {
   runApp(MultiBlocProvider(providers: [
-    BlocProvider<WorkOrderListBloc>(create: (context) => WorkOrderListBloc())
+    BlocProvider<WorkOrderListBloc>(create: (context) => WorkOrderListBloc()),
+    BlocProvider<WorkOrderEditorBloc>(
+        create: (context) => WorkOrderEditorBloc()),
   ], child: const MyApp()));
 }
 

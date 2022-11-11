@@ -10,7 +10,7 @@ class ApiServices {
   static const String ip = 'localhost' /*'10.0.2.2'*/;
   static const String port = '5189';
   static const String workOrderUrl = 'http://${ip}:${port}/api/WorkOrder/';
-  static const int requestTimeoutSeconds = 60;
+  static const int requestTimeoutSeconds = 10;
   static const Map<String, String> headers = {
     'Content-Type': 'application/json; charset=UTF-8',
     //'Accept': '*/*'
@@ -34,7 +34,7 @@ class ApiServices {
     return list.map((obj) => WorkOrder.fromJson(obj)).toList();
   }
 
-  static Future<bool> postWorkOrder(WorkOrder workOrder) async {
+  static Future postWorkOrder(WorkOrder workOrder) async {
     var workOrderMap = workOrder.toJson();
     var workOrderBody = json.encode(workOrderMap);
 
@@ -52,10 +52,12 @@ class ApiServices {
       throw Exception(e);
     }
 
-    return Future.value(response.statusCode == 200 ? true : false);
+    if (response.statusCode != 200) {
+      throw Exception("Erro ao salvar ormde de serviço");
+    }
   }
 
-  static Future<bool> putWorkOrder(WorkOrder workOrder) async {
+  static Future putWorkOrder(WorkOrder workOrder) async {
     var workOrderMap = workOrder.toJson();
     var workOrderBody = json.encode(workOrderMap);
 
@@ -73,6 +75,8 @@ class ApiServices {
       throw Exception(e);
     }
 
-    return Future.value(response.statusCode == 200 ? true : false);
+    if (response.statusCode != 200) {
+      throw Exception("Erro ao salvar ormde de serviço");
+    }
   }
 }
