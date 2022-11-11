@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class ResponsivePageUi extends StatelessWidget {
   final PreferredSizeWidget appBar;
@@ -36,34 +37,24 @@ class ResponsivePageUi extends StatelessWidget {
     );
   }
 
-  static bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < 680;
-
-  static bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width < 1100 &&
-      MediaQuery.of(context).size.width >= 680;
-
-  static bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 1100;
-
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return appBar;
   }
 
   Widget _buildBody(BuildContext context) {
-    if (isDesktop(context)) {
+    if (Responsive.platform(context) == Platform.desktop) {
       if (desktopDrawer != null) {
         return Row(children: [
           SizedBox(
             width: 300,
             child: desktopDrawer,
           ),
-          desktopBody,
+          Expanded(child: desktopBody),
         ]);
       } else {
         return desktopBody;
       }
-    } else if (isTablet(context)) {
+    } else if (Responsive.platform(context) == Platform.tablet) {
       return tabletBody;
     } else /*if (isMobile(context))*/ {
       return mobileBody;
@@ -71,9 +62,9 @@ class ResponsivePageUi extends StatelessWidget {
   }
 
   Widget? _buildFloatingActionButton(BuildContext context) {
-    if (isDesktop(context)) {
+    if (Responsive.platform(context) == Platform.desktop) {
       return desktopFloatingActionButton;
-    } else if (isTablet(context)) {
+    } else if (Responsive.platform(context) == Platform.tablet) {
       return tabletFloatingActionButton;
     } else /*if (isMobile(context))*/ {
       return mobileFloatingActionButton;
@@ -81,9 +72,9 @@ class ResponsivePageUi extends StatelessWidget {
   }
 
   Widget? _buildDrawer(BuildContext context) {
-    if (isDesktop(context)) {
+    if (Responsive.platform(context) == Platform.desktop) {
       return null;
-    } else if (isTablet(context)) {
+    } else if (Responsive.platform(context) == Platform.tablet) {
       return tabletDrawer;
     } else /*if (isMobile(context))*/ {
       return mobileDrawer;
