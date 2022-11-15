@@ -40,7 +40,7 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Nova ordem de serviço'));
+    return AppBar(title: const Text('Editor de ordem de serviço'));
   }
 
   Widget _buildFloatingActionButton() {

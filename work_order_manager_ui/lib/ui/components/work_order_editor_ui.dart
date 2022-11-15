@@ -1,13 +1,12 @@
 import 'dart:async';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
-import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
-import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/models/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
@@ -76,19 +75,10 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       child: BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
         bloc: BlocProvider.of(context),
         buildWhen: (previous, current) =>
-            (current != previous) &&
             (current is! WorkOrderEditorSavingState) &&
             (current is! WorkOrderEditorSavedState) &&
             (current is! WorkOrderEditorErrorState),
-        builder: ((context, state) {
-          if (state is WorkOrderEditorEditingState) {
-            workOrder = state.workOrder;
-            _inputInitialValues();
-            return _buildForm();
-          } else {
-            return Container();
-          }
-        }),
+        builder: _buildBloc,
       ),
     );
   }
@@ -103,6 +93,61 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     remarksController.text = workOrder?.remarks ?? "";
   }
 
+  Widget _buildBloc(BuildContext context, WorkOrderEditorState state) {
+    String title;
+    Widget body;
+
+    if (state is WorkOrderEditorEditingState) {
+      workOrder = state.workOrder;
+      _inputInitialValues();
+
+      if (workOrder == null) {
+        title = "Nova ordem de serviço";
+      } else {
+        title =
+            "Editando ordem #${workOrder!.dayId.toString().padLeft(2, '0')} de ${workOrder!.orderOpeningDatetime.split(" ")[0]}";
+      }
+      body = _buildForm();
+    } else {
+      title = "Editor de ordem de serviço";
+      body = _buildEmpty();
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
+          child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: AdaptiveTheme.of(context)
+                          .theme
+                          .textTheme
+                          .titleMedium!
+                          .color!),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0))),
+              alignment: Alignment.topCenter,
+              child: body),
+        ),
+        Positioned(
+          left: 30,
+          top: 5,
+          child: Text(title,
+              style: TextStyle(
+                  backgroundColor:
+                      AdaptiveTheme.of(context).theme.scaffoldBackgroundColor)),
+        )
+      ],
+    );
+  }
+
+  Widget _buildEmpty() {
+    return const Align(
+        alignment: Alignment.center,
+        child: Text("Nenhuma ordem de serviço para edição"));
+  }
+
   Widget _buildForm() {
     return Form(
         key: formKey,
@@ -113,7 +158,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
               controller: scrollController,
               child: Column(children: [
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
                     child: TextFormField(
                       controller: clientController,
                       textCapitalization: TextCapitalization.words,
@@ -130,7 +175,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                               borderRadius: BorderRadius.circular(5.0))),
                     )),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
                       controller: telephoneController,
                       keyboardType: TextInputType.phone,
@@ -143,7 +188,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                               borderRadius: BorderRadius.circular(5.0))),
                     )),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                   child: TextFormField(
                     controller: vehicleController,
                     textCapitalization: TextCapitalization.sentences,
@@ -161,7 +206,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
                       controller: vehiclePlateController,
                       textCapitalization: TextCapitalization.characters,
@@ -174,7 +219,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                               borderRadius: BorderRadius.circular(5.0))),
                     )),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                   child: TextFormField(
                     controller: requestedServiceController,
                     keyboardType: TextInputType.multiline,
@@ -195,7 +240,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
                       controller: deadlineController,
                       keyboardType: TextInputType.datetime,
@@ -209,7 +254,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                               borderRadius: BorderRadius.circular(5.0))),
                     )),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
                       controller: remarksController,
                       keyboardType: TextInputType.multiline,

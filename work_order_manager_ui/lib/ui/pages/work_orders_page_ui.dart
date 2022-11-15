@@ -45,7 +45,7 @@ class _WorkOrdersPageUiState extends State<WorkOrdersPageUi> {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
         title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      const Text('Início'),
+      const Text('Ordens de serviço'),
       const Spacer(),
       IconButton(
           onPressed: () => BlocProvider.of<WorkOrderListBloc>(context)

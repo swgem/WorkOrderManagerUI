@@ -42,7 +42,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
         itemCount: workOrders.length,
         itemBuilder: (content, index) {
           return Padding(
-              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
               child: WorkOrderCardUi(workOrder: workOrders[index]));
         });
   }
