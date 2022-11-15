@@ -121,6 +121,10 @@ class _HomePageUiState extends State<HomePageUi> {
   Widget _buildEditorButtons() {
     return BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
       bloc: BlocProvider.of(context),
+      buildWhen: (previous, current) =>
+          (current is! WorkOrderEditorSavingState) &&
+          (current is! WorkOrderEditorSavedState) &&
+          (current is! WorkOrderEditorErrorState),
       builder: ((context, state) {
         if (state is WorkOrderListEmptyState) {
           return const SizedBox();
