@@ -149,128 +149,134 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   }
 
   Widget _buildForm() {
-    return Form(
-        key: formKey,
-        child: Scrollbar(
-            controller: scrollController,
-            thumbVisibility: true,
-            child: SingleChildScrollView(
+    return FocusTraversalGroup(
+      child: Form(
+          key: formKey,
+          child: Scrollbar(
               controller: scrollController,
-              child: Column(children: [
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(children: [
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+                      child: TextFormField(
+                        key: GlobalKey(),
+                        autofocus: true,
+                        controller: clientController,
+                        textCapitalization: TextCapitalization.words,
+                        textInputAction: TextInputAction.next,
+                        style: textFieldTextStyle,
+                        validator: (value) =>
+                            (value!.isEmpty) ? "Insira o cliente" : null,
+                        decoration: InputDecoration(
+                            label:
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                              Text("Cliente", style: textFieldLabelStyle),
+                              Text("*", style: textFieldLabelAsteriskStyle)
+                            ]),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                      child: TextFormField(
+                        controller: telephoneController,
+                        keyboardType: TextInputType.phone,
+                        textCapitalization: TextCapitalization.words,
+                        textInputAction: TextInputAction.next,
+                        style: textFieldTextStyle,
+                        decoration: InputDecoration(
+                            label: Text("Telefone", style: textFieldLabelStyle),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
-                      controller: clientController,
-                      textCapitalization: TextCapitalization.words,
+                      controller: vehicleController,
+                      textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.next,
                       style: textFieldTextStyle,
                       validator: (value) =>
-                          (value!.isEmpty) ? "Insira o cliente" : null,
+                          (value!.isEmpty) ? "Insira o veículo" : null,
                       decoration: InputDecoration(
                           label: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Text("Cliente", style: textFieldLabelStyle),
+                            Text("Veículo", style: textFieldLabelStyle),
                             Text("*", style: textFieldLabelAsteriskStyle)
                           ]),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                    child: TextFormField(
-                      controller: telephoneController,
-                      keyboardType: TextInputType.phone,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      style: textFieldTextStyle,
-                      decoration: InputDecoration(
-                          label: Text("Telefone", style: textFieldLabelStyle),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0))),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                  child: TextFormField(
-                    controller: vehicleController,
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputAction: TextInputAction.next,
-                    style: textFieldTextStyle,
-                    validator: (value) =>
-                        (value!.isEmpty) ? "Insira o veículo" : null,
-                    decoration: InputDecoration(
-                        label: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Text("Veículo", style: textFieldLabelStyle),
-                          Text("*", style: textFieldLabelAsteriskStyle)
-                        ]),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0))),
+                    ),
                   ),
-                ),
-                Padding(
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                      child: TextFormField(
+                        controller: vehiclePlateController,
+                        textCapitalization: TextCapitalization.characters,
+                        textInputAction: TextInputAction.next,
+                        style: textFieldTextStyle,
+                        decoration: InputDecoration(
+                            label: Text("Placa do veículo",
+                                style: textFieldLabelStyle),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      )),
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
-                      controller: vehiclePlateController,
-                      textCapitalization: TextCapitalization.characters,
-                      textInputAction: TextInputAction.next,
-                      style: textFieldTextStyle,
-                      decoration: InputDecoration(
-                          label: Text("Placa do veículo",
-                              style: textFieldLabelStyle),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0))),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                  child: TextFormField(
-                    controller: requestedServiceController,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 3,
-                    maxLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: textFieldTextStyle,
-                    validator: (value) =>
-                        (value!.isEmpty) ? "Insira a descrição serviço" : null,
-                    decoration: InputDecoration(
-                        label: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Text("Descrição do serviço",
-                              style: textFieldLabelStyle),
-                          Text("*", style: textFieldLabelAsteriskStyle)
-                        ]),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0))),
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                    child: TextFormField(
-                      controller: deadlineController,
-                      keyboardType: TextInputType.datetime,
-                      maxLines: null,
-                      textCapitalization: TextCapitalization.characters,
-                      textInputAction: TextInputAction.next,
-                      style: textFieldTextStyle,
-                      decoration: InputDecoration(
-                          label: Text("Prazo", style: textFieldLabelStyle),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0))),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                    child: TextFormField(
-                      controller: remarksController,
+                      controller: requestedServiceController,
                       keyboardType: TextInputType.multiline,
                       minLines: 3,
                       maxLines: null,
-                      textCapitalization: TextCapitalization.characters,
+                      textCapitalization: TextCapitalization.sentences,
                       style: textFieldTextStyle,
+                      validator: (value) => (value!.isEmpty)
+                          ? "Insira a descrição serviço"
+                          : null,
                       decoration: InputDecoration(
-                          label:
-                              Text("Observações", style: textFieldLabelStyle),
+                          label: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Text("Descrição do serviço",
+                                style: textFieldLabelStyle),
+                            Text("*", style: textFieldLabelAsteriskStyle)
+                          ]),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
-                    )),
-                const SizedBox(height: 25.0)
-              ]),
-            )));
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                      child: TextFormField(
+                        controller: deadlineController,
+                        keyboardType: TextInputType.datetime,
+                        maxLines: null,
+                        textCapitalization: TextCapitalization.characters,
+                        textInputAction: TextInputAction.next,
+                        style: textFieldTextStyle,
+                        decoration: InputDecoration(
+                            label: Text("Prazo", style: textFieldLabelStyle),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                      child: TextFormField(
+                        controller: remarksController,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 3,
+                        maxLines: null,
+                        textCapitalization: TextCapitalization.characters,
+                        style: textFieldTextStyle,
+                        decoration: InputDecoration(
+                            label:
+                                Text("Observações", style: textFieldLabelStyle),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      )),
+                  const SizedBox(height: 25.0)
+                ]),
+              ))),
+    );
   }
 
   Widget _buildButtonAlertDialog(

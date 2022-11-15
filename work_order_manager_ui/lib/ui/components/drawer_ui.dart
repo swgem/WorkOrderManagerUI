@@ -7,30 +7,32 @@ class DrawerUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child: ListView(
-      children: [
-        DrawerHeader(
-          child: Text(
-            "Menu",
-            style: Theme.of(context).textTheme.titleLarge,
+        child: FocusTraversalGroup(
+      child: ListView(
+        children: [
+          DrawerHeader(
+            child: Text(
+              "Menu",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.home),
-          title: const Text("Início"),
-          onTap: () => _onTap(context, Routes.home),
-        ),
-        ListTile(
-          leading: const Icon(Icons.list),
-          title: const Text("Ordens de serviço"),
-          onTap: () => _onTap(context, Routes.workOrders),
-        ),
-        ListTile(
-          leading: const Icon(Icons.settings),
-          title: const Text("Preferências"),
-          onTap: () => _onTap(context, Routes.settings),
-        )
-      ],
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text("Início"),
+            onTap: () => _onTap(context, Routes.home),
+          ),
+          ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text("Ordens de serviço"),
+            onTap: () => _onTap(context, Routes.workOrders),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text("Preferências"),
+            onTap: () => _onTap(context, Routes.settings),
+          )
+        ],
+      ),
     ));
   }
 

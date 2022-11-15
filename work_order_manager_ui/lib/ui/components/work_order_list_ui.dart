@@ -46,18 +46,20 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   }
 
   Widget _buildWorkOrderList(List<WorkOrder> workOrders) {
-    return Scrollbar(
-      controller: scrollController,
-      thumbVisibility: true,
-      child: ListView.builder(
-          controller: scrollController,
-          padding: const EdgeInsets.only(top: 7.0, bottom: 150.0),
-          itemCount: workOrders.length,
-          itemBuilder: (content, index) {
-            return Padding(
-                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                child: WorkOrderCardUi(workOrder: workOrders[index]));
-          }),
+    return FocusTraversalGroup(
+      child: Scrollbar(
+        controller: scrollController,
+        thumbVisibility: true,
+        child: ListView.builder(
+            controller: scrollController,
+            padding: const EdgeInsets.only(top: 7.0, bottom: 150.0),
+            itemCount: workOrders.length,
+            itemBuilder: (content, index) {
+              return Padding(
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                  child: WorkOrderCardUi(workOrder: workOrders[index]));
+            }),
+      ),
     );
   }
 
