@@ -31,6 +31,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+      sdk: flutter
   http: ^0.13.5
   json_serializable: ^6.5.4
   build_runner: ^2.3.2
