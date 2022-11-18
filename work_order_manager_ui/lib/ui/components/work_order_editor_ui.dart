@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
@@ -68,7 +69,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
             showDialog<String>(
                 context: context,
                 builder: (context) => _buildButtonAlertDialog(
-                    "Salvar ordem de serviço", () => saveWorkOrder()));
+                    "Salvar ordem de serviço", () => _saveWorkOrder()));
           }
         }
       },
@@ -247,8 +248,18 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
+                        focusNode: FocusNode(onKey: (node, event) {
+                          if (event.logicalKey == LogicalKeyboardKey.enter ||
+                              event.logicalKey == LogicalKeyboardKey.space) {
+                            _openDeadlineDateTimePicker();
+                            return KeyEventResult.handled;
+                          } else {
+                            return KeyEventResult.ignored;
+                          }
+                        }),
                         controller: deadlineController,
-                        keyboardType: TextInputType.datetime,
+                        readOnly: true,
+                        enabled: true,
                         maxLines: null,
                         textCapitalization: TextCapitalization.characters,
                         textInputAction: TextInputAction.next,
@@ -257,6 +268,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                             label: Text("Prazo", style: textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
+                        onTap: _openDeadlineDateTimePicker,
                       )),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
@@ -298,7 +310,30 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         ]);
   }
 
-  Future saveWorkOrder() async {
+  Future _openDeadlineDateTimePicker() async {
+    DateTime? date = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2999));
+    if (date == null) {
+      return;
+    }
+    TimeOfDay? time = await showTimePicker(
+        context: context,
+        initialTime: const TimeOfDay(hour: 0, minute: 0),
+        initialEntryMode: TimePickerEntryMode.input);
+    if (time == null) {
+      return;
+    }
+    String dateString =
+        '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+    String timeString =
+        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+    deadlineController.text = '$dateString $timeString';
+  }
+
+  Future _saveWorkOrder() async {
     var currentDateTime =
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
 
