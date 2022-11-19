@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
@@ -23,6 +24,10 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   WorkOrder? workOrder;
 
+  late Key _clientFieldKey;
+
+  late FocusNode _telephoneFocusNode;
+
   late ScrollController scrollController;
   late TextEditingController clientController;
   late TextEditingController telephoneController;
@@ -35,12 +40,35 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late TextStyle textFieldLabelStyle;
   late TextStyle textFieldLabelAsteriskStyle;
   late InputDecorationTheme textFormFieldDecoration;
+  late MaskTextInputFormatter _maskPhone;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
     formKey = GlobalKey<FormState>();
+    _clientFieldKey = GlobalKey();
+    _telephoneFocusNode = FocusNode()
+      ..addListener(() {
+        if (_telephoneFocusNode.hasFocus) {
+          telephoneController.value =
+              _maskPhone.updateMask(mask: '###########');
+        } else {
+          if (telephoneController.text.length == 8) {
+            telephoneController.value =
+                _maskPhone.updateMask(mask: '####-####');
+          } else if (telephoneController.text.length == 9) {
+            telephoneController.value =
+                _maskPhone.updateMask(mask: '#####-####');
+          } else if (telephoneController.text.length == 10) {
+            telephoneController.value =
+                _maskPhone.updateMask(mask: '(##) ####-####');
+          } else if (telephoneController.text.length == 11) {
+            telephoneController.value =
+                _maskPhone.updateMask(mask: '(##) #####-####');
+          }
+        }
+      });
     scrollController = ScrollController();
     clientController = TextEditingController();
     telephoneController = TextEditingController();
@@ -49,6 +77,15 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     requestedServiceController = TextEditingController();
     deadlineController = TextEditingController();
     remarksController = TextEditingController();
+
+    _maskPhone = MaskTextInputFormatter(
+        mask: '###########', filter: {'#': RegExp(r'[0-9]')});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     textFieldTextStyle = Theme.of(context).textTheme.titleMedium!;
     textFieldLabelStyle = Theme.of(context)
         .textTheme
@@ -71,6 +108,9 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                 builder: (context) => _buildButtonAlertDialog(
                     "Salvar ordem de serviço", () => _saveWorkOrder()));
           }
+        } else if (state is WorkOrderEditorEditingState) {
+          workOrder = state.workOrder;
+          _inputInitialValues();
         }
       },
       child: BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
@@ -99,9 +139,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     Widget body;
 
     if (state is WorkOrderEditorEditingState) {
-      workOrder = state.workOrder;
-      _inputInitialValues();
-
       if (workOrder == null) {
         title = "Nova ordem de serviço";
       } else {
@@ -162,7 +199,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
                       child: TextFormField(
-                        key: GlobalKey(),
+                        key: _clientFieldKey,
                         autofocus: true,
                         controller: clientController,
                         textCapitalization: TextCapitalization.words,
@@ -182,9 +219,10 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
+                        focusNode: _telephoneFocusNode,
                         controller: telephoneController,
                         keyboardType: TextInputType.phone,
-                        textCapitalization: TextCapitalization.words,
+                        inputFormatters: [_maskPhone],
                         textInputAction: TextInputAction.next,
                         style: textFieldTextStyle,
                         decoration: InputDecoration(
