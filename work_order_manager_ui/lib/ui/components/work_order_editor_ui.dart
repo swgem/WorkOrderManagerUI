@@ -41,6 +41,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late TextStyle textFieldLabelAsteriskStyle;
   late InputDecorationTheme textFormFieldDecoration;
   late MaskTextInputFormatter _maskPhone;
+  late MaskTextInputFormatter _maskVehiclePlate;
 
   @override
   void initState() {
@@ -80,6 +81,8 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
+    _maskVehiclePlate = MaskTextInputFormatter(
+        mask: 'xxxxxxxx', filter: {'x': RegExp(r'[0-9a-zA-Z-]')});
   }
 
   @override
@@ -253,6 +256,10 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                       child: TextFormField(
                         controller: vehiclePlateController,
                         textCapitalization: TextCapitalization.characters,
+                        inputFormatters: [
+                          _maskVehiclePlate,
+                          UpperCaseTextFormatter()
+                        ],
                         textInputAction: TextInputAction.next,
                         style: textFieldTextStyle,
                         decoration: InputDecoration(
@@ -402,5 +409,14 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       BlocProvider.of<WorkOrderEditorBloc>(context)
           .add(WorkOrderEditorErrorEvent(error: e.toString()));
     }
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+        text: newValue.text.toUpperCase(), selection: newValue.selection);
   }
 }
