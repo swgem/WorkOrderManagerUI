@@ -53,7 +53,7 @@ class ApiServices {
     }
 
     if (response.statusCode != 200) {
-      throw Exception("Erro ao salvar ormde de serviço");
+      throw Exception("Erro ao salvar ordem de serviço");
     }
   }
 
@@ -76,7 +76,7 @@ class ApiServices {
     }
 
     if (response.statusCode != 200) {
-      throw Exception("Erro ao salvar ormde de serviço");
+      throw Exception("Erro ao salvar ordem de serviço");
     }
   }
 }
