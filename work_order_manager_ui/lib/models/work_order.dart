@@ -36,6 +36,7 @@ class WorkOrder {
       this.pendencies,
       this.deadline,
       this.remarks});
+
   factory WorkOrder.fromJson(Map<String, dynamic> json) =>
       _$WorkOrderFromJson(json);
 

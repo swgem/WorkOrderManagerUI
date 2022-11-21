@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
-import 'package:work_order_manager_ui/models/api_services.dart';
+import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
@@ -62,7 +62,8 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
 
   Future<WorkOrderListState> _fetchWorkOrdersFilteredByStatus() async {
     try {
-      List<WorkOrder> workOrders = await ApiServices.fetchAllWorkOrders();
+      List<WorkOrder> workOrders =
+          await WorkOrderApiServices.fetchAllWorkOrders();
       // List<WorkOrder> workOrders =
       //     await Future.delayed(Duration(seconds: 2), () => _workOrdersMock);
 

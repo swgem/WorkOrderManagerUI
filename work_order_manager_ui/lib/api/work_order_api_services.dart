@@ -4,24 +4,22 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:work_order_manager_ui/api/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
-class ApiServices {
-  static const String ip = 'localhost' /*'10.0.2.2'*/;
-  static const String port = '5189';
-  static const String workOrderUrl = 'http://${ip}:${port}/api/WorkOrder/';
-  static const int requestTimeoutSeconds = 10;
-  static const Map<String, String> headers = {
-    'Content-Type': 'application/json; charset=UTF-8',
-    //'Accept': '*/*'
-  };
+abstract class WorkOrderApiServices extends ApiServices {
+  static Map<String, String> headers = Map.from(ApiServices.headers);
+  static const String _workOrderUrl =
+      'http://${ApiServices.ip}:${ApiServices.port}/api/WorkOrder/';
 
   static Future fetchAllWorkOrders() async {
     Response? response;
     try {
+      headers["Authorization"] = "Bearer ${await _getToken()}";
       response = await http
-          .get(Uri.parse(workOrderUrl))
-          .timeout(const Duration(seconds: requestTimeoutSeconds));
+          .get(Uri.parse(_workOrderUrl), headers: headers)
+          .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");
     } on TimeoutException {
@@ -41,9 +39,10 @@ class ApiServices {
     Response response;
 
     try {
+      headers["Authorization"] = "Bearer ${await _getToken()}";
       response = await http
-          .post(Uri.parse(workOrderUrl), headers: headers, body: workOrderBody)
-          .timeout(const Duration(seconds: requestTimeoutSeconds));
+          .post(Uri.parse(_workOrderUrl), headers: headers, body: workOrderBody)
+          .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");
     } on TimeoutException {
@@ -64,9 +63,10 @@ class ApiServices {
     Response response;
 
     try {
+      headers["Authorization"] = "Bearer ${await _getToken()}";
       response = await http
-          .put(Uri.parse(workOrderUrl), headers: headers, body: workOrderBody)
-          .timeout(const Duration(seconds: requestTimeoutSeconds));
+          .put(Uri.parse(_workOrderUrl), headers: headers, body: workOrderBody)
+          .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");
     } on TimeoutException {
@@ -78,5 +78,10 @@ class ApiServices {
     if (response.statusCode != 200) {
       throw Exception("Erro ao salvar ordem de serviço");
     }
+  }
+
+  static Future<String> _getToken() async {
+    var prefs = await SharedPreferences.getInstance();
+    return (prefs.getString("tokenjwt") ?? "");
   }
 }

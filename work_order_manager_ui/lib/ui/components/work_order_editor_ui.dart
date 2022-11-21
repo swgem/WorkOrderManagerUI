@@ -9,7 +9,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
-import 'package:work_order_manager_ui/models/api_services.dart';
+import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
@@ -399,9 +399,9 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
     try {
       if (workOrder == null) {
-        await ApiServices.postWorkOrder(newWorkOrder);
+        await WorkOrderApiServices.postWorkOrder(newWorkOrder);
       } else {
-        await ApiServices.putWorkOrder(newWorkOrder);
+        await WorkOrderApiServices.putWorkOrder(newWorkOrder);
       }
       BlocProvider.of<WorkOrderEditorBloc>(context)
           .add(WorkOrderEditorSavedEvent());

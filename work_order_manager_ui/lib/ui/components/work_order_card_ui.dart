@@ -7,7 +7,7 @@ import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
-import 'package:work_order_manager_ui/models/api_services.dart';
+import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 import 'package:work_order_manager_ui/ui/responsive.dart';
@@ -402,7 +402,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
 
   Future _saveWorkOrder(WorkOrder workOrder) async {
     try {
-      await ApiServices.putWorkOrder(workOrder);
+      await WorkOrderApiServices.putWorkOrder(workOrder);
       BlocProvider.of<WorkOrderListBloc>(context)
           .add(WorkOrderListFetchEvent());
     } catch (e) {
