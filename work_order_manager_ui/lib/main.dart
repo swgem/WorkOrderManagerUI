@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +12,9 @@ import 'package:work_order_manager_ui/ui/pages/routes.dart';
 import 'package:work_order_manager_ui/ui/pages/settings_page_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/work_orders_page_ui.dart';
 
-void main() {
+void main() async {
+  HttpOverrides.global = MyHttpOverrides();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -69,5 +73,14 @@ class MyApp extends StatelessWidget {
               ],
               initialRoute: Routes.login,
             ));
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

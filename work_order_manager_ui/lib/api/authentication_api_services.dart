@@ -11,7 +11,7 @@ import 'package:work_order_manager_ui/dto/user_login_response.dart';
 
 abstract class AuthenticationApiServices extends ApiServices {
   static const String _authenticationBaseUrl =
-      'http://${ApiServices.ip}:${ApiServices.port}/api/User/';
+      'https://${ApiServices.ip}:${ApiServices.port}/api/User/';
   static const String _authenticationLoginUrl =
       '${_authenticationBaseUrl}login';
 

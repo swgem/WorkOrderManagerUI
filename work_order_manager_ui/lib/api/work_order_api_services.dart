@@ -11,7 +11,7 @@ import 'package:work_order_manager_ui/models/work_order.dart';
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);
   static const String _workOrderUrl =
-      'http://${ApiServices.ip}:${ApiServices.port}/api/WorkOrder/';
+      'https://${ApiServices.ip}:${ApiServices.port}/api/WorkOrder/';
 
   static Future fetchAllWorkOrders() async {
     Response? response;
