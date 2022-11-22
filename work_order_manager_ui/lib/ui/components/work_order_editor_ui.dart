@@ -111,9 +111,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                 builder: (context) => _buildButtonAlertDialog(
                     "Salvar ordem de serviço", () => _saveWorkOrder()));
           }
-        } else if (state is WorkOrderEditorEditingState) {
-          workOrder = state.workOrder;
-          _inputInitialValues();
         }
       },
       child: BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
@@ -140,6 +137,11 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   Widget _buildBloc(BuildContext context, WorkOrderEditorState state) {
     String title;
     Widget body;
+
+    if (state is WorkOrderEditorEditingState && state.workOrder != workOrder) {
+      workOrder = state.workOrder;
+      _inputInitialValues();
+    }
 
     if (state is WorkOrderEditorEditingState) {
       if (workOrder == null) {
