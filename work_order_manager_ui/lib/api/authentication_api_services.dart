@@ -48,9 +48,14 @@ abstract class AuthenticationApiServices extends ApiServices {
             loginResponse.errors?.join('. ') ?? "Erro ao realizar login");
       }
     } else {
-      var loginResponse = UserLoginResponse.fromJson(jsonDecode(response.body));
+      UserLoginResponse? loginResponse;
+      try {
+        loginResponse = UserLoginResponse.fromJson(jsonDecode(response.body));
+        // ignore: empty_catches
+      } catch (e) {}
+
       throw Exception(
-          loginResponse.errors?.join('. ') ?? "Erro ao realizar login");
+          loginResponse?.errors?.join('. ') ?? "Erro ao realizar login");
     }
     return success;
   }
