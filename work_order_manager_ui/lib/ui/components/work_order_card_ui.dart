@@ -142,8 +142,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
           Padding(
               padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
               child: Text(
-                  (widget.workOrder.telephone?.isNotEmpty ?? false)
-                      ? widget.workOrder.telephone!
+                  (widget.workOrder.phone?.isNotEmpty ?? false)
+                      ? widget.workOrder.phone!
                       : "-",
                   style: _expTileChildValueStyle)),
         ]),
@@ -253,7 +253,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
                     orderClosingDatetime: widget.workOrder.orderClosingDatetime,
                     client: widget.workOrder.client,
-                    telephone: widget.workOrder.telephone,
+                    phone: widget.workOrder.phone,
                     vehicle: widget.workOrder.vehicle,
                     vehiclePlate: widget.workOrder.vehiclePlate,
                     clientRequest: widget.workOrder.clientRequest,
@@ -285,7 +285,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
                     orderClosingDatetime: widget.workOrder.orderClosingDatetime,
                     client: widget.workOrder.client,
-                    telephone: widget.workOrder.telephone,
+                    phone: widget.workOrder.phone,
                     vehicle: widget.workOrder.vehicle,
                     vehiclePlate: widget.workOrder.vehiclePlate,
                     clientRequest: widget.workOrder.clientRequest,
@@ -317,7 +317,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
                     orderClosingDatetime: widget.workOrder.orderClosingDatetime,
                     client: widget.workOrder.client,
-                    telephone: widget.workOrder.telephone,
+                    phone: widget.workOrder.phone,
                     vehicle: widget.workOrder.vehicle,
                     vehiclePlate: widget.workOrder.vehiclePlate,
                     clientRequest: widget.workOrder.clientRequest,
@@ -349,7 +349,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                     orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
                     orderClosingDatetime: widget.workOrder.orderClosingDatetime,
                     client: widget.workOrder.client,
-                    telephone: widget.workOrder.telephone,
+                    phone: widget.workOrder.phone,
                     vehicle: widget.workOrder.vehicle,
                     vehiclePlate: widget.workOrder.vehiclePlate,
                     clientRequest: widget.workOrder.clientRequest,

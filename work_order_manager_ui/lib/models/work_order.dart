@@ -13,7 +13,7 @@ class WorkOrder {
   final String orderOpeningDatetime;
   final String? orderClosingDatetime;
   final String client;
-  final String? telephone;
+  final String? phone;
   final String vehicle;
   final String? vehiclePlate;
   final String clientRequest;
@@ -29,7 +29,7 @@ class WorkOrder {
       required this.orderOpeningDatetime,
       this.orderClosingDatetime,
       required this.client,
-      this.telephone,
+      this.phone,
       required this.vehicle,
       this.vehiclePlate,
       required this.clientRequest,

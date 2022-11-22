@@ -26,11 +26,11 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   late Key _clientFieldKey;
 
-  late FocusNode _telephoneFocusNode;
+  late FocusNode _phoneFocusNode;
 
   late ScrollController scrollController;
   late TextEditingController clientController;
-  late TextEditingController telephoneController;
+  late TextEditingController phoneController;
   late TextEditingController vehicleController;
   late TextEditingController vehiclePlateController;
   late TextEditingController requestedServiceController;
@@ -49,30 +49,27 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
     formKey = GlobalKey<FormState>();
     _clientFieldKey = GlobalKey();
-    _telephoneFocusNode = FocusNode()
+    _phoneFocusNode = FocusNode()
       ..addListener(() {
-        if (_telephoneFocusNode.hasFocus) {
-          telephoneController.value =
-              _maskPhone.updateMask(mask: '###########');
+        if (_phoneFocusNode.hasFocus) {
+          phoneController.value = _maskPhone.updateMask(mask: '###########');
         } else {
-          if (telephoneController.text.length == 8) {
-            telephoneController.value =
-                _maskPhone.updateMask(mask: '####-####');
-          } else if (telephoneController.text.length == 9) {
-            telephoneController.value =
-                _maskPhone.updateMask(mask: '#####-####');
-          } else if (telephoneController.text.length == 10) {
-            telephoneController.value =
+          if (phoneController.text.length == 8) {
+            phoneController.value = _maskPhone.updateMask(mask: '####-####');
+          } else if (phoneController.text.length == 9) {
+            phoneController.value = _maskPhone.updateMask(mask: '#####-####');
+          } else if (phoneController.text.length == 10) {
+            phoneController.value =
                 _maskPhone.updateMask(mask: '(##) ####-####');
-          } else if (telephoneController.text.length == 11) {
-            telephoneController.value =
+          } else if (phoneController.text.length == 11) {
+            phoneController.value =
                 _maskPhone.updateMask(mask: '(##) #####-####');
           }
         }
       });
     scrollController = ScrollController();
     clientController = TextEditingController();
-    telephoneController = TextEditingController();
+    phoneController = TextEditingController();
     vehicleController = TextEditingController();
     vehiclePlateController = TextEditingController();
     requestedServiceController = TextEditingController();
@@ -126,7 +123,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   void _inputInitialValues() {
     clientController.text = workOrder?.client ?? "";
-    telephoneController.text = workOrder?.telephone ?? "";
+    phoneController.text = workOrder?.phone ?? "";
     vehicleController.text = workOrder?.vehicle ?? "";
     vehiclePlateController.text = workOrder?.vehiclePlate ?? "";
     requestedServiceController.text = workOrder?.clientRequest ?? "";
@@ -224,8 +221,8 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
-                        focusNode: _telephoneFocusNode,
-                        controller: telephoneController,
+                        focusNode: _phoneFocusNode,
+                        controller: phoneController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [_maskPhone],
                         textInputAction: TextInputAction.next,
@@ -391,7 +388,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       priority: workOrder?.priority ?? 0,
       orderOpeningDatetime: workOrder?.orderOpeningDatetime ?? currentDateTime,
       client: clientController.text,
-      telephone: telephoneController.text,
+      phone: phoneController.text,
       vehicle: vehicleController.text,
       vehiclePlate: vehiclePlateController.text,
       clientRequest: requestedServiceController.text,
