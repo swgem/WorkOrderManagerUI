@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/api/authentication_api_services.dart';
 import 'package:work_order_manager_ui/ui/pages/routes.dart';
@@ -16,6 +15,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
 
   late TextEditingController _userNameController;
   late TextEditingController _passwordController;
+  bool _isRequestingFromServer = false;
 
   late TextStyle _textFieldLabelStyle;
 
@@ -45,28 +45,28 @@ class _LoginPageUiState extends State<LoginPageUi> {
   }
 
   Widget _buildBody() {
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: Form(
         key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-                flex: 2,
-                child: Center(
-                  child: Text(
-                    "Sevencar Gerenciador",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.primary),
-                  ),
-                )),
-            Expanded(
-              flex: 3,
-              child: Container(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                  height: 260,
+                  child: Center(
+                    child: Text(
+                      "Sevencar Gerenciador",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.primary),
+                    ),
+                  )),
+              Container(
                 constraints: const BoxConstraints(maxWidth: 380),
                 child: Column(
                   children: [
@@ -94,19 +94,30 @@ class _LoginPageUiState extends State<LoginPageUi> {
                                 borderRadius: BorderRadius.circular(5.0))),
                       ),
                     ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(220, 0)),
-                        onPressed: _requestUserLogin,
-                        child: const Padding(
-                            padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                            child:
-                                Text("Login", style: TextStyle(fontSize: 20))))
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(220, 0)),
+                          onPressed: (_isRequestingFromServer)
+                              ? null
+                              : _requestUserLogin,
+                          child: const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text("Login",
+                                  style: TextStyle(fontSize: 20)))),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Visibility(
+                          visible: _isRequestingFromServer,
+                          child: const CircularProgressIndicator()),
+                    )
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -114,6 +125,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
 
   Future _requestUserLogin() async {
     try {
+      setState(() => _isRequestingFromServer = true);
       bool success = await AuthenticationApiServices.login(
           _userNameController.text, _passwordController.text);
 
@@ -128,5 +140,6 @@ class _LoginPageUiState extends State<LoginPageUi> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(e.toString()), duration: const Duration(seconds: 5)));
     }
+    setState(() => _isRequestingFromServer = false);
   }
 }

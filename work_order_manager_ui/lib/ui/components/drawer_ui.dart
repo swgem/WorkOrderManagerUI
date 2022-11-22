@@ -10,10 +10,27 @@ class DrawerUi extends StatelessWidget {
         child: FocusTraversalGroup(
       child: ListView(
         children: [
-          DrawerHeader(
-            child: Text(
-              "Menu",
-              style: Theme.of(context).textTheme.titleLarge,
+          SizedBox(
+            height: 200,
+            child: DrawerHeader(
+              child: Column(children: [
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Icon(Icons.account_circle,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
+                ),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                        icon: const Icon(Icons.logout),
+                        tooltip: "Deslogar",
+                        onPressed: () => showDialog<String>(
+                            context: context,
+                            builder: (context) =>
+                                _buildLogoutAlertDialog(context))))
+              ]),
             ),
           ),
           ListTile(
@@ -34,6 +51,25 @@ class DrawerUi extends StatelessWidget {
         ],
       ),
     ));
+  }
+
+  Widget _buildLogoutAlertDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Deslogar"),
+      content: const Text("Tem certeza que deseja deslogar?"),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, "Não"),
+            child: const Text("Não")),
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context, "Sim");
+              Navigator.pushReplacementNamed(context, Routes.login);
+              ;
+            },
+            child: const Text("Sim"))
+      ],
+    );
   }
 
   void _onTap(BuildContext context, String route) {
