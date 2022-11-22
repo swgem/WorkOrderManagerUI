@@ -10,15 +10,41 @@ import 'package:work_order_manager_ui/models/work_order.dart';
 
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);
-  static const String _workOrderUrl =
-      'https://${ApiServices.ip}:${ApiServices.port}/api/WorkOrder/';
+  static const String _workOrderUrlBase =
+      '${ApiServices.ip}:${ApiServices.port}';
+  static const String _workOrderUrlPath = '/api/WorkOrder/';
 
   static Future fetchAllWorkOrders() async {
     Response? response;
     try {
       headers["Authorization"] = "Bearer ${await _getToken()}";
       response = await http
-          .get(Uri.parse(_workOrderUrl), headers: headers)
+          .get(Uri.https(_workOrderUrlBase, _workOrderUrlPath),
+              headers: headers)
+          .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
+    } on SocketException {
+      throw Exception("Problema com a conexão");
+    } on TimeoutException {
+      throw Exception("Requisição ao servidor resultou em timeout");
+    } on Error catch (e) {
+      throw Exception(e);
+    }
+
+    Iterable list = jsonDecode(response.body);
+    return list.map((obj) => WorkOrder.fromJson(obj)).toList();
+  }
+
+  static Future fetchWorkOrdersFilteredByStatus(List<String> status) async {
+    Response? response;
+    try {
+      headers["Authorization"] = "Bearer ${await _getToken()}";
+      Map<String, String> queryParams = {};
+      for (int i = 0; i < status.length; i++) {
+        queryParams["status[$i]"] = status[i];
+      }
+      final url = Uri.https(_workOrderUrlBase, _workOrderUrlPath, queryParams);
+      response = await http
+          .get(url, headers: headers)
           .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");
@@ -41,7 +67,8 @@ abstract class WorkOrderApiServices extends ApiServices {
     try {
       headers["Authorization"] = "Bearer ${await _getToken()}";
       response = await http
-          .post(Uri.parse(_workOrderUrl), headers: headers, body: workOrderBody)
+          .post(Uri.https(_workOrderUrlBase, _workOrderUrlPath),
+              headers: headers, body: workOrderBody)
           .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");
@@ -65,7 +92,8 @@ abstract class WorkOrderApiServices extends ApiServices {
     try {
       headers["Authorization"] = "Bearer ${await _getToken()}";
       response = await http
-          .put(Uri.parse(_workOrderUrl), headers: headers, body: workOrderBody)
+          .put(Uri.https(_workOrderUrlBase, _workOrderUrlPath),
+              headers: headers, body: workOrderBody)
           .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");

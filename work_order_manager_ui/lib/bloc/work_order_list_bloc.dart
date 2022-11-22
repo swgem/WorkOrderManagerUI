@@ -7,35 +7,11 @@ import 'package:work_order_manager_ui/models/work_order.dart';
 class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
   List<String>? workOrderStatusFilter;
 
-  // final _workOrdersMock = [
-  //   WorkOrder(
-  //     client: 'Claudinelson',
-  //     status: 'waiting',
-  //     dayId: 1,
-  //     priority: 0,
-  //     telephone: '15 3127 1543',
-  //     clientRequest: 'Alinhamento e balanceamento',
-  //     orderOpeningDatetime: '01/11/2022 7:51:37',
-  //     vehicle: 'Porsche',
-  //   ),
-  //   WorkOrder(
-  //       client: 'Elton da marmoraria Henriques',
-  //       status: 'ongoing',
-  //       dayId: 2,
-  //       priority: 1,
-  //       telephone: '+12 47 95471 3150',
-  //       clientRequest:
-  //           'Troca dos amortecedores. Vazamento de óleo. Ventoinha não está ligando',
-  //       orderOpeningDatetime: '01/11/2022 9:35:10',
-  //       vehicle: 'Strada Endurance cabine dupla',
-  //       remarks: 'Bateu o carro em um poste')
-  // ];
-
   WorkOrderListBloc() : super(WorkOrderListLoadingState()) {
     on<WorkOrderListFetchEvent>((event, emit) async {
       emit(WorkOrderListLoadingState());
       await Future.delayed(const Duration(milliseconds: 300));
-      emit(await _fetchWorkOrdersFilteredByStatus());
+      emit(await _fetchFilteredWorkOrders());
     });
 
     on<WorkOrderListLoadStatusFilterEvent>(
@@ -60,16 +36,15 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
     }
   }
 
-  Future<WorkOrderListState> _fetchWorkOrdersFilteredByStatus() async {
+  Future<WorkOrderListState> _fetchFilteredWorkOrders() async {
     try {
-      List<WorkOrder> workOrders =
-          await WorkOrderApiServices.fetchAllWorkOrders();
-      // List<WorkOrder> workOrders =
-      //     await Future.delayed(Duration(seconds: 2), () => _workOrdersMock);
+      List<WorkOrder> workOrders;
 
-      if (workOrderStatusFilter != null && workOrderStatusFilter!.isNotEmpty) {
-        workOrders.removeWhere(
-            (element) => !workOrderStatusFilter!.contains(element.status));
+      if (workOrderStatusFilter == null) {
+        workOrders = await WorkOrderApiServices.fetchAllWorkOrders();
+      } else {
+        workOrders = await WorkOrderApiServices.fetchWorkOrdersFilteredByStatus(
+            workOrderStatusFilter!);
       }
 
       workOrders.sort(_sortWorkOrdersByStatus);
