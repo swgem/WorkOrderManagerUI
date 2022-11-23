@@ -27,6 +27,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late Key _clientFieldKey;
 
   late FocusNode _phoneFocusNode;
+  late FocusNode _clientFocusNode;
 
   late ScrollController scrollController;
   late TextEditingController clientController;
@@ -67,6 +68,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           }
         }
       });
+    _clientFocusNode = FocusNode();
     scrollController = ScrollController();
     clientController = TextEditingController();
     phoneController = TextEditingController();
@@ -129,11 +131,16 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     requestedServiceController.text = workOrder?.clientRequest ?? "";
     deadlineController.text = workOrder?.deadline ?? "";
     remarksController.text = workOrder?.remarks ?? "";
+
+    _maskPhone = MaskTextInputFormatter(
+        mask: '###########', filter: {'#': RegExp(r'[0-9]')});
   }
 
   Widget _buildBloc(BuildContext context, WorkOrderEditorState state) {
     String title;
     Widget body;
+
+    _clientFocusNode.requestFocus();
 
     if (state is WorkOrderEditorEditingState && state.workOrder != workOrder) {
       workOrder = state.workOrder;
@@ -149,6 +156,9 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       }
       body = _buildForm();
     } else {
+      // Clear possible old values
+      workOrder = null;
+      _inputInitialValues();
       title = "Editor de ordem de serviço";
       body = _buildEmpty();
     }
@@ -202,7 +212,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                       padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
                       child: TextFormField(
                         key: _clientFieldKey,
-                        autofocus: true,
+                        focusNode: _clientFocusNode,
                         controller: clientController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
