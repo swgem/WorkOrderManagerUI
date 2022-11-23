@@ -30,11 +30,18 @@ abstract class WorkOrderApiServices extends ApiServices {
       throw Exception(e);
     }
 
-    Iterable list = jsonDecode(response.body);
-    return list.map((obj) => WorkOrder.fromJson(obj)).toList();
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      Iterable list = jsonDecode(response.body);
+      return list.map((obj) => WorkOrder.fromJson(obj)).toList();
+    } else if (response.statusCode == 401) {
+      throw Exception("401: Falha de autenticação");
+    } else {
+      throw Exception("Erro ao requisitar dados do servidor");
+    }
   }
 
-  static Future fetchWorkOrdersFilteredByStatus(List<String> status) async {
+  static Future<List<WorkOrder>> fetchWorkOrdersFilteredByStatus(
+      List<String> status) async {
     Response? response;
     try {
       headers["Authorization"] = "Bearer ${await _getToken()}";
@@ -54,8 +61,14 @@ abstract class WorkOrderApiServices extends ApiServices {
       throw Exception(e);
     }
 
-    Iterable list = jsonDecode(response.body);
-    return list.map((obj) => WorkOrder.fromJson(obj)).toList();
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      Iterable list = jsonDecode(response.body);
+      return list.map((obj) => WorkOrder.fromJson(obj)).toList();
+    } else if (response.statusCode == 401) {
+      throw Exception("401: Falha de autenticação");
+    } else {
+      throw Exception("Erro ao requisitar dados do servidor");
+    }
   }
 
   static Future postWorkOrder(WorkOrder workOrder) async {
@@ -78,7 +91,9 @@ abstract class WorkOrderApiServices extends ApiServices {
       throw Exception(e);
     }
 
-    if (response.statusCode != 200) {
+    if (response.statusCode == 401) {
+      throw Exception("401: Falha de autenticação");
+    } else if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception("Erro ao salvar ordem de serviço");
     }
   }
@@ -103,7 +118,9 @@ abstract class WorkOrderApiServices extends ApiServices {
       throw Exception(e);
     }
 
-    if (response.statusCode != 200) {
+    if (response.statusCode == 401) {
+      throw Exception("401: Falha de autenticação");
+    } else if (response.statusCode != 200) {
       throw Exception("Erro ao salvar ordem de serviço");
     }
   }
