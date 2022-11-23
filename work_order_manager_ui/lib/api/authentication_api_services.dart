@@ -101,14 +101,15 @@ abstract class AuthenticationApiServices extends ApiServices {
             registerResponse.errors?.join('. ') ?? "Erro ao registrar usuário");
       }
     } else {
-      UserLoginResponse? loginResponse;
+      UserRegisterResponse? registerResponse;
       try {
-        loginResponse = UserLoginResponse.fromJson(jsonDecode(response.body));
+        registerResponse =
+            UserRegisterResponse.fromJson(jsonDecode(response.body));
         // ignore: empty_catches
       } catch (e) {}
 
       throw Exception(
-          loginResponse?.errors?.join('. ') ?? "Erro ao registrar usuário");
+          registerResponse?.errors?.join('. ') ?? "Erro ao registrar usuário");
     }
     return success;
   }
