@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/api/authentication_api_services.dart';
-import 'package:work_order_manager_ui/ui/pages/register_page_ui.dart';
-import 'package:work_order_manager_ui/ui/pages/routes.dart';
 
-class LoginPageUi extends StatefulWidget {
-  static const String routeName = "/loginPage";
-  const LoginPageUi({super.key});
+class RegisterPageUi extends StatefulWidget {
+  const RegisterPageUi({super.key});
 
   @override
-  State<LoginPageUi> createState() => _LoginPageUiState();
+  State<RegisterPageUi> createState() => _RegisterPageUiState();
 }
 
-class _LoginPageUiState extends State<LoginPageUi> {
+class _RegisterPageUiState extends State<RegisterPageUi> {
   late GlobalKey<FormState> _formKey;
 
   late TextEditingController _userNameController;
   late TextEditingController _passwordController;
+  late TextEditingController _passwordConfirmationController;
   bool _isRequestingFromServer = false;
 
   late TextStyle _textFieldLabelStyle;
@@ -27,6 +25,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
     _formKey = GlobalKey<FormState>();
     _userNameController = TextEditingController();
     _passwordController = TextEditingController();
+    _passwordConfirmationController = TextEditingController();
   }
 
   @override
@@ -42,7 +41,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Login'));
+    return AppBar(title: const Text('Cadastrar novo usuário'));
   }
 
   Widget _buildBody() {
@@ -83,7 +82,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 25.0),
+                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 8.0),
                       child: TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -96,7 +95,21 @@ class _LoginPageUiState extends State<LoginPageUi> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 8.0),
+                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 25.0),
+                      child: TextFormField(
+                        controller: _passwordConfirmationController,
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            label: Text("Confirmação de senha",
+                                style: _textFieldLabelStyle),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -105,19 +118,8 @@ class _LoginPageUiState extends State<LoginPageUi> {
                                 : _requestUserLogin,
                             child: const Padding(
                                 padding: EdgeInsets.all(10),
-                                child: Text("Login",
+                                child: Text("Cadastrar",
                                     style: TextStyle(fontSize: 20)))),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: TextButton(
-                            onPressed: (_isRequestingFromServer)
-                                ? null
-                                : _navigateToRegisterPage,
-                            child: Text("Cadastrar novo usuário")),
                       ),
                     ),
                     Padding(
@@ -139,14 +141,19 @@ class _LoginPageUiState extends State<LoginPageUi> {
   Future _requestUserLogin() async {
     try {
       setState(() => _isRequestingFromServer = true);
-      bool success = await AuthenticationApiServices.login(
-          _userNameController.text, _passwordController.text);
+      bool success = await AuthenticationApiServices.register(
+          _userNameController.text,
+          _passwordController.text,
+          _passwordConfirmationController.text);
 
       if (success) {
-        Navigator.pushReplacementNamed(context, Routes.home);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Usuário registrado com sucesso"),
+            duration: const Duration(seconds: 5)));
+        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Erro ao realizar login"),
+            content: Text("Erro ao registrar usuário"),
             duration: const Duration(seconds: 5)));
       }
     } catch (e) {
@@ -154,10 +161,5 @@ class _LoginPageUiState extends State<LoginPageUi> {
           content: Text(e.toString()), duration: const Duration(seconds: 5)));
     }
     setState(() => _isRequestingFromServer = false);
-  }
-
-  void _navigateToRegisterPage() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: ((context) => const RegisterPageUi())));
   }
 }
