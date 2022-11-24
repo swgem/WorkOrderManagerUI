@@ -10,8 +10,9 @@ import 'package:work_order_manager_ui/models/work_order.dart';
 
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);
-  static const String _workOrderUrlBase =
-      '${ApiServices.ip}:${ApiServices.port}';
+  static const String _workOrderUrlBase = ApiServices.ip;
+  // static const String _workOrderUrlBase =
+  //     '${ApiServices.ip}:${ApiServices.port}';
   static const String _workOrderUrlPath = '/api/WorkOrder/';
 
   static Future fetchAllWorkOrders() async {

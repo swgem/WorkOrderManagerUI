@@ -14,7 +14,9 @@ import '../dto/user_register_request.dart';
 
 abstract class AuthenticationApiServices extends ApiServices {
   static const String _authenticationBaseUrl =
-      'https://${ApiServices.ip}:${ApiServices.port}/api/User/';
+      'https://${ApiServices.ip}/api/User/';
+  // static const String _authenticationBaseUrl =
+  //     'https://${ApiServices.ip}:${ApiServices.port}/api/User/';
   static const String _authenticationLoginUrl =
       '${_authenticationBaseUrl}login';
   static const String _authenticationRegisterUrl =
