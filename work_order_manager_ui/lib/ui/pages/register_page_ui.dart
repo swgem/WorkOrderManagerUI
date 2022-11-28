@@ -11,6 +11,8 @@ class RegisterPageUi extends StatefulWidget {
 class _RegisterPageUiState extends State<RegisterPageUi> {
   late GlobalKey<FormState> _formKey;
 
+  late FocusNode _userNameFocusNode;
+
   late TextEditingController _userNameController;
   late TextEditingController _passwordController;
   late TextEditingController _passwordConfirmationController;
@@ -23,6 +25,12 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
     super.initState();
 
     _formKey = GlobalKey<FormState>();
+    _userNameFocusNode = FocusNode()
+      ..addListener(() {
+        if (!_userNameFocusNode.hasFocus) {
+          _userNameController.text = _userNameController.text.trim();
+        }
+      });
     _userNameController = TextEditingController();
     _passwordController = TextEditingController();
     _passwordConfirmationController = TextEditingController();
@@ -73,6 +81,7 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 8.0),
                       child: TextFormField(
+                        focusNode: _userNameFocusNode,
                         controller: _userNameController,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
@@ -88,6 +97,7 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             label: Text("Senha", style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
@@ -101,6 +111,7 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             label: Text("Confirmação de senha",
                                 style: _textFieldLabelStyle),

@@ -14,6 +14,8 @@ class LoginPageUi extends StatefulWidget {
 class _LoginPageUiState extends State<LoginPageUi> {
   late GlobalKey<FormState> _formKey;
 
+  late FocusNode _userNameFocusNode;
+
   late TextEditingController _userNameController;
   late TextEditingController _passwordController;
   bool _isRequestingFromServer = false;
@@ -25,6 +27,12 @@ class _LoginPageUiState extends State<LoginPageUi> {
     super.initState();
 
     _formKey = GlobalKey<FormState>();
+    _userNameFocusNode = FocusNode()
+      ..addListener(() {
+        if (!_userNameFocusNode.hasFocus) {
+          _userNameController.text = _userNameController.text.trim();
+        }
+      });
     _userNameController = TextEditingController();
     _passwordController = TextEditingController();
   }
@@ -74,6 +82,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 8.0),
                       child: TextFormField(
+                        focusNode: _userNameFocusNode,
                         controller: _userNameController,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
@@ -89,6 +98,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             label: Text("Senha", style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
@@ -117,7 +127,7 @@ class _LoginPageUiState extends State<LoginPageUi> {
                             onPressed: (_isRequestingFromServer)
                                 ? null
                                 : _navigateToRegisterPage,
-                            child: Text("Cadastrar novo usuário")),
+                            child: const Text("Cadastrar novo usuário")),
                       ),
                     ),
                     Padding(
