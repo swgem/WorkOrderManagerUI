@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
-import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/ui/pages/routes.dart';
 
 class DrawerUi extends StatelessWidget {
@@ -76,11 +73,6 @@ class DrawerUi extends StatelessWidget {
   }
 
   void _onTap(BuildContext context, String route) {
-    if (route == Routes.home || route == Routes.workOrders) {
-      BlocProvider.of<WorkOrderListBloc>(context)
-          .add(WorkOrderListClearEvent());
-    }
-
     if (ModalRoute.of(context)!.settings.name != route) {
       Navigator.pushReplacementNamed(context, route);
     } else {

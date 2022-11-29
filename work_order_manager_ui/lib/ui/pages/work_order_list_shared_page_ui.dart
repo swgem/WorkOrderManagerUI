@@ -33,6 +33,7 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
   void initState() {
     super.initState();
 
+    BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListClearEvent());
     BlocProvider.of<WorkOrderListBloc>(context)
         .add(WorkOrderListLoadStatusFilterEvent(status: widget.statusFilter));
     BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
