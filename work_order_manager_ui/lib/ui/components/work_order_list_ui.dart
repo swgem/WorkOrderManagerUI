@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
@@ -27,21 +28,37 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => Future(() => BlocProvider.of<WorkOrderListBloc>(context)
-          .add(WorkOrderListFetchEvent())),
-      child: BlocBuilder<WorkOrderListBloc, WorkOrderListState>(
+    return LoaderOverlay(
+      child: RefreshIndicator(
+        onRefresh: () => Future(() =>
+            BlocProvider.of<WorkOrderListBloc>(context)
+                .add(WorkOrderListFetchEvent())),
+        child: BlocListener<WorkOrderListBloc, WorkOrderListState>(
           bloc: BlocProvider.of(context),
-          builder: (context, state) {
-            if (state is WorkOrderListSucessState) {
-              return _buildWorkOrderList(state.workOrders);
-            } else if (state is WorkOrderListEmptyState) {
-              return _buildEmpty();
-            } else if (state is WorkOrderListErrorState) {
-              return _buildError();
+          listener: (context, state) {
+            if (state is WorkOrderListLoadingState) {
+              context.loaderOverlay.show();
+            } else {
+              context.loaderOverlay.hide();
             }
-            return const Center(child: CircularProgressIndicator());
-          }),
+          },
+          child: BlocBuilder<WorkOrderListBloc, WorkOrderListState>(
+              bloc: BlocProvider.of(context),
+              buildWhen: (previous, current) =>
+                  (current is! WorkOrderListLoadingState),
+              builder: (context, state) {
+                if (state is WorkOrderListSucessState) {
+                  return _buildWorkOrderList(state.workOrders);
+                } else if (state is WorkOrderListEmptyState) {
+                  return _buildEmpty();
+                } else if (state is WorkOrderListErrorState) {
+                  return _buildError();
+                } else /* if (state is WorkOrderListBlankState) */ {
+                  return _buildBlank();
+                }
+              }),
+        ),
+      ),
     );
   }
 
@@ -69,5 +86,9 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
 
   Widget _buildError() {
     return const Center(child: Text("Erro ao carregar ordens de serviço"));
+  }
+
+  Widget _buildBlank() {
+    return Container();
   }
 }

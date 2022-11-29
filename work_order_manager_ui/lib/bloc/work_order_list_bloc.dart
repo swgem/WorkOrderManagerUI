@@ -16,6 +16,9 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
 
     on<WorkOrderListLoadStatusFilterEvent>(
         (event, emit) => workOrderStatusFilter = event.status);
+
+    on<WorkOrderListClearEvent>(
+        (event, emit) => emit(WorkOrderListBlankState()));
   }
 
   int _sortWorkOrdersByStatus(WorkOrder a, WorkOrder b) {

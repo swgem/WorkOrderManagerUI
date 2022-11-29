@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
@@ -110,9 +111,11 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           if (formKey.currentState!.validate()) {
             showDialog<String>(
                 context: context,
-                builder: (context) => _buildButtonAlertDialog(
-                    "Salvar ordem de serviço", () => _saveWorkOrder()));
+                builder: (context) => _buildButtonAlertDialog());
           }
+        } else if (state is WorkOrderEditorSavedState ||
+            state is WorkOrderEditorErrorState) {
+          context.loaderOverlay.hide();
         }
       },
       child: BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
@@ -159,7 +162,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         title =
             "Editando ordem #${workOrder!.dayId.toString().padLeft(2, '0')} de ${workOrder!.orderOpeningDatetime.split(" ")[0]}";
       }
-      bodyChild = _buildForm();
+      bodyChild = LoaderOverlay(child: _buildForm());
     } else {
       // Clear possible old values
       workOrder = null;
@@ -372,10 +375,9 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     );
   }
 
-  Widget _buildButtonAlertDialog(
-      String titleText, void Function() yesCallback) {
+  Widget _buildButtonAlertDialog() {
     return AlertDialog(
-        title: Text(titleText),
+        title: const Text("Salvar ordem de serviço"),
         content:
             const Text("Tem certeza que deseja salvar a ordem de serviço?"),
         actions: [
@@ -385,7 +387,8 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           TextButton(
               onPressed: () {
                 Navigator.pop(context, "Sim");
-                yesCallback();
+                context.loaderOverlay.show();
+                _saveWorkOrder();
               },
               child: const Text("Sim"))
         ]);

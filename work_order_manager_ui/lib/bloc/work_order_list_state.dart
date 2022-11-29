@@ -18,6 +18,10 @@ class WorkOrderListEmptyState extends WorkOrderListState {
   WorkOrderListEmptyState() : super(workOrders: []);
 }
 
+class WorkOrderListBlankState extends WorkOrderListState {
+  WorkOrderListBlankState() : super(workOrders: []);
+}
+
 class WorkOrderListErrorState extends WorkOrderListState {
   final String message;
   WorkOrderListErrorState({required this.message}) : super(workOrders: []);

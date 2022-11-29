@@ -4,6 +4,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
@@ -469,6 +470,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Future _saveWorkOrder(WorkOrder workOrder) async {
+    context.loaderOverlay.show();
     try {
       await WorkOrderApiServices.putWorkOrder(workOrder);
       BlocProvider.of<WorkOrderListBloc>(context)
@@ -477,6 +479,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
       BlocProvider.of<WorkOrderEditorBloc>(context)
           .add(WorkOrderEditorErrorEvent(error: e.toString()));
     }
+    context.loaderOverlay.hide();
   }
 
   Future _navigateToWorkOrderEditor() async {
