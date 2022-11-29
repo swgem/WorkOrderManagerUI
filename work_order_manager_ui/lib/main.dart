@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
               darkTheme: darkTheme,
               routes: {
                 Routes.login: (context) => const LoginPageUi(),
-                Routes.home: (context) => const HomePageUi(),
+                Routes.home: (context) => HomePageUi(),
                 Routes.workOrders: (context) => const WorkOrdersPageUi(),
                 Routes.settings: (context) => const SettingsPageUi()
               },
