@@ -11,6 +11,7 @@ import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
 import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
   const WorkOrderEditorUi({super.key});
@@ -139,6 +140,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   Widget _buildBloc(BuildContext context, WorkOrderEditorState state) {
     String title;
     Widget body;
+    Widget bodyChild;
 
     _clientFocusNode.requestFocus();
 
@@ -154,42 +156,50 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         title =
             "Editando ordem #${workOrder!.dayId.toString().padLeft(2, '0')} de ${workOrder!.orderOpeningDatetime.split(" ")[0]}";
       }
-      body = _buildForm();
+      bodyChild = _buildForm();
     } else {
       // Clear possible old values
       workOrder = null;
       _inputInitialValues();
       title = "Editor de ordem de serviço";
-      body = _buildEmpty();
+      bodyChild = _buildEmpty();
     }
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
-          child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: AdaptiveTheme.of(context)
-                          .theme
-                          .textTheme
-                          .titleMedium!
-                          .color!),
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-              alignment: Alignment.topCenter,
-              child: body),
-        ),
-        Positioned(
-          left: 30,
-          top: 5,
-          child: Text(title,
-              style: TextStyle(
-                  backgroundColor:
-                      AdaptiveTheme.of(context).theme.scaffoldBackgroundColor)),
-        )
-      ],
-    );
+    if (Responsive.platform(context) == Platform.mobile) {
+      body = bodyChild;
+    } else {
+      body = Stack(
+        fit: StackFit.expand,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
+            child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: AdaptiveTheme.of(context)
+                            .theme
+                            .textTheme
+                            .titleMedium!
+                            .color!),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(10.0))),
+                alignment: Alignment.topCenter,
+                child: bodyChild),
+          ),
+          Positioned(
+            left: 30,
+            top: 5,
+            child: Text(title,
+                style: TextStyle(
+                    backgroundColor: AdaptiveTheme.of(context)
+                        .theme
+                        .scaffoldBackgroundColor)),
+          )
+        ],
+      );
+    }
+
+    return body;
   }
 
   Widget _buildEmpty() {
