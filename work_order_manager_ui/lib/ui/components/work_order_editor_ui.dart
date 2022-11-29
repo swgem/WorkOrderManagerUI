@@ -423,7 +423,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
     var newWorkOrder = WorkOrder(
       id: workOrder?.id ?? 0,
-      dayId: workOrder?.id ?? 0,
+      dayId: workOrder?.dayId ?? 0,
       status: workOrder?.status ?? "waiting",
       priority: workOrder?.priority ?? 0,
       orderOpeningDatetime: workOrder?.orderOpeningDatetime ?? currentDateTime,
