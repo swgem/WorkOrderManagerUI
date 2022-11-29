@@ -402,7 +402,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     }
     TimeOfDay? time = await showTimePicker(
         context: context,
-        initialTime: const TimeOfDay(hour: 0, minute: 0),
+        initialTime: const TimeOfDay(hour: 18, minute: 0),
         initialEntryMode: TimePickerEntryMode.input);
     if (time == null) {
       return;
