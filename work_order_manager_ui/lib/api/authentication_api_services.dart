@@ -52,17 +52,16 @@ abstract class AuthenticationApiServices extends ApiServices {
         success = true;
       } else {
         throw Exception(
-            loginResponse.errors?.join('. ') ?? "Erro ao realizar login");
+            loginResponse.errors?.toString() ?? "Erro ao realizar login");
       }
     } else {
-      UserLoginResponse? loginResponse;
+      String? errors;
       try {
-        loginResponse = UserLoginResponse.fromJson(jsonDecode(response.body));
+        errors = jsonDecode(response.body)['errors'].toString();
         // ignore: empty_catches
       } catch (e) {}
 
-      throw Exception(
-          loginResponse?.errors?.join('. ') ?? "Erro ao realizar login");
+      throw Exception(errors ?? "Erro ao registrar usuário");
     }
     return success;
   }
@@ -100,18 +99,16 @@ abstract class AuthenticationApiServices extends ApiServices {
         success = true;
       } else {
         throw Exception(
-            registerResponse.errors?.join('. ') ?? "Erro ao registrar usuário");
+            registerResponse.errors?.toString() ?? "Erro ao registrar usuário");
       }
     } else {
-      UserRegisterResponse? registerResponse;
+      String? errors;
       try {
-        registerResponse =
-            UserRegisterResponse.fromJson(jsonDecode(response.body));
+        errors = jsonDecode(response.body)['errors'].toString();
         // ignore: empty_catches
       } catch (e) {}
 
-      throw Exception(
-          registerResponse?.errors?.join('. ') ?? "Erro ao registrar usuário");
+      throw Exception(errors ?? "Erro ao registrar usuário");
     }
     return success;
   }

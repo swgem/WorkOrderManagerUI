@@ -83,6 +83,9 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                       child: TextFormField(
                         focusNode: _userNameFocusNode,
                         controller: _userNameController,
+                        validator: (value) => _userNameController.text.isEmpty
+                            ? "Insira o usuário"
+                            : null,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             label: Text("Usuário", style: _textFieldLabelStyle),
@@ -94,6 +97,15 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                       padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 8.0),
                       child: TextFormField(
                         controller: _passwordController,
+                        validator: (value) {
+                          if (_passwordController.text.isEmpty) {
+                            return "Insira a senha";
+                          } else if (_passwordController.text.length < 4) {
+                            return "Senha deve ter ao menos 4 caracteres";
+                          } else {
+                            return null;
+                          }
+                        },
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -108,6 +120,16 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                       padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 25.0),
                       child: TextFormField(
                         controller: _passwordConfirmationController,
+                        validator: (value) {
+                          if (_passwordConfirmationController.text.isEmpty) {
+                            return "Insira a confirmação da senha";
+                          } else if (_passwordController.text !=
+                              _passwordConfirmationController.text) {
+                            return "Confirmação de senha diferente da senha";
+                          } else {
+                            return null;
+                          }
+                        },
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -126,7 +148,7 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                         child: ElevatedButton(
                             onPressed: (_isRequestingFromServer)
                                 ? null
-                                : _requestUserLogin,
+                                : _handleRegister,
                             child: const Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text("Cadastrar",
@@ -149,7 +171,13 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
     );
   }
 
-  Future _requestUserLogin() async {
+  void _handleRegister() {
+    if (_formKey.currentState!.validate()) {
+      _requestUserRegister();
+    }
+  }
+
+  Future _requestUserRegister() async {
     try {
       setState(() => _isRequestingFromServer = true);
       bool success = await AuthenticationApiServices.register(

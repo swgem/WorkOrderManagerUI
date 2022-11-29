@@ -84,6 +84,9 @@ class _LoginPageUiState extends State<LoginPageUi> {
                       child: TextFormField(
                         focusNode: _userNameFocusNode,
                         controller: _userNameController,
+                        validator: (value) => _userNameController.text.isEmpty
+                            ? "Insira o usuário"
+                            : null,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             label: Text("Usuário", style: _textFieldLabelStyle),
@@ -95,6 +98,9 @@ class _LoginPageUiState extends State<LoginPageUi> {
                       padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 25.0),
                       child: TextFormField(
                         controller: _passwordController,
+                        validator: (value) => _passwordController.text.isEmpty
+                            ? "Insira a senha"
+                            : null,
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -110,9 +116,8 @@ class _LoginPageUiState extends State<LoginPageUi> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                            onPressed: (_isRequestingFromServer)
-                                ? null
-                                : _requestUserLogin,
+                            onPressed:
+                                (_isRequestingFromServer) ? null : _handleLogin,
                             child: const Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text("Login",
@@ -144,6 +149,12 @@ class _LoginPageUiState extends State<LoginPageUi> {
         ),
       ),
     );
+  }
+
+  void _handleLogin() {
+    if (_formKey.currentState!.validate()) {
+      _requestUserLogin();
+    }
   }
 
   Future _requestUserLogin() async {
