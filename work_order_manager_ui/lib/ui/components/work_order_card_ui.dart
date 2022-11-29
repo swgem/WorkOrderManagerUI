@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
@@ -79,8 +80,15 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     return Row(children: [
       Expanded(
           flex: 0,
-          child: Text("#${widget.workOrder.dayId.toString().padLeft(2, '0')}",
-              style: _expTileTitleStyle)),
+          child: Column(
+            children: [
+              Text("#${widget.workOrder.dayId.toString().padLeft(2, '0')}",
+                  style: _expTileTitleStyle),
+              const SizedBox(height: 5),
+              Text(widget.workOrder.orderOpeningDatetime.substring(0, 5),
+                  style: _expTileTitleStyle),
+            ],
+          )),
       Expanded(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,6 +115,20 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                       style: _expTileTitleStyle)),
             ]),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Icon(Icons.description, color: _expTileTitleStyle.color),
+              const SizedBox(width: 5),
+              Expanded(
+                  child: Text(
+                widget.workOrder.clientRequest.replaceAll('\n', '; '),
+                style: _expTileTitleStyle,
+                overflow: TextOverflow.ellipsis,
+              )),
+            ]),
+          ),
         ],
       )),
     ]);
@@ -118,6 +140,22 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         0: IntrinsicColumnWidth(),
         1: FlexColumnWidth()
       }, children: [
+        TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+            child: Text(
+              "Placa:",
+              style: _expTileChildKeyStyle,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+              child: Text(
+                  (widget.workOrder.vehiclePlate?.isNotEmpty ?? false)
+                      ? widget.workOrder.vehiclePlate!
+                      : "-",
+                  style: _expTileChildValueStyle)),
+        ]),
         TableRow(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
@@ -164,11 +202,39 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         TableRow(children: [
           Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+              child: Text("Pendências:", style: _expTileChildKeyStyle)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+            child: Text(
+              (widget.workOrder.pendencies?.isNotEmpty ?? false)
+                  ? widget.workOrder.pendencies!
+                  : "-",
+              style: _expTileChildValueStyle,
+            ),
+          ),
+        ]),
+        TableRow(children: [
+          Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
               child: Text("Criado em:", style: _expTileChildKeyStyle)),
           Padding(
             padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
             child: Text(
               widget.workOrder.orderOpeningDatetime,
+              style: _expTileChildValueStyle,
+            ),
+          ),
+        ]),
+        TableRow(children: [
+          Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+              child: Text("Finalizado em:", style: _expTileChildKeyStyle)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+            child: Text(
+              (widget.workOrder.orderClosingDatetime?.isNotEmpty ?? false)
+                  ? widget.workOrder.orderClosingDatetime!
+                  : "-",
               style: _expTileChildValueStyle,
             ),
           ),
@@ -309,13 +375,15 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             context: context,
             builder: (context) =>
                 _buildButtonAlertDialog("Finalizar ordem de serviço?", () {
+                  var currentDateTime =
+                      DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
                   var workOrder = WorkOrder(
                     id: widget.workOrder.id,
                     dayId: widget.workOrder.dayId,
                     status: 'finished',
                     priority: widget.workOrder.priority,
                     orderOpeningDatetime: widget.workOrder.orderOpeningDatetime,
-                    orderClosingDatetime: widget.workOrder.orderClosingDatetime,
+                    orderClosingDatetime: currentDateTime,
                     client: widget.workOrder.client,
                     phone: widget.workOrder.phone,
                     vehicle: widget.workOrder.vehicle,

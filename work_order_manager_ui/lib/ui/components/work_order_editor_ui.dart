@@ -38,6 +38,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late TextEditingController requestedServiceController;
   late TextEditingController deadlineController;
   late TextEditingController remarksController;
+  late TextEditingController pendenciesController;
   late TextStyle textFieldTextStyle;
   late TextStyle textFieldLabelStyle;
   late TextStyle textFieldLabelAsteriskStyle;
@@ -78,6 +79,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     requestedServiceController = TextEditingController();
     deadlineController = TextEditingController();
     remarksController = TextEditingController();
+    pendenciesController = TextEditingController();
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
@@ -131,6 +133,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     vehiclePlateController.text = workOrder?.vehiclePlate ?? "";
     requestedServiceController.text = workOrder?.clientRequest ?? "";
     deadlineController.text = workOrder?.deadline ?? "";
+    pendenciesController.text = workOrder?.pendencies ?? "";
     remarksController.text = workOrder?.remarks ?? "";
 
     _maskPhone = MaskTextInputFormatter(
@@ -325,7 +328,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                         readOnly: true,
                         enabled: true,
                         maxLines: null,
-                        textCapitalization: TextCapitalization.characters,
                         textInputAction: TextInputAction.next,
                         style: textFieldTextStyle,
                         decoration: InputDecoration(
@@ -341,11 +343,26 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                         keyboardType: TextInputType.multiline,
                         minLines: 3,
                         maxLines: null,
-                        textCapitalization: TextCapitalization.characters,
+                        textCapitalization: TextCapitalization.sentences,
                         style: textFieldTextStyle,
                         decoration: InputDecoration(
                             label:
                                 Text("Observações", style: textFieldLabelStyle),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                      child: TextFormField(
+                        controller: pendenciesController,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 3,
+                        maxLines: null,
+                        textCapitalization: TextCapitalization.sentences,
+                        style: textFieldTextStyle,
+                        decoration: InputDecoration(
+                            label:
+                                Text("Pendências", style: textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
@@ -407,11 +424,13 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       status: workOrder?.status ?? "waiting",
       priority: workOrder?.priority ?? 0,
       orderOpeningDatetime: workOrder?.orderOpeningDatetime ?? currentDateTime,
+      orderClosingDatetime: workOrder?.orderClosingDatetime,
       client: clientController.text,
       phone: phoneController.text,
       vehicle: vehicleController.text,
       vehiclePlate: vehiclePlateController.text,
       clientRequest: requestedServiceController.text,
+      pendencies: pendenciesController.text,
       deadline: deadlineController.text,
       remarks: remarksController.text,
     );
