@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class ResponsivePageUi extends StatelessWidget {
-  final PreferredSizeWidget appBar;
+  final PreferredSizeWidget mobileAppBar;
+  final PreferredSizeWidget tabletAppBar;
+  final PreferredSizeWidget desktopAppBar;
   final Widget mobileBody;
   final Widget tabletBody;
   final Widget desktopBody;
@@ -15,7 +17,9 @@ class ResponsivePageUi extends StatelessWidget {
 
   const ResponsivePageUi({
     super.key,
-    required this.appBar,
+    required this.mobileAppBar,
+    required this.tabletAppBar,
+    required this.desktopAppBar,
     required this.mobileBody,
     required this.tabletBody,
     required this.desktopBody,
@@ -38,7 +42,13 @@ class ResponsivePageUi extends StatelessWidget {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return appBar;
+    if (Responsive.platform(context) == Platform.desktop) {
+      return desktopAppBar;
+    } else if (Responsive.platform(context) == Platform.tablet) {
+      return tabletAppBar;
+    } else /*if (isMobile(context))*/ {
+      return mobileAppBar;
+    }
   }
 
   Widget _buildBody(BuildContext context) {

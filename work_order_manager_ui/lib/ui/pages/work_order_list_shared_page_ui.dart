@@ -42,7 +42,9 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
   @override
   Widget build(BuildContext context) {
     return ResponsivePageUi(
-      appBar: _buildAppBar(),
+      mobileAppBar: _buildMobileAppBar(),
+      tabletAppBar: _buildTabletDesktopAppBar(),
+      desktopAppBar: _buildTabletDesktopAppBar(),
       mobileBody: _buildMobileBody(),
       tabletBody: _buildTabletDesktopBody(),
       desktopBody: _buildTabletDesktopBody(),
@@ -55,16 +57,17 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildMobileAppBar() {
     return AppBar(
         title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Text(widget.pageTitle),
       const Spacer(),
-      IconButton(
-          onPressed: () => BlocProvider.of<WorkOrderListBloc>(context)
-              .add(WorkOrderListFetchEvent()),
-          icon: const Icon(Icons.refresh))
+      IconButton(onPressed: _refreshWorkOrders, icon: const Icon(Icons.refresh))
     ]));
+  }
+
+  PreferredSizeWidget _buildTabletDesktopAppBar() {
+    return AppBar(title: Text(widget.pageTitle));
   }
 
   Widget? _buildMobileFloatingActionButton() {
@@ -197,7 +200,19 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                       duration: const Duration(seconds: 5)));
                 }
               },
-              child: const WorkOrderListUi()),
+              child: Column(
+                children: [
+                  SizedBox(
+                      height: 60,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned(right: 25, child: _buildRefreshButton())
+                        ],
+                      )),
+                  const Expanded(child: WorkOrderListUi()),
+                ],
+              )),
         ),
         Expanded(
             flex: 1,
@@ -222,6 +237,11 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
     );
   }
 
+  Widget _buildRefreshButton() {
+    return IconButton(
+        onPressed: _refreshWorkOrders, icon: const Icon(Icons.refresh));
+  }
+
   Future _navigateToWorkOrderEditorPage() async {
     await Navigator.push(
         context,
@@ -229,5 +249,9 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
             builder: ((context) => const WorkOrderEditorPageUi()))).then(
         (value) => BlocProvider.of<WorkOrderListBloc>(context)
             .add(WorkOrderListFetchEvent()));
+  }
+
+  void _refreshWorkOrders() {
+    BlocProvider.of<WorkOrderListBloc>(context).add(WorkOrderListFetchEvent());
   }
 }

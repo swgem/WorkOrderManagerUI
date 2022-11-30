@@ -34,7 +34,9 @@ class _SettingsPageUiState extends State<SettingsPageUi> {
   @override
   Widget build(BuildContext context) {
     return ResponsivePageUi(
-      appBar: _buildAppBar(),
+      mobileAppBar: _buildAppBar(),
+      tabletAppBar: _buildAppBar(),
+      desktopAppBar: _buildAppBar(),
       mobileBody: _buildBody(),
       tabletBody: _buildBody(),
       desktopBody: _buildBody(),
@@ -48,11 +50,7 @@ class _SettingsPageUiState extends State<SettingsPageUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-        title:
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: const [
-      Text('Preferências'),
-    ]));
+    return AppBar(title: const Text('Preferências'));
   }
 
   Widget _buildBody() {
