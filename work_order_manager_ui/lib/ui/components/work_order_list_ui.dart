@@ -68,6 +68,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
         controller: scrollController,
         thumbVisibility: true,
         child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: scrollController,
             padding: const EdgeInsets.only(top: 7.0, bottom: 150.0),
             itemCount: workOrders.length,
@@ -81,11 +82,26 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   }
 
   Widget _buildEmpty() {
-    return const Center(child: Text("Não há ordens de serviço"));
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) =>
+          ListView(children: [
+        SizedBox(
+            height: constraints.maxHeight,
+            child: const Center(child: Text("Não há ordens de serviço")))
+      ]),
+    );
   }
 
   Widget _buildError() {
-    return const Center(child: Text("Erro ao carregar ordens de serviço"));
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) =>
+          ListView(children: [
+        SizedBox(
+            height: constraints.maxHeight,
+            child:
+                const Center(child: Text("Erro ao carregar ordens de serviço")))
+      ]),
+    );
   }
 
   Widget _buildBlank() {
