@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work_order_manager_ui/api/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/tools/authentication_manager.dart';
 
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);
@@ -17,7 +17,8 @@ abstract class WorkOrderApiServices extends ApiServices {
 
   static Future fetchAllWorkOrders() async {
     try {
-      headers["Authorization"] = "Bearer ${await _getToken()}";
+      headers["Authorization"] =
+          "Bearer ${await AuthenticationManager.getToken()}";
       Response response = await http
           .get(Uri.https(_workOrderUrlBase, _workOrderUrlPath),
               headers: headers)
@@ -38,7 +39,8 @@ abstract class WorkOrderApiServices extends ApiServices {
   static Future<List<WorkOrder>> fetchWorkOrdersFilteredByStatus(
       List<String> status) async {
     try {
-      headers["Authorization"] = "Bearer ${await _getToken()}";
+      headers["Authorization"] =
+          "Bearer ${await AuthenticationManager.getToken()}";
       Map<String, String> queryParams = {};
       for (int i = 0; i < status.length; i++) {
         queryParams["status[$i]"] = status[i];
@@ -65,7 +67,8 @@ abstract class WorkOrderApiServices extends ApiServices {
       var workOrderMap = workOrder.toJson();
       var workOrderBody = json.encode(workOrderMap);
 
-      headers["Authorization"] = "Bearer ${await _getToken()}";
+      headers["Authorization"] =
+          "Bearer ${await AuthenticationManager.getToken()}";
       Response response = await http
           .post(Uri.https(_workOrderUrlBase, _workOrderUrlPath),
               headers: headers, body: workOrderBody)
@@ -86,7 +89,8 @@ abstract class WorkOrderApiServices extends ApiServices {
       var workOrderMap = workOrder.toJson();
       var workOrderBody = json.encode(workOrderMap);
 
-      headers["Authorization"] = "Bearer ${await _getToken()}";
+      headers["Authorization"] =
+          "Bearer ${await AuthenticationManager.getToken()}";
       Response response = await http
           .put(Uri.https(_workOrderUrlBase, _workOrderUrlPath),
               headers: headers, body: workOrderBody)
@@ -100,11 +104,6 @@ abstract class WorkOrderApiServices extends ApiServices {
     } on Error catch (e) {
       throw Exception(e);
     }
-  }
-
-  static Future<String> _getToken() async {
-    var prefs = await SharedPreferences.getInstance();
-    return (prefs.getString("tokenjwt") ?? "");
   }
 
   static void _checkAndThrowErrorCode(int statusCode) {

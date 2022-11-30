@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:work_order_manager_ui/tools/authentication_manager.dart';
 import 'package:work_order_manager_ui/ui/pages/routes.dart';
 
 class DrawerUi extends StatelessWidget {
@@ -59,13 +60,12 @@ class DrawerUi extends StatelessWidget {
       content: const Text("Tem certeza que deseja deslogar?"),
       actions: [
         TextButton(
-            onPressed: () => Navigator.pop(context, "Não"),
-            child: const Text("Não")),
+            onPressed: () => Navigator.pop(context), child: const Text("Não")),
         TextButton(
             onPressed: () {
-              Navigator.pop(context, "Sim");
+              Navigator.pop(context);
               Navigator.pushReplacementNamed(context, Routes.login);
-              ;
+              AuthenticationManager.clearAuth();
             },
             child: const Text("Sim"))
       ],

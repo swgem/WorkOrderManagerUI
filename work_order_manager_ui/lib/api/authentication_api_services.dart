@@ -4,11 +4,11 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work_order_manager_ui/api/api_services.dart';
 import 'package:work_order_manager_ui/dto/user_login_request.dart';
 import 'package:work_order_manager_ui/dto/user_login_response.dart';
 import 'package:work_order_manager_ui/dto/user_register_response.dart';
+import 'package:work_order_manager_ui/tools/authentication_manager.dart';
 
 import '../dto/user_register_request.dart';
 
@@ -46,9 +46,9 @@ abstract class AuthenticationApiServices extends ApiServices {
     bool success = false;
     if (response.statusCode == 200) {
       var loginResponse = UserLoginResponse.fromJson(jsonDecode(response.body));
-      var prefs = await SharedPreferences.getInstance();
       if (loginResponse.success && loginResponse.token != null) {
-        prefs.setString("tokenjwt", loginResponse.token!);
+        AuthenticationManager.setAuth(
+            loginResponse.token, loginResponse.expirationDate);
         success = true;
       } else {
         throw Exception(
