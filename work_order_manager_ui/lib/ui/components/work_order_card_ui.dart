@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
@@ -180,11 +181,19 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
           ),
           Padding(
               padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-              child: Text(
-                  (widget.workOrder.phone?.isNotEmpty ?? false)
-                      ? widget.workOrder.phone!
-                      : "-",
-                  style: _expTileChildValueStyle)),
+              child: GestureDetector(
+                  onTap: (widget.workOrder.phone?.isNotEmpty ?? false)
+                      ? _handlePhoneTapped
+                      : null,
+                  child: Text(
+                      (widget.workOrder.phone?.isNotEmpty ?? false)
+                          ? widget.workOrder.phone!
+                          : "-",
+                      style: (widget.workOrder.phone?.isNotEmpty ?? false)
+                          ? _expTileChildValueStyle.copyWith(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline)
+                          : _expTileChildValueStyle))),
         ]),
         TableRow(children: [
           Padding(
@@ -490,5 +499,48 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                   workOrder: widget.workOrder,
                 )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
         .add(WorkOrderListFetchEvent()));
+  }
+
+  void _handlePhoneTapped() {
+    if (widget.workOrder.phone == null) return;
+    String rawPhone = widget.workOrder.phone!.replaceAll(RegExp(r"\D"), "");
+    if (rawPhone.length < 10) {
+      rawPhone = "44$rawPhone";
+    }
+    showDialog(
+      context: context,
+      builder: ((context) => AlertDialog(
+            title: Text('${widget.workOrder.phone}'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  await launchUrl(Uri.parse("tel:${widget.workOrder.phone}"));
+                  Navigator.pop(context);
+                },
+                child: Row(mainAxisSize: MainAxisSize.min, children: const [
+                  Icon(Icons.phone),
+                  SizedBox(width: 5),
+                  Text('Ligação')
+                ]),
+              ),
+              TextButton(
+                  onPressed: () async {
+                    await launchUrl(
+                        Uri.parse(
+                            'https://api.whatsapp.com/send?phone=55$rawPhone'),
+                        mode: LaunchMode.externalApplication);
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.whatsapp),
+                      SizedBox(width: 5),
+                      Text('WhatsApp')
+                    ],
+                  ))
+            ],
+          )),
+    );
   }
 }
