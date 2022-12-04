@@ -13,14 +13,13 @@ import 'package:work_order_manager_ui/tools/authentication_manager.dart';
 import '../dto/user_register_request.dart';
 
 abstract class AuthenticationApiServices extends ApiServices {
-  static const String _authenticationBaseUrl =
-      'https://${ApiServices.hostname}/api/User/';
-  // static const String _authenticationBaseUrl =
-  //     'https://${ApiServices.ip}:${ApiServices.port}/api/User/';
-  static const String _authenticationLoginUrl =
-      '${_authenticationBaseUrl}login';
-  static const String _authenticationRegisterUrl =
-      '${_authenticationBaseUrl}register';
+  static Map<String, String> headers = Map.from(ApiServices.headers);
+  static const String _authenticationBaseUrl = ApiServices.hostname;
+  static const String _authenticationUrlPath = '/api/User/';
+  static const String _authenticationLoginUrlPath =
+      '${_authenticationUrlPath}login';
+  static const String _authenticationRegisterUrlPath =
+      '${_authenticationUrlPath}register';
 
   static Future<bool> login(String userName, String password) async {
     var request = UserLoginRequest(userName: userName, password: password);
@@ -32,8 +31,8 @@ abstract class AuthenticationApiServices extends ApiServices {
 
     try {
       response = await http
-          .post(Uri.parse(_authenticationLoginUrl),
-              headers: ApiServices.headers, body: requestBody)
+          .post(Uri.https(_authenticationBaseUrl, _authenticationLoginUrlPath),
+              headers: headers, body: requestBody)
           .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");
@@ -80,8 +79,10 @@ abstract class AuthenticationApiServices extends ApiServices {
 
     try {
       response = await http
-          .post(Uri.parse(_authenticationRegisterUrl),
-              headers: ApiServices.headers, body: requestBody)
+          .post(
+              Uri.https(_authenticationBaseUrl, _authenticationRegisterUrlPath),
+              headers: headers,
+              body: requestBody)
           .timeout(const Duration(seconds: ApiServices.requestTimeoutSeconds));
     } on SocketException {
       throw Exception("Problema com a conexão");

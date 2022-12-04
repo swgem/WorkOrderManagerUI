@@ -11,8 +11,6 @@ import 'package:work_order_manager_ui/tools/authentication_manager.dart';
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);
   static const String _workOrderUrlBase = ApiServices.hostname;
-  // static const String _workOrderUrlBase =
-  //     '${ApiServices.ip}:${ApiServices.port}';
   static const String _workOrderUrlPath = '/api/WorkOrder/';
 
   static Future fetchAllWorkOrders() async {
