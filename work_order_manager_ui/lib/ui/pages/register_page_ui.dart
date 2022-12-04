@@ -133,7 +133,10 @@ class _RegisterPageUiState extends State<RegisterPageUi> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
-                        textInputAction: TextInputAction.next,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_isRequestingFromServer)
+                            ? null
+                            : ((value) => _handleRegister()),
                         decoration: InputDecoration(
                             label: Text("Confirmação de senha",
                                 style: _textFieldLabelStyle),

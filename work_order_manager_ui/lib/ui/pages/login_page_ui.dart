@@ -104,7 +104,10 @@ class _LoginPageUiState extends State<LoginPageUi> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
-                        textInputAction: TextInputAction.next,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_isRequestingFromServer)
+                            ? null
+                            : ((value) => _handleLogin()),
                         decoration: InputDecoration(
                             label: Text("Senha", style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
