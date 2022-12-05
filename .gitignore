@@ -251,3 +251,5 @@ google-services.json
 # Plugins (already resolved through pubspec.yaml)
 .flutter-plugins
 .flutter-plugins-dependencies
+key.properties
+app/upload-keystore.jks

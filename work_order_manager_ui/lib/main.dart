@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
       initial: AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
-        title: 'SEVENCAR ORGANIZADOR',
+        title: 'Sevencar Gerenciador',
         theme: theme,
         darkTheme: darkTheme,
         routes: {
