@@ -384,6 +384,30 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           TextButton(
               onPressed: () {
                 Navigator.pop(context, "Sim");
+                if (phoneController.text.isEmpty) {
+                  showDialog<String>(
+                      context: context,
+                      builder: (context) => _buildEmptyPhoneAlertDialog());
+                } else {
+                  context.loaderOverlay.show();
+                  _saveWorkOrder();
+                }
+              },
+              child: const Text("Sim")),
+          TextButton(
+              onPressed: () => Navigator.pop(context, "Não"),
+              child: const Text("Não"))
+        ]);
+  }
+
+  Widget _buildEmptyPhoneAlertDialog() {
+    return AlertDialog(
+        title: const Text("Telefone não inserido"),
+        content: const Text("Tem certeza que deseja salvar sem telefone?"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context, "Sim");
                 context.loaderOverlay.show();
                 _saveWorkOrder();
               },
