@@ -382,15 +382,15 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
             const Text("Tem certeza que deseja salvar a ordem de serviço?"),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, "Não"),
-              child: const Text("Não")),
-          TextButton(
               onPressed: () {
                 Navigator.pop(context, "Sim");
                 context.loaderOverlay.show();
                 _saveWorkOrder();
               },
-              child: const Text("Sim"))
+              child: const Text("Sim")),
+          TextButton(
+              onPressed: () => Navigator.pop(context, "Não"),
+              child: const Text("Não"))
         ]);
   }
 

@@ -467,14 +467,14 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             "Tem certeza que deseja alterar o status da ordem de serviço?"),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, "Não"),
-              child: const Text("Não")),
-          TextButton(
               onPressed: () {
                 Navigator.pop(context, "Sim");
                 yesCallback();
               },
-              child: const Text("Sim"))
+              child: const Text("Sim")),
+          TextButton(
+              onPressed: () => Navigator.pop(context, "Não"),
+              child: const Text("Não"))
         ]);
   }
 
@@ -513,17 +513,6 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             title: Text('${widget.workOrder.phone}'),
             actions: [
               TextButton(
-                onPressed: () async {
-                  await launchUrl(Uri.parse("tel:${widget.workOrder.phone}"));
-                  Navigator.pop(context);
-                },
-                child: Row(mainAxisSize: MainAxisSize.min, children: const [
-                  Icon(Icons.phone),
-                  SizedBox(width: 5),
-                  Text('Ligação')
-                ]),
-              ),
-              TextButton(
                   onPressed: () async {
                     await launchUrl(
                         Uri.parse(
@@ -538,7 +527,18 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
                       SizedBox(width: 5),
                       Text('WhatsApp')
                     ],
-                  ))
+                  )),
+              TextButton(
+                onPressed: () async {
+                  await launchUrl(Uri.parse("tel:${widget.workOrder.phone}"));
+                  Navigator.pop(context);
+                },
+                child: Row(mainAxisSize: MainAxisSize.min, children: const [
+                  Icon(Icons.phone),
+                  SizedBox(width: 5),
+                  Text('Ligação')
+                ]),
+              )
             ],
           )),
     );

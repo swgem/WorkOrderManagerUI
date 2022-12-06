@@ -60,14 +60,14 @@ class DrawerUi extends StatelessWidget {
       content: const Text("Tem certeza que deseja deslogar?"),
       actions: [
         TextButton(
-            onPressed: () => Navigator.pop(context), child: const Text("Não")),
-        TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pushReplacementNamed(context, Routes.login);
               AuthenticationManager.clearAuth();
             },
-            child: const Text("Sim"))
+            child: const Text("Sim")),
+        TextButton(
+            onPressed: () => Navigator.pop(context), child: const Text("Não"))
       ],
     );
   }
