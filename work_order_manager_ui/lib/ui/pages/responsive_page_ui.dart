@@ -56,7 +56,7 @@ class ResponsivePageUi extends StatelessWidget {
       if (desktopDrawer != null) {
         return Row(children: [
           SizedBox(
-            width: 300,
+            width: 250,
             child: desktopDrawer,
           ),
           Expanded(child: desktopBody),

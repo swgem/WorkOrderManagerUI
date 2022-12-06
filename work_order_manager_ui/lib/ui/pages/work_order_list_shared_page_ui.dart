@@ -85,11 +85,7 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
 
   Widget _buildTabletFloatingActionButton() {
     return Row(children: [
-      Expanded(
-          flex: 1,
-          child: (widget.hasAddWorkOrderButton)
-              ? _buildAddButton()
-              : const SizedBox()),
+      const Expanded(flex: 1, child: SizedBox()),
       Expanded(
         flex: 1,
         child: _buildEditorButtons(),
@@ -99,31 +95,11 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
 
   Widget _buildDesktopFloatingActionButton() {
     return Row(children: [
-      const SizedBox(width: 300),
-      Expanded(
-          flex: 1,
-          child: (widget.hasAddWorkOrderButton)
-              ? _buildAddButton()
-              : const SizedBox()),
+      const SizedBox(width: 250),
+      const Expanded(flex: 1, child: SizedBox()),
       Expanded(
         flex: 1,
         child: _buildEditorButtons(),
-      )
-    ]);
-  }
-
-  Widget _buildAddButton() {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      FloatingActionButton.extended(
-        onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
-            .add(WorkOrderEditorAddEvent()),
-        tooltip: "Adicionar ordem de serviço",
-        heroTag: "addButton",
-        label: Row(children: const [
-          Icon(Icons.add),
-          SizedBox(width: 8),
-          Text('Adicionar')
-        ]),
       )
     ]);
   }
@@ -207,6 +183,8 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
+                          Positioned(
+                              left: 25, child: _buildAddWorkOrderButton()),
                           Positioned(right: 25, child: _buildRefreshButton())
                         ],
                       )),
@@ -239,7 +217,23 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
 
   Widget _buildRefreshButton() {
     return IconButton(
-        onPressed: _refreshWorkOrders, icon: const Icon(Icons.refresh));
+        icon: const Icon(Icons.refresh),
+        tooltip: "Atualizar lista de ordens de serviço",
+        onPressed: _refreshWorkOrders);
+  }
+
+  Widget _buildAddWorkOrderButton() {
+    return Visibility(
+      visible: widget.hasAddWorkOrderButton,
+      child: IconButton(
+        icon: const Icon(Icons.add),
+        tooltip: "Adicionar ordem de serviço",
+        onPressed: () {
+          BlocProvider.of<WorkOrderEditorBloc>(context)
+              .add(WorkOrderEditorAddEvent());
+        },
+      ),
+    );
   }
 
   Future _navigateToWorkOrderEditorPage() async {
