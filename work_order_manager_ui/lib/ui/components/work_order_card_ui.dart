@@ -152,7 +152,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
           ),
           Padding(
               padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-              child: Text(
+              child: SelectableText(
+                  enableInteractiveSelection: true,
                   (widget.workOrder.vehiclePlate?.isNotEmpty ?? false)
                       ? widget.workOrder.vehiclePlate!
                       : "-",
@@ -168,7 +169,9 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
           ),
           Padding(
               padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-              child: Text(widget.workOrder.clientRequest,
+              child: SelectableText(
+                  enableInteractiveSelection: true,
+                  widget.workOrder.clientRequest,
                   style: _expTileChildValueStyle)),
         ]),
         TableRow(children: [
@@ -181,19 +184,19 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
           ),
           Padding(
               padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-              child: GestureDetector(
+              child: SelectableText(
+                  enableInteractiveSelection: true,
                   onTap: (widget.workOrder.phone?.isNotEmpty ?? false)
                       ? _handlePhoneTapped
                       : null,
-                  child: Text(
-                      (widget.workOrder.phone?.isNotEmpty ?? false)
-                          ? widget.workOrder.phone!
-                          : "-",
-                      style: (widget.workOrder.phone?.isNotEmpty ?? false)
-                          ? _expTileChildValueStyle.copyWith(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline)
-                          : _expTileChildValueStyle))),
+                  (widget.workOrder.phone?.isNotEmpty ?? false)
+                      ? widget.workOrder.phone!
+                      : "-",
+                  style: (widget.workOrder.phone?.isNotEmpty ?? false)
+                      ? _expTileChildValueStyle.copyWith(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline)
+                      : _expTileChildValueStyle)),
         ]),
         TableRow(children: [
           Padding(
@@ -201,7 +204,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
               child: Text("Observações:", style: _expTileChildKeyStyle)),
           Padding(
             padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-            child: Text(
+            child: SelectableText(
+              enableInteractiveSelection: true,
               (widget.workOrder.remarks?.isNotEmpty ?? false)
                   ? widget.workOrder.remarks!
                   : "-",
@@ -215,7 +219,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
               child: Text("Pendências:", style: _expTileChildKeyStyle)),
           Padding(
             padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-            child: Text(
+            child: SelectableText(
+              enableInteractiveSelection: true,
               (widget.workOrder.pendencies?.isNotEmpty ?? false)
                   ? widget.workOrder.pendencies!
                   : "-",
@@ -229,7 +234,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
               child: Text("Criado em:", style: _expTileChildKeyStyle)),
           Padding(
             padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-            child: Text(
+            child: SelectableText(
+              enableInteractiveSelection: true,
               widget.workOrder.orderOpeningDatetime,
               style: _expTileChildValueStyle,
             ),
@@ -241,7 +247,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
               child: Text("Finalizado em:", style: _expTileChildKeyStyle)),
           Padding(
             padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-            child: Text(
+            child: SelectableText(
+              enableInteractiveSelection: true,
               (widget.workOrder.orderClosingDatetime?.isNotEmpty ?? false)
                   ? widget.workOrder.orderClosingDatetime!
                   : "-",
@@ -255,7 +262,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
               child: Text("Prazo:", style: _expTileChildKeyStyle)),
           Padding(
             padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 15.0),
-            child: Text(
+            child: SelectableText(
+              enableInteractiveSelection: true,
               (widget.workOrder.deadline?.isNotEmpty ?? false)
                   ? widget.workOrder.deadline!
                   : "-",
