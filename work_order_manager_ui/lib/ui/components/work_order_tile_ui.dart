@@ -1,29 +1,28 @@
-import 'dart:async';
-
 import 'package:adaptive_theme/adaptive_theme.dart';
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
-import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/ui/dialogs/work_order_editor_dialog_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 
-class WorkOrderCardUi extends StatefulWidget {
+class WorkOrderTileUi extends StatefulWidget {
   final WorkOrder workOrder;
 
-  const WorkOrderCardUi({super.key, required this.workOrder});
+  const WorkOrderTileUi({super.key, required this.workOrder});
 
   @override
-  State<WorkOrderCardUi> createState() => _WorkOrderCardUiState();
+  State<WorkOrderTileUi> createState() => _WorkOrderTileUiState();
 }
 
-class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
+class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
   late TextStyle _expTileTitleStyle;
   late TextStyle _expTileChildKeyStyle;
   late TextStyle _expTileChildValueStyle;
@@ -79,59 +78,55 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
 
   Widget _buildExpTileTitle(BuildContext context) {
     return Row(children: [
-      Expanded(
-          flex: 0,
-          child: Column(
-            children: [
-              Text("#${widget.workOrder.dayId.toString().padLeft(2, '0')}",
-                  style: _expTileTitleStyle),
-              const SizedBox(height: 5),
-              Text(widget.workOrder.orderOpeningDatetime.substring(0, 5),
-                  style: _expTileTitleStyle),
-            ],
-          )),
-      Expanded(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
-            child: Row(children: [
-              Icon(const IconData(0xe1d7, fontFamily: 'MaterialIcons'),
-                  color: _expTileTitleStyle.color),
-              const SizedBox(width: 5),
-              Expanded(
-                  child: Text(widget.workOrder.vehicle,
-                      style: _expTileTitleStyle)),
-            ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
-            child:
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Icon(Icons.person, color: _expTileTitleStyle.color),
-              const SizedBox(width: 5),
-              Expanded(
-                  child:
-                      Text(widget.workOrder.client, style: _expTileTitleStyle)),
-            ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 5, 8, 5),
-            child:
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Icon(Icons.description, color: _expTileTitleStyle.color),
-              const SizedBox(width: 5),
-              Expanded(
-                  child: Text(
+      Text(widget.workOrder.orderOpeningDatetime.substring(0, 5),
+          style: _expTileTitleStyle),
+      const SizedBox(width: 15),
+      Text("#${widget.workOrder.dayId.toString().padLeft(2, '0')}",
+          style: _expTileTitleStyle),
+      const SizedBox(width: 15),
+      Flexible(
+        flex: 1,
+        child: Row(
+          children: [
+            Icon(const IconData(0xe1d7, fontFamily: 'MaterialIcons'),
+                color: _expTileTitleStyle.color),
+            const SizedBox(width: 5),
+            Expanded(
+                child:
+                    Text(widget.workOrder.vehicle, style: _expTileTitleStyle)),
+          ],
+        ),
+      ),
+      const SizedBox(width: 15),
+      Flexible(
+        flex: 1,
+        child: Row(
+          children: [
+            Icon(Icons.person, color: _expTileTitleStyle.color),
+            const SizedBox(width: 5),
+            Expanded(
+                child:
+                    Text(widget.workOrder.client, style: _expTileTitleStyle)),
+          ],
+        ),
+      ),
+      const SizedBox(width: 15),
+      Flexible(
+        flex: 4,
+        child: Row(
+          children: [
+            Icon(Icons.description, color: _expTileTitleStyle.color),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
                 widget.workOrder.clientRequest.replaceAll('\n', '; '),
                 style: _expTileTitleStyle,
                 overflow: TextOverflow.ellipsis,
-              )),
-            ]),
-          ),
-        ],
-      )),
+              ),
+            ),
+          ],
+        ),
+      ),
     ]);
   }
 
@@ -141,6 +136,36 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         0: IntrinsicColumnWidth(),
         1: FlexColumnWidth()
       }, children: [
+        TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+            child: Text(
+              "Cliente:",
+              style: _expTileChildKeyStyle,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+              child: SelectableText(
+                  enableInteractiveSelection: true,
+                  widget.workOrder.client,
+                  style: _expTileChildValueStyle)),
+        ]),
+        TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
+            child: Text(
+              "Veículo:",
+              style: _expTileChildKeyStyle,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
+              child: SelectableText(
+                  enableInteractiveSelection: true,
+                  widget.workOrder.vehicle,
+                  style: _expTileChildValueStyle)),
+        ]),
         TableRow(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
@@ -457,7 +482,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         onPressed: () {
           BlocProvider.of<WorkOrderEditorBloc>(context)
               .add(WorkOrderEditorAddEvent(workOrder: widget.workOrder));
-          _navigateToWorkOrderEditor();
+          _showWorkOrderEditorDialog();
         },
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -496,14 +521,13 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     context.loaderOverlay.hide();
   }
 
-  Future _navigateToWorkOrderEditor() async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: ((context) => WorkOrderEditorPageUi(
-                  workOrder: widget.workOrder,
-                )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
-        .add(WorkOrderListFetchEvent()));
+  Future _showWorkOrderEditorDialog() async {
+    showDialog(
+        context: context,
+        builder: (context) =>
+            WorkOrderEditorDialogUi(workOrder: widget.workOrder)).then(
+        (value) => BlocProvider.of<WorkOrderListBloc>(context)
+            .add(WorkOrderListFetchEvent()));
   }
 
   void _handlePhoneTapped() {

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_editor_ui.dart';
-import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class WorkOrderEditorPageUi extends StatefulWidget {
   final WorkOrder? workOrder;
@@ -43,28 +40,13 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    PreferredSizeWidget appBar;
-    if (Responsive.platform(context) == Platform.mobile) {
-      var currentState = BlocProvider.of<WorkOrderEditorBloc>(context).state;
-      String title = "";
-      if (currentState is WorkOrderEditorEditingState) {
-        WorkOrder? workOrder = currentState.workOrder;
-        if (workOrder == null) {
-          title = "Nova ordem de serviço";
-        } else {
-          title =
-              "Editando ordem #${workOrder.dayId.toString().padLeft(2, '0')} de ${workOrder.orderOpeningDatetime.split(" ")[0]}";
-        }
-      }
+    String title = (widget.workOrder == null)
+        ? "Nova ordem de serviço"
+        : "Ordem #${widget.workOrder!.dayId.toString().padLeft(2, '0')} de ${widget.workOrder!.orderOpeningDatetime.split(" ")[0]}";
 
-      appBar = AppBar(
-          title: SingleChildScrollView(
-              scrollDirection: Axis.horizontal, child: Text(title)));
-    } else {
-      appBar = AppBar(title: const Text('Editor de ordem de serviço'));
-    }
-
-    return appBar;
+    return AppBar(
+        title: SingleChildScrollView(
+            scrollDirection: Axis.horizontal, child: Text(title)));
   }
 
   Widget _buildFloatingActionButton() {

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +11,6 @@ import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
 import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
-import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
   const WorkOrderEditorUi({super.key});
@@ -162,47 +160,13 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         title =
             "Editando ordem #${workOrder!.dayId.toString().padLeft(2, '0')} de ${workOrder!.orderOpeningDatetime.split(" ")[0]}";
       }
-      bodyChild = LoaderOverlay(child: _buildForm());
+      body = LoaderOverlay(child: _buildForm());
     } else {
       // Clear possible old values
       workOrder = null;
       _inputInitialValues();
       title = "Editor de ordem de serviço";
-      bodyChild = _buildEmpty();
-    }
-
-    if (Responsive.platform(context) == Platform.mobile) {
-      body = bodyChild;
-    } else {
-      body = Stack(
-        fit: StackFit.expand,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
-            child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: AdaptiveTheme.of(context)
-                            .theme
-                            .textTheme
-                            .titleMedium!
-                            .color!),
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(10.0))),
-                alignment: Alignment.topCenter,
-                child: bodyChild),
-          ),
-          Positioned(
-            left: 30,
-            top: 5,
-            child: Text(title,
-                style: TextStyle(
-                    backgroundColor: AdaptiveTheme.of(context)
-                        .theme
-                        .scaffoldBackgroundColor)),
-          )
-        ],
-      );
+      body = _buildEmpty();
     }
 
     return body;
@@ -225,7 +189,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                 controller: scrollController,
                 child: Column(children: [
                   Padding(
-                      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
                         key: _clientFieldKey,
                         focusNode: _clientFocusNode,
@@ -369,7 +333,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
-                  const SizedBox(height: 25.0)
+                  const SizedBox(height: 10.0)
                 ]),
               ))),
     );
