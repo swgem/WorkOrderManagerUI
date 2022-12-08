@@ -44,7 +44,7 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
                 child: Text(_getTitleText(),
                     style: Theme.of(context).textTheme.titleLarge),
               ),
-              const WorkOrderEditorUi(),
+              const Flexible(child: WorkOrderEditorUi()),
               Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: Container(
