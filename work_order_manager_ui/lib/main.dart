@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
     return AdaptiveTheme(
       light: ThemeData(
           colorSchemeSeed: const Color.fromARGB(255, 11, 163, 87),
-          scaffoldBackgroundColor: const Color.fromARGB(255, 226, 226, 226),
           inputDecorationTheme: const InputDecorationTheme(
               filled: true, fillColor: Color.fromARGB(255, 255, 255, 255)),
           expansionTileTheme: const ExpansionTileThemeData(
