@@ -293,19 +293,19 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
     if (widget.workOrder.status == "waiting") {
       buttonList = [
         _buildToOngoingButton(),
-        const SizedBox(width: 25, height: 12),
+        const SizedBox(width: 25, height: 5),
         _buildToCancelledButton(),
-        const SizedBox(width: 25, height: 12),
+        const SizedBox(width: 25, height: 5),
         _buildEditButton(),
       ];
     } else if (widget.workOrder.status == "ongoing") {
       buttonList = [
         _buildToCancelledButton(),
-        const SizedBox(width: 25, height: 12),
+        const SizedBox(width: 25, height: 5),
         _buildToWaitingButton(),
-        const SizedBox(width: 25, height: 12),
+        const SizedBox(width: 25, height: 5),
         _buildToFinishedButton(),
-        const SizedBox(width: 25, height: 12),
+        const SizedBox(width: 25, height: 5),
         _buildEditButton(),
       ];
     } else if (widget.workOrder.status == "finished") {
@@ -321,8 +321,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Widget _buildToWaitingButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
+    return OutlinedButton(
+        style: OutlinedButton.styleFrom(
             minimumSize: const Size(190, 0),
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
@@ -353,8 +353,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Widget _buildToOngoingButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
+    return OutlinedButton(
+        style: OutlinedButton.styleFrom(
             minimumSize: const Size(190, 0),
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
@@ -385,8 +385,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Widget _buildToFinishedButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
+    return OutlinedButton(
+        style: OutlinedButton.styleFrom(
             minimumSize: const Size(190, 0),
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
@@ -419,8 +419,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Widget _buildToCancelledButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
+    return OutlinedButton(
+        style: OutlinedButton.styleFrom(
             minimumSize: const Size(190, 0),
             backgroundColor: Theme.of(context).hoverColor),
         onPressed: () => showDialog<String>(
@@ -451,8 +451,8 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
   }
 
   Widget _buildEditButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
+    return OutlinedButton(
+        style: OutlinedButton.styleFrom(
             minimumSize: const Size(190, 0),
             backgroundColor: Theme.of(context).highlightColor),
         onPressed: () {
