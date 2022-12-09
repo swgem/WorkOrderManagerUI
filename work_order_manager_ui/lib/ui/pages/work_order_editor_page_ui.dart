@@ -17,6 +17,8 @@ class WorkOrderEditorPageUi extends StatefulWidget {
 }
 
 class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
+  bool _savingState = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<WorkOrderEditorBloc, WorkOrderEditorState>(
@@ -51,11 +53,21 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
   }
 
   Widget _buildFloatingActionButton() {
-    return FloatingActionButton(
-        onPressed: () => BlocProvider.of<WorkOrderEditorBloc>(context)
-            .add(WorkOrderEditorSaveEvent()),
-        tooltip: "Salvar ordem de serviço",
-        child: const Icon(Icons.save));
+    return BlocListener<WorkOrderEditorBloc, WorkOrderEditorState>(
+      bloc: BlocProvider.of(context),
+      listener: (context, state) => setState(() {
+        _savingState = (state is WorkOrderEditorSavingState);
+      }),
+      child: FloatingActionButton(
+          onPressed: _savingState ? null : _onSaveButtonPressed,
+          tooltip: "Salvar ordem de serviço",
+          child: const Icon(Icons.save)),
+    );
+  }
+
+  void _onSaveButtonPressed() {
+    BlocProvider.of<WorkOrderEditorBloc>(context)
+        .add(WorkOrderEditorSaveEvent());
   }
 
   Widget _buildForm() {
