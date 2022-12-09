@@ -82,6 +82,7 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
     // Simplified because case is forced low to ignore case and
     // diacritics are ignored
     var simplifiedText = removeDiacritics(text).toLowerCase();
+    var searchTextList = simplifiedText.split(" ");
 
     if (workOrders != null) {
       searchResult = workOrders!.where((element) {
@@ -90,14 +91,21 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
         var simplifiedVehiclePlate = element.vehiclePlate?.toLowerCase() ?? "";
         var simplifiedPhone =
             element.phone?.replaceAll(RegExp(r"\D"), "") ?? "";
-        if (simplifiedClient.contains(simplifiedText) ||
-            simplifiedVehicle.contains(simplifiedText) ||
-            simplifiedVehiclePlate.contains(simplifiedText) ||
-            simplifiedPhone.contains(simplifiedText)) {
-          return true;
-        } else {
-          return false;
+
+        bool valid = true;
+
+        for (var searhText in searchTextList) {
+          if (simplifiedClient.contains(searhText) ||
+              simplifiedVehicle.contains(searhText) ||
+              simplifiedVehiclePlate.contains(searhText) ||
+              simplifiedPhone.contains(searhText)) {
+            valid &= true;
+          } else {
+            valid = false;
+          }
         }
+
+        return valid;
       }).toList();
     }
 
