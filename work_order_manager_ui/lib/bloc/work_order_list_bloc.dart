@@ -62,9 +62,8 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
       } else {
         workOrders = await WorkOrderApiServices.fetchWorkOrdersFilteredByStatus(
             workOrderStatusFilter!);
+        workOrders!.sort(_sortWorkOrdersByStatus);
       }
-
-      workOrders!.sort(_sortWorkOrdersByStatus);
 
       if (workOrders!.isEmpty) {
         return WorkOrderListEmptyState();
