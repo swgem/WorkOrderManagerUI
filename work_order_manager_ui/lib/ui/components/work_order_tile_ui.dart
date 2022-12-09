@@ -489,7 +489,11 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
         onPressed: () {
           BlocProvider.of<WorkOrderEditorBloc>(context)
               .add(WorkOrderEditorAddEvent(workOrder: widget.workOrder));
-          _showWorkOrderEditorDialog();
+          if (Responsive.platform(context) == Platform.desktop) {
+            _showWorkOrderEditorDialog();
+          } else {
+            _navigateToWorkOrderEditor();
+          }
         },
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -526,6 +530,16 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
           .add(WorkOrderEditorErrorEvent(error: e.toString()));
     }
     context.loaderOverlay.hide();
+  }
+
+  Future _navigateToWorkOrderEditor() async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => WorkOrderEditorPageUi(
+                  workOrder: widget.workOrder,
+                )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
+        .add(WorkOrderListFetchEvent()));
   }
 
   Future _showWorkOrderEditorDialog() async {

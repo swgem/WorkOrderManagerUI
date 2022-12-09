@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
@@ -6,6 +7,7 @@ import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
   List<String>? workOrderStatusFilter;
+  List<WorkOrder>? workOrders;
 
   WorkOrderListBloc() : super(WorkOrderListLoadingState()) {
     on<WorkOrderListFetchEvent>((event, emit) async {
@@ -17,8 +19,22 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
     on<WorkOrderListLoadStatusFilterEvent>(
         (event, emit) => workOrderStatusFilter = event.status);
 
-    on<WorkOrderListClearEvent>(
-        (event, emit) => emit(WorkOrderListBlankState()));
+    on<WorkOrderSearchEvent>((event, emit) {
+      emit(_searchWorkOrders(event.text));
+    });
+
+    on<WorkOrderCancelSearchEvent>((event, emit) {
+      if (workOrders != null && workOrders!.isNotEmpty) {
+        emit(WorkOrderListSucessState(workOrders: workOrders!));
+      } else {
+        emit(WorkOrderListEmptyState());
+      }
+    });
+
+    on<WorkOrderListClearEvent>((event, emit) {
+      workOrders = null;
+      emit(WorkOrderListBlankState());
+    });
   }
 
   int _sortWorkOrdersByStatus(WorkOrder a, WorkOrder b) {
@@ -41,8 +57,6 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
 
   Future<WorkOrderListState> _fetchFilteredWorkOrders() async {
     try {
-      List<WorkOrder> workOrders;
-
       if (workOrderStatusFilter == null) {
         workOrders = await WorkOrderApiServices.fetchAllWorkOrders();
       } else {
@@ -50,15 +64,48 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
             workOrderStatusFilter!);
       }
 
-      workOrders.sort(_sortWorkOrdersByStatus);
+      workOrders!.sort(_sortWorkOrdersByStatus);
 
-      if (workOrders.isEmpty) {
+      if (workOrders!.isEmpty) {
         return WorkOrderListEmptyState();
       } else {
-        return WorkOrderListSucessState(workOrders: workOrders);
+        return WorkOrderListSucessState(workOrders: workOrders!);
       }
     } catch (e) {
+      workOrders = null;
       return WorkOrderListErrorState(message: e.toString());
+    }
+  }
+
+  WorkOrderListState _searchWorkOrders(String text) {
+    List<WorkOrder>? searchResult;
+
+    // Simplified because case is forced low to ignore case and
+    // diacritics are ignored
+    var simplifiedText = removeDiacritics(text).toLowerCase();
+
+    if (workOrders != null) {
+      searchResult = workOrders!.where((element) {
+        var simplifiedClient = removeDiacritics(element.client).toLowerCase();
+        var simplifiedVehicle = removeDiacritics(element.vehicle).toLowerCase();
+        var simplifiedVehiclePlate = element.vehiclePlate?.toLowerCase() ?? "";
+        var simplifiedPhone =
+            element.phone?.replaceAll(RegExp(r"\D"), "") ?? "";
+        if (simplifiedClient.contains(simplifiedText) ||
+            simplifiedVehicle.contains(simplifiedText) ||
+            simplifiedVehiclePlate.contains(simplifiedText) ||
+            simplifiedPhone.contains(simplifiedText)) {
+          return true;
+        } else {
+          return false;
+        }
+      }).toList();
+    }
+
+    if (searchResult != null && searchResult.isNotEmpty) {
+      return WorkOrderListSucessState(workOrders: searchResult);
+    } else {
+      return WorkOrderListEmptyState();
     }
   }
 }

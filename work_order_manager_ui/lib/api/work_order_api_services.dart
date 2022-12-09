@@ -13,7 +13,7 @@ abstract class WorkOrderApiServices extends ApiServices {
   static const String _workOrderUrlBase = ApiServices.hostname;
   static const String _workOrderUrlPath = '/api/WorkOrder/';
 
-  static Future fetchAllWorkOrders() async {
+  static Future<List<WorkOrder>> fetchAllWorkOrders() async {
     try {
       headers["Authorization"] =
           "Bearer ${await AuthenticationManager.getToken()}";

@@ -7,4 +7,11 @@ class WorkOrderListLoadStatusFilterEvent extends WorkOrderListEvent {
   WorkOrderListLoadStatusFilterEvent({this.status});
 }
 
+class WorkOrderSearchEvent extends WorkOrderListEvent {
+  final String text;
+  WorkOrderSearchEvent({required this.text});
+}
+
+class WorkOrderCancelSearchEvent extends WorkOrderListEvent {}
+
 class WorkOrderListClearEvent extends WorkOrderListEvent {}

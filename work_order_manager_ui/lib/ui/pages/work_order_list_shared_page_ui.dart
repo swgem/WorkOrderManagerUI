@@ -41,14 +41,14 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
   @override
   Widget build(BuildContext context) {
     return ResponsivePageUi(
-      mobileAppBar: _buildMobileAppBar(),
-      tabletAppBar: _buildTabletDesktopAppBar(),
-      desktopAppBar: _buildTabletDesktopAppBar(),
-      mobileBody: _buildMobileBody(),
-      tabletBody: _buildTabletDesktopBody(),
-      desktopBody: _buildTabletDesktopBody(),
-      mobileFloatingActionButton: _buildMobileFloatingActionButton(),
-      tabletFloatingActionButton: null,
+      mobileAppBar: _buildMobileTabletAppBar(),
+      tabletAppBar: _buildMobileTabletAppBar(),
+      desktopAppBar: _buildDesktopAppBar(),
+      mobileBody: _buildMobileTabletBody(),
+      tabletBody: _buildMobileTabletBody(),
+      desktopBody: _buildDesktopBody(),
+      mobileFloatingActionButton: _buildMobileTabletFloatingActionButton(),
+      tabletFloatingActionButton: _buildMobileTabletFloatingActionButton(),
       desktopFloatingActionButton: null,
       mobileDrawer: const DrawerUi(),
       tabletDrawer: const DrawerUi(),
@@ -56,7 +56,7 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
     );
   }
 
-  PreferredSizeWidget _buildMobileAppBar() {
+  PreferredSizeWidget _buildMobileTabletAppBar() {
     return AppBar(
         title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Text(widget.pageTitle),
@@ -65,11 +65,11 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
     ]));
   }
 
-  PreferredSizeWidget _buildTabletDesktopAppBar() {
+  PreferredSizeWidget _buildDesktopAppBar() {
     return AppBar(title: Text(widget.pageTitle));
   }
 
-  Widget? _buildMobileFloatingActionButton() {
+  Widget? _buildMobileTabletFloatingActionButton() {
     return (widget.hasAddWorkOrderButton)
         ? FloatingActionButton(
             onPressed: () {
@@ -82,24 +82,38 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
         : null;
   }
 
-  Widget _buildMobileBody() {
-    return BlocListener(
-        bloc: BlocProvider.of<WorkOrderListBloc>(context),
-        listener: (context, state) {
-          if (state is WorkOrderListErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(state.message.toString()),
-                duration: const Duration(seconds: 5)));
-          }
-        },
-        child: const WorkOrderListUi());
-  }
-
-  Widget _buildTabletDesktopBody() {
+  Widget _buildMobileTabletBody() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
+            flex: 1,
+            child: BlocListener(
+                bloc: BlocProvider.of<WorkOrderListBloc>(context),
+                listener: (context, state) {
+                  if (state is WorkOrderListErrorState) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(state.message.toString()),
+                        duration: const Duration(seconds: 5)));
+                  }
+                },
+                child: Column(
+                  children: [
+                    SizedBox(
+                        height: 70,
+                        child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: _buildSearchField())),
+                    const Expanded(child: WorkOrderListUi()),
+                  ],
+                )))
+      ],
+    );
+  }
+
+  Widget _buildDesktopBody() {
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Expanded(
           flex: 1,
           child: BlocListener(
               bloc: BlocProvider.of<WorkOrderListBloc>(context),
@@ -110,31 +124,72 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                       duration: const Duration(seconds: 5)));
                 }
               },
-              child: Column(
-                children: [
-                  SizedBox(
-                      height: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Visibility(
-                            visible: widget.hasAddWorkOrderButton,
-                            child: Row(
-                              children: [
-                                _buildAddWorkOrderButton(),
-                                const SizedBox(width: 25),
-                              ],
-                            ),
+              child: Column(children: [
+                SizedBox(
+                    height: 70,
+                    child: Row(children: [
+                      Flexible(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 450),
+                                  child: _buildSearchField(),
+                                ),
+                              ),
+                              const SizedBox()
+                            ],
                           ),
-                          _buildRefreshButton()
-                        ],
-                      )),
-                  const Expanded(child: WorkOrderListUi()),
-                ],
-              )),
-        ),
-      ],
-    );
+                        ),
+                      ),
+                      Flexible(
+                        flex: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Visibility(
+                              visible: widget.hasAddWorkOrderButton,
+                              child: Row(
+                                children: [
+                                  _buildAddWorkOrderButton(),
+                                  const SizedBox(width: 25),
+                                ],
+                              ),
+                            ),
+                            _buildRefreshButton()
+                          ],
+                        ),
+                      ),
+                      const Flexible(
+                        flex: 1,
+                        child: SizedBox(),
+                      )
+                    ])),
+                const Expanded(child: WorkOrderListUi()),
+              ])))
+    ]);
+  }
+
+  Widget _buildSearchField() {
+    return TextField(
+        onChanged: (value) {
+          if (value.isNotEmpty) {
+            BlocProvider.of<WorkOrderListBloc>(context)
+                .add(WorkOrderSearchEvent(text: value));
+          } else {
+            BlocProvider.of<WorkOrderListBloc>(context)
+                .add(WorkOrderCancelSearchEvent());
+          }
+        },
+        decoration: const InputDecoration(
+            filled: true,
+            fillColor: Colors.transparent,
+            border: UnderlineInputBorder(),
+            labelText: 'Pesquisar'));
   }
 
   Widget _buildRefreshButton() {
