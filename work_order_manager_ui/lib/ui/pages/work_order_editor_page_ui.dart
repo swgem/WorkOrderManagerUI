@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
@@ -35,7 +36,7 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
         child: Scaffold(
           appBar: _buildAppBar(),
           floatingActionButton: _buildFloatingActionButton(),
-          body: _buildForm(),
+          body: LoaderOverlay(child: _buildForm()),
         ));
   }
 

@@ -160,7 +160,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         title =
             "Editando ordem #${workOrder!.dayId.toString().padLeft(2, '0')} de ${workOrder!.orderOpeningDatetime.split(" ")[0]}";
       }
-      body = LoaderOverlay(child: _buildForm());
+      body = _buildForm();
     } else {
       // Clear possible old values
       workOrder = null;
