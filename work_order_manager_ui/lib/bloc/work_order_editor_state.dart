@@ -1,13 +1,6 @@
-import 'package:work_order_manager_ui/models/work_order.dart';
-
 abstract class WorkOrderEditorState {}
 
-class WorkOrderEditorEmptyState extends WorkOrderEditorState {}
-
-class WorkOrderEditorEditingState extends WorkOrderEditorState {
-  WorkOrder? workOrder;
-  WorkOrderEditorEditingState({this.workOrder});
-}
+class WorkOrderEditorEditingState extends WorkOrderEditorState {}
 
 class WorkOrderEditorSavingState extends WorkOrderEditorState {}
 

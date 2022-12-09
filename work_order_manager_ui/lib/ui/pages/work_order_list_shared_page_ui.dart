@@ -74,7 +74,7 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
         ? FloatingActionButton(
             onPressed: () {
               BlocProvider.of<WorkOrderEditorBloc>(context)
-                  .add(WorkOrderEditorAddEvent());
+                  .add(WorkOrderEditorEditEvent());
               _navigateToWorkOrderEditorPage();
             },
             tooltip: "Adicionar ordem de serviço",
@@ -205,28 +205,23 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
       tooltip: "Adicionar ordem de serviço",
       onPressed: () {
         BlocProvider.of<WorkOrderEditorBloc>(context)
-            .add(WorkOrderEditorAddEvent());
+            .add(WorkOrderEditorEditEvent());
         _showWorkOrderEditorDialog();
       },
     );
   }
 
-  Future _navigateToWorkOrderEditorPage() async {
-    await Navigator.push(
+  void _navigateToWorkOrderEditorPage() {
+    Navigator.push(
         context,
         MaterialPageRoute(
-            builder: ((context) => const WorkOrderEditorPageUi()))).then(
-        (value) => BlocProvider.of<WorkOrderListBloc>(context)
-            .add(WorkOrderListFetchEvent()));
+            builder: ((context) => const WorkOrderEditorPageUi())));
   }
 
-  Future _showWorkOrderEditorDialog() async {
-    await showDialog(
+  void _showWorkOrderEditorDialog() {
+    showDialog(
         context: context,
-        builder: (context) =>
-            const WorkOrderEditorDialogUi(workOrder: null)).then((value) =>
-        BlocProvider.of<WorkOrderListBloc>(context)
-            .add(WorkOrderListFetchEvent()));
+        builder: (context) => const WorkOrderEditorDialogUi(workOrder: null));
   }
 
   void _refreshWorkOrders() {

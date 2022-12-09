@@ -456,7 +456,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
             backgroundColor: Theme.of(context).highlightColor),
         onPressed: () {
           BlocProvider.of<WorkOrderEditorBloc>(context)
-              .add(WorkOrderEditorAddEvent(workOrder: widget.workOrder));
+              .add(WorkOrderEditorEditEvent());
           _navigateToWorkOrderEditor();
         },
         child: Padding(
@@ -502,8 +502,7 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
         MaterialPageRoute(
             builder: ((context) => WorkOrderEditorPageUi(
                   workOrder: widget.workOrder,
-                )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
-        .add(WorkOrderListFetchEvent()));
+                ))));
   }
 
   void _handlePhoneTapped() {

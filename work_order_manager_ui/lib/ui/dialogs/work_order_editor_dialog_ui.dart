@@ -4,6 +4,8 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_editor_ui.dart';
 
@@ -25,9 +27,9 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
       bloc: BlocProvider.of(context),
       listener: (context, state) {
         if (state is WorkOrderEditorSavedState) {
+          BlocProvider.of<WorkOrderListBloc>(context)
+              .add(WorkOrderListFetchEvent());
           Navigator.pop(context);
-          BlocProvider.of<WorkOrderEditorBloc>(context)
-              .add(WorkOrderEditorClearEvent());
         } else if (state is WorkOrderEditorErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(state.error),
@@ -45,7 +47,7 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
                   child: Text(_getTitleText(),
                       style: Theme.of(context).textTheme.titleLarge),
                 ),
-                const Flexible(child: WorkOrderEditorUi()),
+                Flexible(child: WorkOrderEditorUi(workOrder: widget.workOrder)),
                 Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: Container(

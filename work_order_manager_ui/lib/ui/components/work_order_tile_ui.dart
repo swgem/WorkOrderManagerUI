@@ -488,7 +488,7 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
             backgroundColor: Theme.of(context).highlightColor),
         onPressed: () {
           BlocProvider.of<WorkOrderEditorBloc>(context)
-              .add(WorkOrderEditorAddEvent(workOrder: widget.workOrder));
+              .add(WorkOrderEditorEditEvent());
           if (Responsive.platform(context) == Platform.desktop) {
             _showWorkOrderEditorDialog();
           } else {
@@ -532,23 +532,20 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
     context.loaderOverlay.hide();
   }
 
-  Future _navigateToWorkOrderEditor() async {
-    await Navigator.push(
+  void _navigateToWorkOrderEditor() {
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: ((context) => WorkOrderEditorPageUi(
                   workOrder: widget.workOrder,
-                )))).then((value) => BlocProvider.of<WorkOrderListBloc>(context)
-        .add(WorkOrderListFetchEvent()));
+                ))));
   }
 
-  Future _showWorkOrderEditorDialog() async {
+  void _showWorkOrderEditorDialog() {
     showDialog(
         context: context,
         builder: (context) =>
-            WorkOrderEditorDialogUi(workOrder: widget.workOrder)).then(
-        (value) => BlocProvider.of<WorkOrderListBloc>(context)
-            .add(WorkOrderListFetchEvent()));
+            WorkOrderEditorDialogUi(workOrder: widget.workOrder));
   }
 
   void _handlePhoneTapped() {

@@ -13,7 +13,8 @@ import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
-  const WorkOrderEditorUi({super.key});
+  final WorkOrder? workOrder;
+  const WorkOrderEditorUi({super.key, required this.workOrder});
 
   @override
   State<WorkOrderEditorUi> createState() => _WorkOrderEditorUiState();
@@ -21,8 +22,6 @@ class WorkOrderEditorUi extends StatefulWidget {
 
 class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late GlobalKey<FormState> formKey;
-
-  WorkOrder? workOrder;
 
   late Key _clientFieldKey;
 
@@ -128,54 +127,24 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   }
 
   void _inputInitialValues() {
-    clientController.text = workOrder?.client ?? "";
-    phoneController.text = workOrder?.phone ?? "";
-    vehicleController.text = workOrder?.vehicle ?? "";
-    vehiclePlateController.text = workOrder?.vehiclePlate ?? "";
-    requestedServiceController.text = workOrder?.clientRequest ?? "";
-    deadlineController.text = workOrder?.deadline ?? "";
-    pendenciesController.text = workOrder?.pendencies ?? "";
-    remarksController.text = workOrder?.remarks ?? "";
+    clientController.text = widget.workOrder?.client ?? "";
+    phoneController.text = widget.workOrder?.phone ?? "";
+    vehicleController.text = widget.workOrder?.vehicle ?? "";
+    vehiclePlateController.text = widget.workOrder?.vehiclePlate ?? "";
+    requestedServiceController.text = widget.workOrder?.clientRequest ?? "";
+    deadlineController.text = widget.workOrder?.deadline ?? "";
+    pendenciesController.text = widget.workOrder?.pendencies ?? "";
+    remarksController.text = widget.workOrder?.remarks ?? "";
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
   }
 
   Widget _buildBloc(BuildContext context, WorkOrderEditorState state) {
-    String title;
-    Widget body;
-    Widget bodyChild;
-
+    _inputInitialValues();
     _clientFocusNode.requestFocus();
 
-    if (state is WorkOrderEditorEditingState && state.workOrder != workOrder) {
-      workOrder = state.workOrder;
-      _inputInitialValues();
-    }
-
-    if (state is WorkOrderEditorEditingState) {
-      if (workOrder == null) {
-        title = "Nova ordem de serviço";
-      } else {
-        title =
-            "Editando ordem #${workOrder!.dayId.toString().padLeft(2, '0')} de ${workOrder!.orderOpeningDatetime.split(" ")[0]}";
-      }
-      body = _buildForm();
-    } else {
-      // Clear possible old values
-      workOrder = null;
-      _inputInitialValues();
-      title = "Editor de ordem de serviço";
-      body = _buildEmpty();
-    }
-
-    return body;
-  }
-
-  Widget _buildEmpty() {
-    return const Align(
-        alignment: Alignment.center,
-        child: Text("Nenhuma ordem de serviço para edição"));
+    return _buildForm();
   }
 
   Widget _buildForm() {
@@ -410,12 +379,13 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
 
     var newWorkOrder = WorkOrder(
-      id: workOrder?.id ?? 0,
-      dayId: workOrder?.dayId ?? 0,
-      status: workOrder?.status ?? "waiting",
-      priority: workOrder?.priority ?? 0,
-      orderOpeningDatetime: workOrder?.orderOpeningDatetime ?? currentDateTime,
-      orderClosingDatetime: workOrder?.orderClosingDatetime,
+      id: widget.workOrder?.id ?? 0,
+      dayId: widget.workOrder?.dayId ?? 0,
+      status: widget.workOrder?.status ?? "waiting",
+      priority: widget.workOrder?.priority ?? 0,
+      orderOpeningDatetime:
+          widget.workOrder?.orderOpeningDatetime ?? currentDateTime,
+      orderClosingDatetime: widget.workOrder?.orderClosingDatetime,
       client: clientController.text,
       phone: phoneController.text,
       vehicle: vehicleController.text,
@@ -427,7 +397,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     );
 
     try {
-      if (workOrder == null) {
+      if (widget.workOrder == null) {
         await WorkOrderApiServices.postWorkOrder(newWorkOrder);
       } else {
         await WorkOrderApiServices.putWorkOrder(newWorkOrder);

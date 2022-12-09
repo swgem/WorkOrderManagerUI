@@ -1,13 +1,6 @@
-import 'package:work_order_manager_ui/models/work_order.dart';
-
 abstract class WorkOrderEditorEvent {}
 
-class WorkOrderEditorClearEvent extends WorkOrderEditorEvent {}
-
-class WorkOrderEditorAddEvent extends WorkOrderEditorEvent {
-  WorkOrder? workOrder;
-  WorkOrderEditorAddEvent({this.workOrder});
-}
+class WorkOrderEditorEditEvent extends WorkOrderEditorEvent {}
 
 class WorkOrderEditorSaveEvent extends WorkOrderEditorEvent {}
 

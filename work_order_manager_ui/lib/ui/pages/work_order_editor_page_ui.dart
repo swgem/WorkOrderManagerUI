@@ -4,6 +4,8 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
+import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_editor_ui.dart';
 
@@ -25,9 +27,9 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
         bloc: BlocProvider.of(context),
         listener: (context, state) {
           if (state is WorkOrderEditorSavedState) {
+            BlocProvider.of<WorkOrderListBloc>(context)
+                .add(WorkOrderListFetchEvent());
             Navigator.pop(context);
-            BlocProvider.of<WorkOrderEditorBloc>(context)
-                .add(WorkOrderEditorClearEvent());
           } else if (state is WorkOrderEditorErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(state.error),
@@ -71,6 +73,6 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
   }
 
   Widget _buildForm() {
-    return const WorkOrderEditorUi();
+    return WorkOrderEditorUi(workOrder: widget.workOrder);
   }
 }
