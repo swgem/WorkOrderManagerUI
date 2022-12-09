@@ -12,6 +12,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/ui/dialogs/work_order_editor_dialog_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
+import 'package:work_order_manager_ui/ui/responsive.dart';
 
 class WorkOrderTileUi extends StatefulWidget {
   final WorkOrder workOrder;
@@ -92,8 +93,11 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
                 color: _expTileTitleStyle.color),
             const SizedBox(width: 5),
             Expanded(
-                child:
-                    Text(widget.workOrder.vehicle, style: _expTileTitleStyle)),
+                child: Text(
+              widget.workOrder.vehicle,
+              style: _expTileTitleStyle,
+              overflow: TextOverflow.ellipsis,
+            )),
           ],
         ),
       ),
@@ -105,14 +109,17 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
             Icon(Icons.person, color: _expTileTitleStyle.color),
             const SizedBox(width: 5),
             Expanded(
-                child:
-                    Text(widget.workOrder.client, style: _expTileTitleStyle)),
+                child: Text(
+              widget.workOrder.client,
+              style: _expTileTitleStyle,
+              overflow: TextOverflow.ellipsis,
+            )),
           ],
         ),
       ),
       const SizedBox(width: 15),
       Flexible(
-        flex: 4,
+        flex: (Responsive.platform(context) == Platform.desktop) ? 4 : 2,
         child: Row(
           children: [
             Icon(Icons.description, color: _expTileTitleStyle.color),
