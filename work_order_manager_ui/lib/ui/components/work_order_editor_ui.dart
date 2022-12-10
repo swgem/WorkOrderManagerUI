@@ -28,19 +28,18 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late FocusNode _phoneFocusNode;
   late FocusNode _clientFocusNode;
 
-  late ScrollController scrollController;
-  late TextEditingController clientController;
-  late TextEditingController phoneController;
-  late TextEditingController vehicleController;
-  late TextEditingController vehiclePlateController;
-  late TextEditingController requestedServiceController;
-  late TextEditingController deadlineController;
-  late TextEditingController remarksController;
-  late TextEditingController pendenciesController;
-  late TextStyle textFieldTextStyle;
-  late TextStyle textFieldLabelStyle;
-  late TextStyle textFieldLabelAsteriskStyle;
-  late InputDecorationTheme textFormFieldDecoration;
+  late ScrollController _scrollController;
+  late TextEditingController _clientController;
+  late TextEditingController _phoneController;
+  late TextEditingController _vehicleController;
+  late TextEditingController _vehiclePlateController;
+  late TextEditingController _requestedServiceController;
+  late TextEditingController _deadlineController;
+  late TextEditingController _remarksController;
+  late TextEditingController _pendenciesController;
+  late TextStyle _textFieldTextStyle;
+  late TextStyle _textFieldLabelStyle;
+  late TextStyle _textFieldLabelAsteriskStyle;
   late MaskTextInputFormatter _maskPhone;
   late MaskTextInputFormatter _maskVehiclePlate;
 
@@ -55,28 +54,28 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         if (_phoneFocusNode.hasFocus) {
           _maskPhone.updateMask(mask: '###########');
         } else {
-          if (phoneController.text.length == 8) {
+          if (_phoneController.text.length == 8) {
             _maskPhone.updateMask(mask: '####-####');
-          } else if (phoneController.text.length == 9) {
+          } else if (_phoneController.text.length == 9) {
             _maskPhone.updateMask(mask: '#####-####');
-          } else if (phoneController.text.length == 10) {
+          } else if (_phoneController.text.length == 10) {
             _maskPhone.updateMask(mask: '(##) ####-####');
-          } else if (phoneController.text.length == 11) {
+          } else if (_phoneController.text.length == 11) {
             _maskPhone.updateMask(mask: '(##) #####-####');
           }
         }
-        phoneController.text = _maskPhone.maskText(phoneController.text);
+        _phoneController.text = _maskPhone.maskText(_phoneController.text);
       });
     _clientFocusNode = FocusNode();
-    scrollController = ScrollController();
-    clientController = TextEditingController();
-    phoneController = TextEditingController();
-    vehicleController = TextEditingController();
-    vehiclePlateController = TextEditingController();
-    requestedServiceController = TextEditingController();
-    deadlineController = TextEditingController();
-    remarksController = TextEditingController();
-    pendenciesController = TextEditingController();
+    _scrollController = ScrollController();
+    _clientController = TextEditingController();
+    _phoneController = TextEditingController();
+    _vehicleController = TextEditingController();
+    _vehiclePlateController = TextEditingController();
+    _requestedServiceController = TextEditingController();
+    _deadlineController = TextEditingController();
+    _remarksController = TextEditingController();
+    _pendenciesController = TextEditingController();
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
@@ -88,14 +87,13 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    textFieldTextStyle = Theme.of(context).textTheme.titleMedium!;
-    textFieldLabelStyle = Theme.of(context)
+    _textFieldTextStyle = Theme.of(context).textTheme.titleMedium!;
+    _textFieldLabelStyle = Theme.of(context)
         .textTheme
         .titleMedium!
         .copyWith(color: Theme.of(context).hintColor);
-    textFieldLabelAsteriskStyle =
+    _textFieldLabelAsteriskStyle =
         Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red);
-    textFormFieldDecoration = Theme.of(context).inputDecorationTheme;
   }
 
   @override
@@ -126,14 +124,14 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   }
 
   void _inputInitialValues() {
-    clientController.text = widget.workOrder?.client ?? "";
-    phoneController.text = widget.workOrder?.phone ?? "";
-    vehicleController.text = widget.workOrder?.vehicle ?? "";
-    vehiclePlateController.text = widget.workOrder?.vehiclePlate ?? "";
-    requestedServiceController.text = widget.workOrder?.clientRequest ?? "";
-    deadlineController.text = widget.workOrder?.deadline ?? "";
-    pendenciesController.text = widget.workOrder?.pendencies ?? "";
-    remarksController.text = widget.workOrder?.remarks ?? "";
+    _clientController.text = widget.workOrder?.client ?? "";
+    _phoneController.text = widget.workOrder?.phone ?? "";
+    _vehicleController.text = widget.workOrder?.vehicle ?? "";
+    _vehiclePlateController.text = widget.workOrder?.vehiclePlate ?? "";
+    _requestedServiceController.text = widget.workOrder?.clientRequest ?? "";
+    _deadlineController.text = widget.workOrder?.deadline ?? "";
+    _pendenciesController.text = widget.workOrder?.pendencies ?? "";
+    _remarksController.text = widget.workOrder?.remarks ?? "";
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
@@ -151,27 +149,27 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       child: Form(
           key: formKey,
           child: Scrollbar(
-              controller: scrollController,
+              controller: _scrollController,
               thumbVisibility: true,
               child: SingleChildScrollView(
-                controller: scrollController,
+                controller: _scrollController,
                 child: Column(children: [
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
                         key: _clientFieldKey,
                         focusNode: _clientFocusNode,
-                        controller: clientController,
+                        controller: _clientController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
-                        style: textFieldTextStyle,
+                        style: _textFieldTextStyle,
                         validator: (value) =>
                             (value!.isEmpty) ? "Insira o cliente" : null,
                         decoration: InputDecoration(
                             label:
                                 Row(mainAxisSize: MainAxisSize.min, children: [
-                              Text("Cliente", style: textFieldLabelStyle),
-                              Text("*", style: textFieldLabelAsteriskStyle)
+                              Text("Cliente", style: _textFieldLabelStyle),
+                              Text("*", style: _textFieldLabelAsteriskStyle)
                             ]),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
@@ -180,29 +178,30 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
                         focusNode: _phoneFocusNode,
-                        controller: phoneController,
+                        controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         inputFormatters: [_maskPhone],
                         textInputAction: TextInputAction.next,
-                        style: textFieldTextStyle,
+                        style: _textFieldTextStyle,
                         decoration: InputDecoration(
-                            label: Text("Telefone", style: textFieldLabelStyle),
+                            label:
+                                Text("Telefone", style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
-                      controller: vehicleController,
+                      controller: _vehicleController,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.next,
-                      style: textFieldTextStyle,
+                      style: _textFieldTextStyle,
                       validator: (value) =>
                           (value!.isEmpty) ? "Insira o veículo" : null,
                       decoration: InputDecoration(
                           label: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Text("Veículo", style: textFieldLabelStyle),
-                            Text("*", style: textFieldLabelAsteriskStyle)
+                            Text("Veículo", style: _textFieldLabelStyle),
+                            Text("*", style: _textFieldLabelAsteriskStyle)
                           ]),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
@@ -211,37 +210,37 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
-                        controller: vehiclePlateController,
+                        controller: _vehiclePlateController,
                         textCapitalization: TextCapitalization.characters,
                         inputFormatters: [
                           _maskVehiclePlate,
                           UpperCaseTextFormatter()
                         ],
                         textInputAction: TextInputAction.next,
-                        style: textFieldTextStyle,
+                        style: _textFieldTextStyle,
                         decoration: InputDecoration(
                             label: Text("Placa do veículo",
-                                style: textFieldLabelStyle),
+                                style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: TextFormField(
-                      controller: requestedServiceController,
+                      controller: _requestedServiceController,
                       keyboardType: TextInputType.multiline,
                       minLines: 3,
                       maxLines: null,
                       textCapitalization: TextCapitalization.sentences,
-                      style: textFieldTextStyle,
+                      style: _textFieldTextStyle,
                       validator: (value) => (value!.isEmpty)
                           ? "Insira a descrição serviço"
                           : null,
                       decoration: InputDecoration(
                           label: Row(mainAxisSize: MainAxisSize.min, children: [
                             Text("Descrição do serviço",
-                                style: textFieldLabelStyle),
-                            Text("*", style: textFieldLabelAsteriskStyle)
+                                style: _textFieldLabelStyle),
+                            Text("*", style: _textFieldLabelAsteriskStyle)
                           ]),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0))),
@@ -259,14 +258,14 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                             return KeyEventResult.ignored;
                           }
                         }),
-                        controller: deadlineController,
+                        controller: _deadlineController,
                         readOnly: true,
                         enabled: true,
                         maxLines: null,
                         textInputAction: TextInputAction.next,
-                        style: textFieldTextStyle,
+                        style: _textFieldTextStyle,
                         decoration: InputDecoration(
-                            label: Text("Prazo", style: textFieldLabelStyle),
+                            label: Text("Prazo", style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                         onTap: _openDeadlineDateTimePicker,
@@ -274,30 +273,30 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
-                        controller: remarksController,
+                        controller: _remarksController,
                         keyboardType: TextInputType.multiline,
                         minLines: 3,
                         maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
-                        style: textFieldTextStyle,
+                        style: _textFieldTextStyle,
                         decoration: InputDecoration(
-                            label:
-                                Text("Observações", style: textFieldLabelStyle),
+                            label: Text("Observações",
+                                style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                       child: TextFormField(
-                        controller: pendenciesController,
+                        controller: _pendenciesController,
                         keyboardType: TextInputType.multiline,
                         minLines: 3,
                         maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
-                        style: textFieldTextStyle,
+                        style: _textFieldTextStyle,
                         decoration: InputDecoration(
                             label:
-                                Text("Pendências", style: textFieldLabelStyle),
+                                Text("Pendências", style: _textFieldLabelStyle),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
@@ -316,7 +315,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           TextButton(
               onPressed: () {
                 Navigator.pop(context, "Sim");
-                if (phoneController.text.isEmpty) {
+                if (_phoneController.text.isEmpty) {
                   showDialog<String>(
                       context: context,
                       builder: (context) => _buildEmptyPhoneAlertDialog());
@@ -370,7 +369,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
     String timeString =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-    deadlineController.text = '$dateString $timeString';
+    _deadlineController.text = '$dateString $timeString';
   }
 
   Future _saveWorkOrder() async {
@@ -385,14 +384,14 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       orderOpeningDatetime:
           widget.workOrder?.orderOpeningDatetime ?? currentDateTime,
       orderClosingDatetime: widget.workOrder?.orderClosingDatetime,
-      client: clientController.text,
-      phone: phoneController.text,
-      vehicle: vehicleController.text,
-      vehiclePlate: vehiclePlateController.text,
-      clientRequest: requestedServiceController.text,
-      pendencies: pendenciesController.text,
-      deadline: deadlineController.text,
-      remarks: remarksController.text,
+      client: _clientController.text,
+      phone: _phoneController.text,
+      vehicle: _vehicleController.text,
+      vehiclePlate: _vehiclePlateController.text,
+      clientRequest: _requestedServiceController.text,
+      pendencies: _pendenciesController.text,
+      deadline: _deadlineController.text,
+      remarks: _remarksController.text,
     );
 
     try {

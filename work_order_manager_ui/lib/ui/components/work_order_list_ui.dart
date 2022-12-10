@@ -19,13 +19,13 @@ class WorkOrderListUi extends StatefulWidget {
 }
 
 class _WorkOrderListUiState extends State<WorkOrderListUi> {
-  late ScrollController scrollController;
+  late ScrollController _scrollController;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    scrollController = ScrollController();
+    _scrollController = ScrollController();
   }
 
   @override
@@ -67,11 +67,11 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
   Widget _buildWorkOrderList(List<WorkOrder> workOrders) {
     return FocusTraversalGroup(
       child: Scrollbar(
-        controller: scrollController,
+        controller: _scrollController,
         thumbVisibility: true,
         child: ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
-            controller: scrollController,
+            controller: _scrollController,
             padding: const EdgeInsets.only(bottom: 150.0),
             itemCount: workOrders.length,
             itemBuilder: (content, index) {
