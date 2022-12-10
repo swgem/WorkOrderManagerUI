@@ -16,11 +16,10 @@ class DrawerUi extends StatelessWidget {
             child: DrawerHeader(
               child: Column(children: [
                 Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.fill,
-                    child: Icon(Icons.account_circle,
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
+                  child: ClipOval(
+                      child: Container(
+                          color: Theme.of(context).highlightColor,
+                          child: Image.asset('sevencar_mascot.png'))),
                 ),
                 Align(
                     alignment: Alignment.centerRight,

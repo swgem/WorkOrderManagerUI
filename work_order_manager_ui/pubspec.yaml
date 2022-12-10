@@ -103,6 +103,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  assets:
+    - sevencar_mascot.png
 
 flutter_icons:
   image_path: "assets/app_icon.png"
