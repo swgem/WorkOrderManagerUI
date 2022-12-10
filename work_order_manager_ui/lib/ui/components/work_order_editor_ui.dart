@@ -53,20 +53,19 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     _phoneFocusNode = FocusNode()
       ..addListener(() {
         if (_phoneFocusNode.hasFocus) {
-          phoneController.value = _maskPhone.updateMask(mask: '###########');
+          _maskPhone.updateMask(mask: '###########');
         } else {
           if (phoneController.text.length == 8) {
-            phoneController.value = _maskPhone.updateMask(mask: '####-####');
+            _maskPhone.updateMask(mask: '####-####');
           } else if (phoneController.text.length == 9) {
-            phoneController.value = _maskPhone.updateMask(mask: '#####-####');
+            _maskPhone.updateMask(mask: '#####-####');
           } else if (phoneController.text.length == 10) {
-            phoneController.value =
-                _maskPhone.updateMask(mask: '(##) ####-####');
+            _maskPhone.updateMask(mask: '(##) ####-####');
           } else if (phoneController.text.length == 11) {
-            phoneController.value =
-                _maskPhone.updateMask(mask: '(##) #####-####');
+            _maskPhone.updateMask(mask: '(##) #####-####');
           }
         }
+        phoneController.text = _maskPhone.maskText(phoneController.text);
       });
     _clientFocusNode = FocusNode();
     scrollController = ScrollController();
