@@ -84,21 +84,32 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
     var simplifiedText = removeDiacritics(text).toLowerCase();
     var searchTextList = simplifiedText.split(" ");
 
-    if (workOrders != null) {
+    if (workOrders != null && text.isNotEmpty) {
       searchResult = workOrders!.where((element) {
         var simplifiedClient = removeDiacritics(element.client).toLowerCase();
         var simplifiedVehicle = removeDiacritics(element.vehicle).toLowerCase();
         var simplifiedVehiclePlate = element.vehiclePlate?.toLowerCase() ?? "";
         var simplifiedPhone =
             element.phone?.replaceAll(RegExp(r"\D"), "") ?? "";
+        var simplifiedDayId = element.dayId.toString().padLeft(2, '0');
 
         bool valid = true;
 
-        for (var searhText in searchTextList) {
-          if (simplifiedClient.contains(searhText) ||
-              simplifiedVehicle.contains(searhText) ||
-              simplifiedVehiclePlate.contains(searhText) ||
-              simplifiedPhone.contains(searhText)) {
+        for (var searchText in searchTextList) {
+          bool onlyNumber = (int.tryParse(searchText) != null);
+
+          if (onlyNumber) {
+            if ((searchText.length == 2) && (simplifiedDayId == searchText)) {
+              valid &= true;
+            } else if ((searchText.length > 2) &&
+                simplifiedPhone.contains(searchText)) {
+              valid &= true;
+            } else {
+              valid = false;
+            }
+          } else if (simplifiedClient.contains(searchText) ||
+              simplifiedVehicle.contains(searchText) ||
+              simplifiedVehiclePlate.contains(searchText)) {
             valid &= true;
           } else {
             valid = false;
