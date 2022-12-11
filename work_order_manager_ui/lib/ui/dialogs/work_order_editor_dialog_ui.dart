@@ -30,11 +30,6 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
           BlocProvider.of<WorkOrderListBloc>(context)
               .add(WorkOrderListFetchEvent());
           Navigator.pop(context);
-        } else if (state is WorkOrderEditorErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(state.error),
-            duration: const Duration(seconds: 5),
-          ));
         }
       },
       child: Container(
@@ -57,7 +52,7 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
                       child: ElevatedButton(
                           onPressed: () =>
                               BlocProvider.of<WorkOrderEditorBloc>(context)
-                                  .add(WorkOrderEditorSaveEvent()),
+                                  .add(WorkOrderEditorRequestSaveEvent()),
                           child: const Padding(
                               padding: EdgeInsets.all(10),
                               child: Text("Salvar",

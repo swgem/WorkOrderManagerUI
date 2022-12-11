@@ -81,6 +81,9 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
     _maskVehiclePlate = MaskTextInputFormatter(
         mask: 'xxxxxxxx', filter: {'x': RegExp(r'[0-9a-zA-Z-]')});
+
+    _inputInitialValues();
+    _clientFocusNode.requestFocus();
   }
 
   @override
@@ -98,28 +101,23 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<WorkOrderEditorBloc, WorkOrderEditorState>(
+    return BlocConsumer<WorkOrderEditorBloc, WorkOrderEditorState>(
       bloc: BlocProvider.of(context),
       listener: (context, state) {
-        if (state is WorkOrderEditorSavingState) {
+        if (state is WorkOrderEditorRequestedSaveState) {
+          BlocProvider.of<WorkOrderEditorBloc>(context)
+              .add(WorkOrderEditorSavingEvent());
           if (formKey.currentState!.validate()) {
             showDialog<String>(
                 context: context,
                 builder: (context) => _buildButtonAlertDialog());
           }
-        } else if (state is WorkOrderEditorSavedState ||
-            state is WorkOrderEditorErrorState) {
-          context.loaderOverlay.hide();
         }
       },
-      child: BlocBuilder<WorkOrderEditorBloc, WorkOrderEditorState>(
-        bloc: BlocProvider.of(context),
-        buildWhen: (previous, current) =>
-            (current is! WorkOrderEditorSavingState) &&
-            (current is! WorkOrderEditorSavedState) &&
-            (current is! WorkOrderEditorErrorState),
-        builder: _buildBloc,
-      ),
+      buildWhen: (previous, current) =>
+          ((current is! WorkOrderEditorSavingState) &&
+              (current is! WorkOrderEditorSavedState)),
+      builder: (context, state) => _buildForm(),
     );
   }
 
@@ -135,13 +133,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
-  }
-
-  Widget _buildBloc(BuildContext context, WorkOrderEditorState state) {
-    _inputInitialValues();
-    _clientFocusNode.requestFocus();
-
-    return _buildForm();
   }
 
   Widget _buildForm() {
@@ -320,13 +311,16 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                       context: context,
                       builder: (context) => _buildEmptyPhoneAlertDialog());
                 } else {
-                  context.loaderOverlay.show();
                   _saveWorkOrder();
                 }
               },
               child: const Text("Sim")),
           TextButton(
-              onPressed: () => Navigator.pop(context, "Não"),
+              onPressed: () {
+                BlocProvider.of<WorkOrderEditorBloc>(context)
+                    .add(WorkOrderEditorEditEvent());
+                Navigator.pop(context, "Não");
+              },
               child: const Text("Não"))
         ]);
   }
@@ -339,12 +333,15 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           TextButton(
               onPressed: () {
                 Navigator.pop(context, "Sim");
-                context.loaderOverlay.show();
                 _saveWorkOrder();
               },
               child: const Text("Sim")),
           TextButton(
-              onPressed: () => Navigator.pop(context, "Não"),
+              onPressed: () {
+                BlocProvider.of<WorkOrderEditorBloc>(context)
+                    .add(WorkOrderEditorEditEvent());
+                Navigator.pop(context, "Não");
+              },
               child: const Text("Não"))
         ]);
   }
@@ -373,6 +370,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   }
 
   Future _saveWorkOrder() async {
+    context.loaderOverlay.show();
     var currentDateTime =
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
 
@@ -404,8 +402,13 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
           .add(WorkOrderEditorSavedEvent());
     } catch (e) {
       BlocProvider.of<WorkOrderEditorBloc>(context)
-          .add(WorkOrderEditorErrorEvent(error: e.toString()));
+          .add(WorkOrderEditorEditEvent());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+        duration: const Duration(seconds: 5),
+      ));
     }
+    context.loaderOverlay.hide();
   }
 }
 

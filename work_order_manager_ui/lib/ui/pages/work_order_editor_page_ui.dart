@@ -30,11 +30,6 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
             BlocProvider.of<WorkOrderListBloc>(context)
                 .add(WorkOrderListFetchEvent());
             Navigator.pop(context);
-          } else if (state is WorkOrderEditorErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(state.error),
-              duration: const Duration(seconds: 5),
-            ));
           }
         },
         child: Scaffold(
@@ -69,7 +64,7 @@ class _WorkOrderEditorPageUiState extends State<WorkOrderEditorPageUi> {
 
   void _onSaveButtonPressed() {
     BlocProvider.of<WorkOrderEditorBloc>(context)
-        .add(WorkOrderEditorSaveEvent());
+        .add(WorkOrderEditorRequestSaveEvent());
   }
 
   Widget _buildForm() {

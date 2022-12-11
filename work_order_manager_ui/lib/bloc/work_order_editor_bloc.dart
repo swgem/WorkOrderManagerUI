@@ -7,11 +7,11 @@ class WorkOrderEditorBloc
   WorkOrderEditorBloc() : super(WorkOrderEditorEditingState()) {
     on<WorkOrderEditorEditEvent>(
         (event, emit) => emit(WorkOrderEditorEditingState()));
-    on<WorkOrderEditorSaveEvent>(
+    on<WorkOrderEditorRequestSaveEvent>(
+        ((event, emit) => emit(WorkOrderEditorRequestedSaveState())));
+    on<WorkOrderEditorSavingEvent>(
         ((event, emit) => emit(WorkOrderEditorSavingState())));
     on<WorkOrderEditorSavedEvent>(
         ((event, emit) => emit(WorkOrderEditorSavedState())));
-    on<WorkOrderEditorErrorEvent>(
-        ((event, emit) => emit(WorkOrderEditorErrorState(error: event.error))));
   }
 }

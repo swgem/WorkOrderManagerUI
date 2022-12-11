@@ -35,31 +35,28 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
         onRefresh: () => Future(() =>
             BlocProvider.of<WorkOrderListBloc>(context)
                 .add(WorkOrderListFetchEvent())),
-        child: BlocListener<WorkOrderListBloc, WorkOrderListState>(
-          bloc: BlocProvider.of(context),
-          listener: (context, state) {
-            if (state is WorkOrderListLoadingState) {
-              context.loaderOverlay.show();
-            } else {
-              context.loaderOverlay.hide();
-            }
-          },
-          child: BlocBuilder<WorkOrderListBloc, WorkOrderListState>(
-              bloc: BlocProvider.of(context),
-              buildWhen: (previous, current) =>
-                  (current is! WorkOrderListLoadingState),
-              builder: (context, state) {
-                if (state is WorkOrderListSucessState) {
-                  return _buildWorkOrderList(state.workOrders);
-                } else if (state is WorkOrderListEmptyState) {
-                  return _buildEmpty();
-                } else if (state is WorkOrderListErrorState) {
-                  return _buildError();
-                } else /* if (state is WorkOrderListBlankState) */ {
-                  return _buildBlank();
-                }
-              }),
-        ),
+        child: BlocConsumer<WorkOrderListBloc, WorkOrderListState>(
+            bloc: BlocProvider.of(context),
+            listener: (context, state) {
+              if (state is WorkOrderListLoadingState) {
+                context.loaderOverlay.show();
+              } else {
+                context.loaderOverlay.hide();
+              }
+            },
+            buildWhen: (previous, current) =>
+                (current is! WorkOrderListLoadingState),
+            builder: (context, state) {
+              if (state is WorkOrderListSucessState) {
+                return _buildWorkOrderList(state.workOrders);
+              } else if (state is WorkOrderListEmptyState) {
+                return _buildEmpty();
+              } else if (state is WorkOrderListErrorState) {
+                return _buildError();
+              } else /* if (state is WorkOrderListBlankState) */ {
+                return _buildBlank();
+              }
+            }),
       ),
     );
   }

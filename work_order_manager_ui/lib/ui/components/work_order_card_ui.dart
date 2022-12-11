@@ -490,8 +490,10 @@ class _WorkOrderCardUiState extends State<WorkOrderCardUi> {
       BlocProvider.of<WorkOrderListBloc>(context)
           .add(WorkOrderListFetchEvent());
     } catch (e) {
-      BlocProvider.of<WorkOrderEditorBloc>(context)
-          .add(WorkOrderEditorErrorEvent(error: e.toString()));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+        duration: const Duration(seconds: 5),
+      ));
     }
     context.loaderOverlay.hide();
   }
