@@ -69,7 +69,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
         child: ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             controller: _scrollController,
-            padding: const EdgeInsets.only(bottom: 150.0),
+            padding: const EdgeInsets.only(bottom: 10.0),
             itemCount: workOrders.length,
             itemBuilder: (content, index) {
               return Padding(
