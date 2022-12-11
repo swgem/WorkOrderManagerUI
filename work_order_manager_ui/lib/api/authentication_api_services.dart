@@ -8,7 +8,7 @@ import 'package:work_order_manager_ui/api/api_services.dart';
 import 'package:work_order_manager_ui/dto/user_login_request.dart';
 import 'package:work_order_manager_ui/dto/user_login_response.dart';
 import 'package:work_order_manager_ui/dto/user_register_response.dart';
-import 'package:work_order_manager_ui/tools/authentication_manager.dart';
+import 'package:work_order_manager_ui/shared/authentication_manager.dart';
 
 import '../dto/user_register_request.dart';
 

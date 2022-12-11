@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:work_order_manager_ui/tools/authentication_manager.dart';
+import 'package:work_order_manager_ui/shared/authentication_manager.dart';
 import 'package:work_order_manager_ui/ui/pages/routes.dart';
 
 class InitialPageUi extends StatefulWidget {

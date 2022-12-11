@@ -1,5 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:work_order_manager_ui/shared/app_settings.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/responsive_page_ui.dart';
 
@@ -15,6 +17,8 @@ class _SettingsPageUiState extends State<SettingsPageUi> {
   late TextStyle _keyTextStyle;
   late TextStyle _valueTextStyle;
 
+  late Future<bool> _getAsyncInitialValuesFuture;
+
   final Map<AdaptiveThemeMode, String> _themeOptions = {
     AdaptiveThemeMode.system: "Sistema",
     AdaptiveThemeMode.dark: "Modo escuro",
@@ -22,12 +26,28 @@ class _SettingsPageUiState extends State<SettingsPageUi> {
   };
   late String _currentTheme;
 
+  final Map<PhoneToolsOption, String> _phoneToolsOptions = {
+    PhoneToolsOption.none: "Nenhum botão",
+    PhoneToolsOption.onlyWhatsapp: "Somente botão de WhatsApp",
+    PhoneToolsOption.onlyCall: "Somente botão de ligação",
+    PhoneToolsOption.both: "Ambos botões"
+  };
+  late String _currentPhoneToolsOption;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getAsyncInitialValuesFuture = _getAsyncInitialValues();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     _keyTextStyle = Theme.of(context).textTheme.bodyLarge!;
     _valueTextStyle = Theme.of(context).textTheme.bodyMedium!;
+
     _currentTheme = _themeOptions[AdaptiveTheme.of(context).mode]!;
   }
 
@@ -54,6 +74,22 @@ class _SettingsPageUiState extends State<SettingsPageUi> {
   }
 
   Widget _buildBody() {
+    return FutureBuilder(
+      future: _getAsyncInitialValuesFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _buildPage();
+        } else {
+          return Container(
+            color: const Color.fromARGB(102, 158, 158, 158),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildPage() {
     return Align(
       alignment: Alignment.topCenter,
       child: Table(
@@ -88,8 +124,40 @@ class _SettingsPageUiState extends State<SettingsPageUi> {
               ),
             )
           ]),
+          TableRow(children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 0.0),
+              child: Text("Ferramentas para telefone:", style: _keyTextStyle),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5.0, 10.0, 10.0, 0.0),
+              child: DropdownButton(
+                value: _currentPhoneToolsOption,
+                isExpanded: true,
+                items: _phoneToolsOptions.values
+                    .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(value, style: _valueTextStyle)))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _currentPhoneToolsOption = value!;
+                  });
+                  AppSettings.setPhoneToolsOptions(_phoneToolsOptions.keys
+                      .firstWhere((k) => _phoneToolsOptions[k] == value));
+                },
+              ),
+            )
+          ]),
         ],
       ),
     );
+  }
+
+  Future<bool> _getAsyncInitialValues() async {
+    _currentPhoneToolsOption = _phoneToolsOptions[
+        await AppSettings.getPhoneToolsOptions()
+            .timeout(const Duration(seconds: 10))]!;
+    return true;
   }
 }

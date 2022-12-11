@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:work_order_manager_ui/api/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
-import 'package:work_order_manager_ui/tools/authentication_manager.dart';
+import 'package:work_order_manager_ui/shared/authentication_manager.dart';
 
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);

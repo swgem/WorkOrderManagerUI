@@ -10,6 +10,7 @@ import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/shared/app_settings.dart';
 import 'package:work_order_manager_ui/ui/dialogs/work_order_editor_dialog_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 import 'package:work_order_manager_ui/ui/responsive.dart';
@@ -24,10 +25,21 @@ class WorkOrderTileUi extends StatefulWidget {
 }
 
 class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
+  late Future<bool> _getAsyncInitialValuesFuture;
+
   late TextStyle _expTileTitleStyle;
   late TextStyle _expTileChildKeyStyle;
   late TextStyle _expTileChildValueStyle;
   late TextStyle _expTileButtonStyle;
+
+  late PhoneToolsOption _phoneToolsOption;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getAsyncInitialValuesFuture = _getAsyncInitialValues();
+  }
 
   @override
   void didChangeDependencies() {
@@ -47,6 +59,19 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _getAsyncInitialValuesFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _buildCard();
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget _buildCard() {
     return Material(
         color: _getColorByStatus(widget.workOrder.status),
         child: ExpansionTile(
@@ -217,13 +242,15 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
               padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
               child: SelectableText(
                   enableInteractiveSelection: true,
-                  onTap: (widget.workOrder.phone?.isNotEmpty ?? false)
+                  onTap: ((widget.workOrder.phone?.isNotEmpty ?? false) &&
+                          (_phoneToolsOption != PhoneToolsOption.none))
                       ? _handlePhoneTapped
                       : null,
                   (widget.workOrder.phone?.isNotEmpty ?? false)
                       ? widget.workOrder.phone!
                       : "-",
-                  style: (widget.workOrder.phone?.isNotEmpty ?? false)
+                  style: ((widget.workOrder.phone?.isNotEmpty ?? false) &&
+                          (_phoneToolsOption != PhoneToolsOption.none))
                       ? _expTileChildValueStyle.copyWith(
                           color: Colors.blue,
                           decoration: TextDecoration.underline)
@@ -552,44 +579,61 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
 
   void _handlePhoneTapped() {
     if (widget.workOrder.phone == null) return;
+
     String rawPhone = widget.workOrder.phone!.replaceAll(RegExp(r"\D"), "");
     if (rawPhone.length < 10) {
       rawPhone = "44$rawPhone";
     }
+
     showDialog(
       context: context,
       builder: ((context) => AlertDialog(
             title: Text('${widget.workOrder.phone}'),
             actions: [
-              TextButton(
+              Visibility(
+                visible:
+                    ((_phoneToolsOption == PhoneToolsOption.onlyWhatsapp) ||
+                        (_phoneToolsOption == PhoneToolsOption.both)),
+                child: TextButton(
+                    onPressed: () async {
+                      await launchUrl(
+                          Uri.parse(
+                              'https://api.whatsapp.com/send?phone=55$rawPhone'),
+                          mode: LaunchMode.externalApplication);
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.whatsapp),
+                        SizedBox(width: 5),
+                        Text('WhatsApp')
+                      ],
+                    )),
+              ),
+              Visibility(
+                visible: ((_phoneToolsOption == PhoneToolsOption.onlyCall) ||
+                    (_phoneToolsOption == PhoneToolsOption.both)),
+                child: TextButton(
                   onPressed: () async {
-                    await launchUrl(
-                        Uri.parse(
-                            'https://api.whatsapp.com/send?phone=55$rawPhone'),
-                        mode: LaunchMode.externalApplication);
+                    await launchUrl(Uri.parse("tel:${widget.workOrder.phone}"));
                     Navigator.pop(context);
                   },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.whatsapp),
-                      SizedBox(width: 5),
-                      Text('WhatsApp')
-                    ],
-                  )),
-              TextButton(
-                onPressed: () async {
-                  await launchUrl(Uri.parse("tel:${widget.workOrder.phone}"));
-                  Navigator.pop(context);
-                },
-                child: Row(mainAxisSize: MainAxisSize.min, children: const [
-                  Icon(Icons.phone),
-                  SizedBox(width: 5),
-                  Text('Ligação')
-                ]),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: const [
+                    Icon(Icons.phone),
+                    SizedBox(width: 5),
+                    Text('Ligação')
+                  ]),
+                ),
               )
             ],
           )),
     );
+  }
+
+  Future<bool> _getAsyncInitialValues() async {
+    _phoneToolsOption = await AppSettings.getPhoneToolsOptions()
+        .timeout(const Duration(seconds: 10));
+    return true;
   }
 }
