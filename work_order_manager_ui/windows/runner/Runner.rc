@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "work_order_manager_ui" "\0"
+            VALUE "FileDescription", "Sevencar Gerenciador" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "work_order_manager_ui" "\0"
+            VALUE "InternalName", "sevencar_gerenciador" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "work_order_manager_ui.exe" "\0"
-            VALUE "ProductName", "work_order_manager_ui" "\0"
+            VALUE "OriginalFilename", "Sevencar Gerenciador.exe" "\0"
+            VALUE "ProductName", "Sevencar Gerenciador" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
