@@ -106,7 +106,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       listener: (context, state) {
         if (state is WorkOrderEditorRequestedSaveState) {
           BlocProvider.of<WorkOrderEditorBloc>(context)
-              .add(WorkOrderEditorSavingEvent());
+              .add(WorkOrderEditorEditEvent());
           if (formKey.currentState!.validate()) {
             showDialog<String>(
                 context: context,
@@ -371,6 +371,8 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   Future _saveWorkOrder() async {
     context.loaderOverlay.show();
+    BlocProvider.of<WorkOrderEditorBloc>(context)
+        .add(WorkOrderEditorSavingEvent());
     var currentDateTime =
         DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
 
