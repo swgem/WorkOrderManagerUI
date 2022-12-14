@@ -8,6 +8,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_list_ui.dart';
 import 'package:work_order_manager_ui/ui/dialogs/work_order_editor_dialog_ui.dart';
+import 'package:work_order_manager_ui/ui/dialogs/work_order_list_info_dialog_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/responsive_page_ui.dart';
 
@@ -99,12 +100,27 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                 },
                 child: Column(
                   children: [
-                    SizedBox(
-                        height: 70,
-                        child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: _buildSearchField())),
-                    const Expanded(child: WorkOrderListUi()),
+                    Flexible(
+                      flex: 0,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                                height: 70,
+                                child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: _buildSearchField())),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15.0),
+                            child: IconButton(
+                                onPressed: _showInfoDialog,
+                                icon: const Icon(Icons.info_outlined)),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Expanded(child: WorkOrderListUi())
                   ],
                 )))
       ],
@@ -164,9 +180,17 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                           ],
                         ),
                       ),
-                      const Flexible(
+                      Flexible(
                         flex: 1,
-                        child: SizedBox(),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: IconButton(
+                                onPressed: _showInfoDialog,
+                                icon: const Icon(Icons.info_outlined)),
+                          ),
+                        ),
                       )
                     ])),
                 const Expanded(child: WorkOrderListUi()),
@@ -222,6 +246,12 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
     showDialog(
         context: context,
         builder: (context) => const WorkOrderEditorDialogUi(workOrder: null));
+  }
+
+  void _showInfoDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => const WorkOrderListInfoDialogUi());
   }
 
   void _refreshWorkOrders() {
