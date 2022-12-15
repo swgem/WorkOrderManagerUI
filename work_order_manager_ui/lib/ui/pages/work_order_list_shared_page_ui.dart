@@ -62,7 +62,10 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
         title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Text(widget.pageTitle),
       const Spacer(),
-      IconButton(onPressed: _refreshWorkOrders, icon: const Icon(Icons.refresh))
+      IconButton(
+          onPressed: _refreshWorkOrders,
+          tooltip: "Atualizar lista de ordens de serviço",
+          icon: const Icon(Icons.refresh))
     ]));
   }
 
@@ -115,6 +118,7 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                             padding: const EdgeInsets.only(right: 15.0),
                             child: IconButton(
                                 onPressed: _showInfoDialog,
+                                tooltip: "Informações da lista de ordens",
                                 icon: const Icon(Icons.info_outlined)),
                           )
                         ],
@@ -188,6 +192,8 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
                             padding: const EdgeInsets.only(right: 20.0),
                             child: IconButton(
                                 onPressed: _showInfoDialog,
+                                tooltip:
+                                    "Informações da lista de ordens de serviço",
                                 icon: const Icon(Icons.info_outlined)),
                           ),
                         ),
