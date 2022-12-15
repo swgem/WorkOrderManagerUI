@@ -206,15 +206,8 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
 
   Widget _buildSearchField() {
     return TextField(
-        onChanged: (value) {
-          if (value.isNotEmpty) {
-            BlocProvider.of<WorkOrderListBloc>(context)
-                .add(WorkOrderSearchEvent(text: value));
-          } else {
-            BlocProvider.of<WorkOrderListBloc>(context)
-                .add(WorkOrderCancelSearchEvent());
-          }
-        },
+        onChanged: _requestSearch,
+        onSubmitted: _requestSearch,
         decoration: const InputDecoration(
             filled: true,
             fillColor: Colors.transparent,
@@ -258,6 +251,16 @@ class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
     showDialog(
         context: context,
         builder: (context) => const WorkOrderListInfoDialogUi());
+  }
+
+  void _requestSearch(String value) {
+    if (value.isNotEmpty) {
+      BlocProvider.of<WorkOrderListBloc>(context)
+          .add(WorkOrderSearchEvent(text: value));
+    } else {
+      BlocProvider.of<WorkOrderListBloc>(context)
+          .add(WorkOrderCancelSearchEvent());
+    }
   }
 
   void _refreshWorkOrders() {
