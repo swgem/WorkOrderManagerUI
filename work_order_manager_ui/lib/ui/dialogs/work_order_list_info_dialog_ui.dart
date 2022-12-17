@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
 
 class WorkOrderListInfoDialogUi extends StatelessWidget {
   const WorkOrderListInfoDialogUi({super.key});
@@ -28,24 +29,25 @@ class WorkOrderListInfoDialogUi extends StatelessWidget {
       showFinishedWorkOrder = true;
       showCancelledWorkOrder = true;
     } else {
-      showWaitingWorkOrder = statusFilter.contains("waiting");
-      showOngoingWorkOrder = statusFilter.contains("ongoing");
-      showFinishedWorkOrder = statusFilter.contains("finished");
-      showCancelledWorkOrder = statusFilter.contains("cancelled");
+      showWaitingWorkOrder = statusFilter.contains(WorkOrderStatus.waiting);
+      showOngoingWorkOrder = statusFilter.contains(WorkOrderStatus.ongoing);
+      showFinishedWorkOrder = statusFilter.contains(WorkOrderStatus.finished);
+      showCancelledWorkOrder = statusFilter.contains(WorkOrderStatus.cancelled);
     }
 
     if (currState is WorkOrderListSucessState) {
       waitingWorkOrderNumber = currState.workOrders
-          .where((element) => (element.status == "waiting"))
+          .where((element) => (element.status == WorkOrderStatus.waiting.name))
           .length;
       ongoingWorkOrderNumber = currState.workOrders
-          .where((element) => (element.status == "ongoing"))
+          .where((element) => (element.status == WorkOrderStatus.ongoing.name))
           .length;
       finishedWorkOrderNumber = currState.workOrders
-          .where((element) => (element.status == "finished"))
+          .where((element) => (element.status == WorkOrderStatus.finished.name))
           .length;
       cancelledWorkOrderNumber = currState.workOrders
-          .where((element) => (element.status == "cancelled"))
+          .where(
+              (element) => (element.status == WorkOrderStatus.cancelled.name))
           .length;
     }
 
@@ -63,29 +65,81 @@ class WorkOrderListInfoDialogUi extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Visibility(
               visible: showWaitingWorkOrder,
-              child: Text("Em espera: $waitingWorkOrderNumber",
-                  style: Theme.of(context).textTheme.bodyMedium)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: WorkOrderStatus.waiting.color(context)),
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text("Em espera: $waitingWorkOrderNumber",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
           child: Visibility(
               visible: showOngoingWorkOrder,
-              child: Text("Em andamento: $ongoingWorkOrderNumber",
-                  style: Theme.of(context).textTheme.bodyMedium)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: WorkOrderStatus.ongoing.color(context)),
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text("Em andamento: $ongoingWorkOrderNumber",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
           child: Visibility(
               visible: showFinishedWorkOrder,
-              child: Text("Finalizadas: $finishedWorkOrderNumber",
-                  style: Theme.of(context).textTheme.bodyMedium)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: WorkOrderStatus.finished.color(context)),
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text("Finalizadas: $finishedWorkOrderNumber",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              )),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
           child: Visibility(
               visible: showCancelledWorkOrder,
-              child: Text("Canceladas: $cancelledWorkOrderNumber",
-                  style: Theme.of(context).textTheme.bodyMedium)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: WorkOrderStatus.cancelled.color(context)),
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text("Canceladas: $cancelledWorkOrderNumber",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              )),
         ),
       ],
     ));

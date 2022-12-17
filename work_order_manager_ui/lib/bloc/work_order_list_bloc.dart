@@ -4,9 +4,10 @@ import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
 
 class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
-  List<String>? workOrderStatusFilter;
+  List<WorkOrderStatus>? workOrderStatusFilter;
   List<WorkOrder>? workOrders;
 
   WorkOrderListBloc() : super(WorkOrderListLoadingState()) {
@@ -38,17 +39,20 @@ class WorkOrderListBloc extends Bloc<WorkOrderListEvent, WorkOrderListState> {
   }
 
   int _sortWorkOrdersByStatus(WorkOrder a, WorkOrder b) {
-    final Map<String, int> workOrderStatusOrder = {
-      "waiting": 1,
-      "ongoing": 2,
-      "finished": 3,
-      "cancelled": 4
+    final Map<WorkOrderStatus, int> workOrderStatusOrder = {
+      WorkOrderStatus.waiting: 1,
+      WorkOrderStatus.ongoing: 2,
+      WorkOrderStatus.finished: 3,
+      WorkOrderStatus.cancelled: 4
     };
 
-    if (workOrderStatusOrder[a.status]! > workOrderStatusOrder[b.status]!) {
+    var aStatus = WorkOrderStatusExtension.fromString(a.status);
+    var bStatus = WorkOrderStatusExtension.fromString(b.status);
+
+    if (workOrderStatusOrder[aStatus]! > workOrderStatusOrder[bStatus]!) {
       return 1;
-    } else if (workOrderStatusOrder[a.status]! <
-        workOrderStatusOrder[b.status]!) {
+    } else if (workOrderStatusOrder[aStatus]! <
+        workOrderStatusOrder[bStatus]!) {
       return -1;
     } else {
       return 0;

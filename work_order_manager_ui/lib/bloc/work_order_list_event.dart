@@ -1,9 +1,11 @@
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
+
 abstract class WorkOrderListEvent {}
 
 class WorkOrderListFetchEvent extends WorkOrderListEvent {}
 
 class WorkOrderListLoadStatusFilterEvent extends WorkOrderListEvent {
-  final List<String>? status;
+  final List<WorkOrderStatus>? status;
   WorkOrderListLoadStatusFilterEvent({this.status});
 }
 

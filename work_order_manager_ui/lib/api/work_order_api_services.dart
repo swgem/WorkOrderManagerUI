@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 import 'package:work_order_manager_ui/api/api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/shared/authentication_manager.dart';
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
 
 abstract class WorkOrderApiServices extends ApiServices {
   static Map<String, String> headers = Map.from(ApiServices.headers);
@@ -35,13 +36,13 @@ abstract class WorkOrderApiServices extends ApiServices {
   }
 
   static Future<List<WorkOrder>> fetchWorkOrdersFilteredByStatus(
-      List<String> status) async {
+      List<WorkOrderStatus> status) async {
     try {
       headers["Authorization"] =
           "Bearer ${await AuthenticationManager.getToken()}";
       Map<String, String> queryParams = {};
       for (int i = 0; i < status.length; i++) {
-        queryParams["status[$i]"] = status[i];
+        queryParams["status[$i]"] = status[i].name;
       }
       final url = Uri.https(_workOrderUrlBase, _workOrderUrlPath, queryParams);
       Response response = await http

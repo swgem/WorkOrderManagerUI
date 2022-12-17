@@ -5,6 +5,7 @@ import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
 import 'package:work_order_manager_ui/ui/components/drawer_ui.dart';
 import 'package:work_order_manager_ui/ui/components/work_order_list_ui.dart';
 import 'package:work_order_manager_ui/ui/dialogs/work_order_editor_dialog_ui.dart';
@@ -14,7 +15,7 @@ import 'package:work_order_manager_ui/ui/pages/responsive_page_ui.dart';
 
 abstract class WorkOrderListSharedPageUi extends StatefulWidget {
   final String pageTitle;
-  final List<String>? statusFilter;
+  final List<WorkOrderStatus>? statusFilter;
   final bool hasAddWorkOrderButton;
 
   const WorkOrderListSharedPageUi(

@@ -11,6 +11,7 @@ import 'package:work_order_manager_ui/bloc/work_order_editor_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_editor_state.dart';
 import 'package:work_order_manager_ui/api/work_order_api_services.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
 
 class WorkOrderEditorUi extends StatefulWidget {
   final WorkOrder? workOrder;
@@ -379,7 +380,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     var newWorkOrder = WorkOrder(
       id: widget.workOrder?.id ?? 0,
       dayId: widget.workOrder?.dayId ?? 0,
-      status: widget.workOrder?.status ?? "waiting",
+      status: widget.workOrder?.status ?? WorkOrderStatus.waiting.name,
       priority: widget.workOrder?.priority ?? 0,
       orderOpeningDatetime:
           widget.workOrder?.orderOpeningDatetime ?? currentDateTime,

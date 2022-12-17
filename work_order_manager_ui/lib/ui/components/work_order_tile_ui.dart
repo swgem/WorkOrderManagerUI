@@ -11,6 +11,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
 import 'package:work_order_manager_ui/shared/app_settings.dart';
+import 'package:work_order_manager_ui/shared/work_order_status.dart';
 import 'package:work_order_manager_ui/ui/dialogs/work_order_editor_dialog_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 import 'package:work_order_manager_ui/ui/responsive.dart';
@@ -73,33 +74,13 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
 
   Widget _buildCard() {
     return Material(
-        color: _getColorByStatus(widget.workOrder.status),
+        color: WorkOrderStatusExtension.fromString(widget.workOrder.status)!
+            .color(context),
         child: ExpansionTile(
           key: GlobalKey(),
           title: _buildExpTileTitle(context),
           children: [_buildExpTileChild()],
         ));
-  }
-
-  Color _getColorByStatus(String status) {
-    var currentThemeMode = AdaptiveTheme.of(context).brightness;
-
-    final Map<String, Color> statusColor = {
-      "waiting": (currentThemeMode == Brightness.light)
-          ? const Color.fromARGB(255, 255, 242, 121)
-          : const Color.fromARGB(255, 128, 118, 31),
-      "ongoing": (currentThemeMode == Brightness.light)
-          ? const Color.fromARGB(255, 123, 199, 125)
-          : const Color.fromARGB(255, 67, 112, 69),
-      "finished": (currentThemeMode == Brightness.light)
-          ? const Color.fromARGB(255, 185, 185, 185)
-          : const Color.fromARGB(255, 97, 97, 97),
-      "cancelled": (currentThemeMode == Brightness.light)
-          ? const Color.fromARGB(255, 255, 129, 120)
-          : const Color.fromARGB(255, 159, 70, 64)
-    };
-
-    return statusColor[status]!;
   }
 
   Widget _buildExpTileTitle(BuildContext context) {
@@ -348,7 +329,7 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
   List<Widget> _buildExpTileButtonChildren() {
     List<Widget> buttonList;
 
-    if (widget.workOrder.status == "waiting") {
+    if (widget.workOrder.status == WorkOrderStatus.waiting.name) {
       buttonList = [
         _buildToOngoingButton(),
         const SizedBox(width: 25, height: 5),
@@ -356,7 +337,7 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
         const SizedBox(width: 25, height: 5),
         _buildEditButton(),
       ];
-    } else if (widget.workOrder.status == "ongoing") {
+    } else if (widget.workOrder.status == WorkOrderStatus.ongoing.name) {
       buttonList = [
         _buildToCancelledButton(),
         const SizedBox(width: 25, height: 5),
@@ -366,11 +347,11 @@ class _WorkOrderTileUiState extends State<WorkOrderTileUi> {
         const SizedBox(width: 25, height: 5),
         _buildEditButton(),
       ];
-    } else if (widget.workOrder.status == "finished") {
+    } else if (widget.workOrder.status == WorkOrderStatus.finished.name) {
       buttonList = [
         _buildToCancelledButton(),
       ];
-    } else /*if (widget.workOrder.status == "cancelled")*/ {
+    } else /*if (widget.workOrder.status == WorkOrderStatus.cancelled.name)*/ {
       buttonList = [
         _buildToWaitingButton(),
       ];
