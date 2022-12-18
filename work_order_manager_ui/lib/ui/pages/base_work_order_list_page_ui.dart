@@ -13,23 +13,23 @@ import 'package:work_order_manager_ui/ui/dialogs/work_order_list_info_dialog_ui.
 import 'package:work_order_manager_ui/ui/pages/work_order_editor_page_ui.dart';
 import 'package:work_order_manager_ui/ui/pages/responsive_page_ui.dart';
 
-abstract class WorkOrderListSharedPageUi extends StatefulWidget {
+abstract class BaseWorkOrderListPageUi extends StatefulWidget {
   final String pageTitle;
   final List<WorkOrderStatus>? statusFilter;
   final bool hasAddWorkOrderButton;
 
-  const WorkOrderListSharedPageUi(
+  const BaseWorkOrderListPageUi(
       {super.key,
       required this.pageTitle,
       this.statusFilter,
       required this.hasAddWorkOrderButton});
 
   @override
-  State<WorkOrderListSharedPageUi> createState() =>
-      _WorkOrderListSharedPageUiState();
+  State<BaseWorkOrderListPageUi> createState() =>
+      _BaseWorkOrderListPageUiState();
 }
 
-class _WorkOrderListSharedPageUiState extends State<WorkOrderListSharedPageUi> {
+class _BaseWorkOrderListPageUiState extends State<BaseWorkOrderListPageUi> {
   @override
   void initState() {
     super.initState();
