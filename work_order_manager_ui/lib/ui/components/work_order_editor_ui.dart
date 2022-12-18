@@ -46,8 +46,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
   @override
   void initState() {
-    super.initState();
-
     formKey = GlobalKey<FormState>();
     _clientFieldKey = GlobalKey();
     _phoneFocusNode = FocusNode()
@@ -85,6 +83,8 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
 
     _inputInitialValues();
     _clientFocusNode.requestFocus();
+
+    super.initState();
   }
 
   @override
