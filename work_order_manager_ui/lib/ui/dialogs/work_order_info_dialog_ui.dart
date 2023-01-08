@@ -72,7 +72,7 @@ class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
   Widget _buildLoadingInitialValuesDialog() {
     return Dialog(
         child: Container(
-      constraints: const BoxConstraints(maxWidth: 600, maxHeight: 400),
+      constraints: const BoxConstraints(maxWidth: 600, maxHeight: 600),
       alignment: Alignment.center,
       child: const CircularProgressIndicator(),
     ));
@@ -81,16 +81,16 @@ class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
   Widget _buildInfoDialog(BuildContext context) {
     return Dialog(
         child: Container(
-            constraints: const BoxConstraints(maxWidth: 600, maxHeight: 840),
+            constraints: const BoxConstraints(maxWidth: 550, maxHeight: 600),
             child: LoaderOverlay(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 20, bottom: 20),
                     child: _buildTitle(),
                   ),
-                  Flexible(
+                  Expanded(
                     child: Scrollbar(
                       controller: _scrollController,
                       thumbVisibility: true,
@@ -348,7 +348,7 @@ class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
     }
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: buttonList,
     );

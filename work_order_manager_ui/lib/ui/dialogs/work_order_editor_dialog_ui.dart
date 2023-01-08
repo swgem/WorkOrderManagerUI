@@ -34,16 +34,16 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
         }
       },
       child: Container(
-          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 840),
+          constraints: const BoxConstraints(maxWidth: 650, maxHeight: 800),
           child: LoaderOverlay(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 20),
                   child: _buildTitle(),
                 ),
-                Flexible(child: WorkOrderEditorUi(workOrder: widget.workOrder)),
+                Expanded(child: WorkOrderEditorUi(workOrder: widget.workOrder)),
                 Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: Container(
@@ -116,6 +116,6 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
   String _getTitleText() {
     return (widget.workOrder == null)
         ? "Nova ordem de serviço"
-        : "Ordem #${widget.workOrder!.dayId.toString().padLeft(2, '0')} de ${widget.workOrder!.orderOpeningDatetime.split(" ")[0]}";
+        : "Editando ordem #${widget.workOrder!.dayId.toString().padLeft(2, '0')} de ${widget.workOrder!.orderOpeningDatetime.split(" ")[0]}";
   }
 }
