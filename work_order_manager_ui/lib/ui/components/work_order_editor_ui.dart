@@ -37,7 +37,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
   late TextEditingController _requestedServiceController;
   late TextEditingController _deadlineController;
   late TextEditingController _remarksController;
-  late TextEditingController _pendenciesController;
   late TextStyle _textFieldTextStyle;
   late TextStyle _textFieldLabelStyle;
   late TextStyle _textFieldLabelAsteriskStyle;
@@ -74,7 +73,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     _requestedServiceController = TextEditingController();
     _deadlineController = TextEditingController();
     _remarksController = TextEditingController();
-    _pendenciesController = TextEditingController();
 
     _maskPhone = MaskTextInputFormatter(
         mask: '###########', filter: {'#': RegExp(r'[0-9]')});
@@ -129,7 +127,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
     _vehiclePlateController.text = widget.workOrder?.vehiclePlate ?? "";
     _requestedServiceController.text = widget.workOrder?.clientRequest ?? "";
     _deadlineController.text = widget.workOrder?.deadline ?? "";
-    _pendenciesController.text = widget.workOrder?.pendencies ?? "";
     _remarksController.text = widget.workOrder?.remarks ?? "";
 
     _maskPhone = MaskTextInputFormatter(
@@ -277,21 +274,6 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0))),
                       )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                      child: TextFormField(
-                        controller: _pendenciesController,
-                        keyboardType: TextInputType.multiline,
-                        minLines: 3,
-                        maxLines: null,
-                        textCapitalization: TextCapitalization.sentences,
-                        style: _textFieldTextStyle,
-                        decoration: InputDecoration(
-                            label:
-                                Text("Pendências", style: _textFieldLabelStyle),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0))),
-                      )),
                   const SizedBox(height: 10.0)
                 ]),
               ))),
@@ -390,7 +372,7 @@ class _WorkOrderEditorUiState extends State<WorkOrderEditorUi> {
       vehicle: _vehicleController.text,
       vehiclePlate: _vehiclePlateController.text,
       clientRequest: _requestedServiceController.text,
-      pendencies: _pendenciesController.text,
+      pendencies: widget.workOrder?.pendencies,
       deadline: _deadlineController.text,
       remarks: _remarksController.text,
     );

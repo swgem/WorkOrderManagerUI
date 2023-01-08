@@ -36,6 +36,7 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
           constraints: const BoxConstraints(maxWidth: 600, maxHeight: 840),
           child: LoaderOverlay(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -87,6 +88,5 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
     return (widget.workOrder == null)
         ? "Nova ordem de serviço"
         : "Ordem #${widget.workOrder!.dayId.toString().padLeft(2, '0')} de ${widget.workOrder!.orderOpeningDatetime.split(" ")[0]}";
-    ;
   }
 }
