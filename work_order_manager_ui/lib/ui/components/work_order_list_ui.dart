@@ -7,9 +7,7 @@ import 'package:work_order_manager_ui/bloc/work_order_list_bloc.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_event.dart';
 import 'package:work_order_manager_ui/bloc/work_order_list_state.dart';
 import 'package:work_order_manager_ui/models/work_order.dart';
-import 'package:work_order_manager_ui/ui/components/work_order_card_ui.dart';
-import 'package:work_order_manager_ui/ui/components/work_order_tile_ui.dart';
-import 'package:work_order_manager_ui/ui/responsive.dart';
+import 'package:work_order_manager_ui/ui/components/work_order_list_item_ui.dart';
 
 class WorkOrderListUi extends StatefulWidget {
   const WorkOrderListUi({super.key});
@@ -74,9 +72,7 @@ class _WorkOrderListUiState extends State<WorkOrderListUi> {
             itemBuilder: (content, index) {
               return Padding(
                   padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
-                  child: (Responsive.platform(context) == Platform.mobile)
-                      ? WorkOrderCardUi(workOrder: workOrders[index])
-                      : WorkOrderTileUi(workOrder: workOrders[index]));
+                  child: WorkOrderListItemUi(workOrder: workOrders[index]));
             }),
       ),
     );
