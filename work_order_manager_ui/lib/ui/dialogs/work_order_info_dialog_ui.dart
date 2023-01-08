@@ -27,6 +27,8 @@ class WorkOrderInfoDialogUi extends StatefulWidget {
 class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
   late Future<bool> _getAsyncInitialValuesFuture;
 
+  late ScrollController _scrollController;
+
   late TextStyle _infoKeyTextStyle;
   late TextStyle _infoValueTextStyle;
   late TextStyle _buttonTextStyle;
@@ -38,6 +40,7 @@ class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
     super.initState();
 
     _getAsyncInitialValuesFuture = _getAsyncInitialValues();
+    _scrollController = ScrollController();
   }
 
   @override
@@ -87,175 +90,199 @@ class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
                     padding: const EdgeInsets.only(top: 20, bottom: 20),
                     child: _buildTitle(),
                   ),
-                  Table(columnWidths: const <int, TableColumnWidth>{
-                    0: IntrinsicColumnWidth(),
-                    1: FlexColumnWidth()
-                  }, children: [
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Cliente:",
-                          style: _infoKeyTextStyle,
-                        ),
+                  Flexible(
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        child:
+                            Table(columnWidths: const <int, TableColumnWidth>{
+                          0: IntrinsicColumnWidth(),
+                          1: FlexColumnWidth()
+                        }, children: [
+                          TableRow(children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  15.0, 0.0, 4.0, 0.0),
+                              child: Text(
+                                "Cliente:",
+                                style: _infoKeyTextStyle,
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    4.0, 0.0, 15.0, 0.0),
+                                child: SelectableText(
+                                    enableInteractiveSelection: true,
+                                    widget.workOrder.client,
+                                    style: _infoValueTextStyle)),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  15.0, 8.0, 4.0, 0.0),
+                              child: Text(
+                                "Telefone:",
+                                style: _infoKeyTextStyle,
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    4.0, 8.0, 15.0, 0.0),
+                                child: SelectableText(
+                                    enableInteractiveSelection: true,
+                                    onTap:
+                                        ((widget.workOrder.phone?.isNotEmpty ??
+                                                    false) &&
+                                                (_phoneToolsOption !=
+                                                    PhoneToolsOption.none))
+                                            ? _handlePhoneTapped
+                                            : null,
+                                    (widget.workOrder.phone?.isNotEmpty ?? false)
+                                        ? widget.workOrder.phone!
+                                        : "-",
+                                    style: ((widget.workOrder.phone
+                                                    ?.isNotEmpty ??
+                                                false) &&
+                                            (_phoneToolsOption !=
+                                                PhoneToolsOption.none))
+                                        ? _infoValueTextStyle.copyWith(
+                                            color: Colors.blue,
+                                            decoration: TextDecoration.underline)
+                                        : _infoValueTextStyle)),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  15.0, 8.0, 4.0, 0.0),
+                              child: Text(
+                                "Veículo:",
+                                style: _infoKeyTextStyle,
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    4.0, 8.0, 15.0, 0.0),
+                                child: SelectableText(
+                                    enableInteractiveSelection: true,
+                                    widget.workOrder.vehicle,
+                                    style: _infoValueTextStyle)),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  15.0, 8.0, 4.0, 0.0),
+                              child: Text(
+                                "Placa:",
+                                style: _infoKeyTextStyle,
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    4.0, 8.0, 15.0, 0.0),
+                                child: SelectableText(
+                                    enableInteractiveSelection: true,
+                                    (widget.workOrder.vehiclePlate
+                                                ?.isNotEmpty ??
+                                            false)
+                                        ? widget.workOrder.vehiclePlate!
+                                        : "-",
+                                    style: _infoValueTextStyle)),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  15.0, 8.0, 4.0, 0.0),
+                              child: Text(
+                                "Descrição:",
+                                style: _infoKeyTextStyle,
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    4.0, 8.0, 15.0, 0.0),
+                                child: SelectableText(
+                                    enableInteractiveSelection: true,
+                                    widget.workOrder.clientRequest,
+                                    style: _infoValueTextStyle)),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    15.0, 8.0, 4.0, 0.0),
+                                child: Text("Observações:",
+                                    style: _infoKeyTextStyle)),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  4.0, 8.0, 15.0, 0.0),
+                              child: SelectableText(
+                                enableInteractiveSelection: true,
+                                (widget.workOrder.remarks?.isNotEmpty ?? false)
+                                    ? widget.workOrder.remarks!
+                                    : "-",
+                                style: _infoValueTextStyle,
+                              ),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    15.0, 8.0, 4.0, 0.0),
+                                child: Text("Criado em:",
+                                    style: _infoKeyTextStyle)),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  4.0, 8.0, 15.0, 0.0),
+                              child: SelectableText(
+                                enableInteractiveSelection: true,
+                                widget.workOrder.orderOpeningDatetime,
+                                style: _infoValueTextStyle,
+                              ),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    15.0, 8.0, 4.0, 0.0),
+                                child: Text("Finalizado em:",
+                                    style: _infoKeyTextStyle)),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  4.0, 8.0, 15.0, 0.0),
+                              child: SelectableText(
+                                enableInteractiveSelection: true,
+                                (widget.workOrder.orderClosingDatetime
+                                            ?.isNotEmpty ??
+                                        false)
+                                    ? widget.workOrder.orderClosingDatetime!
+                                    : "-",
+                                style: _infoValueTextStyle,
+                              ),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    15.0, 8.0, 4.0, 0.0),
+                                child:
+                                    Text("Prazo:", style: _infoKeyTextStyle)),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  4.0, 8.0, 15.0, 15.0),
+                              child: SelectableText(
+                                enableInteractiveSelection: true,
+                                (widget.workOrder.deadline?.isNotEmpty ?? false)
+                                    ? widget.workOrder.deadline!
+                                    : "-",
+                                style: _infoValueTextStyle,
+                              ),
+                            ),
+                          ]),
+                        ]),
                       ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: SelectableText(
-                              enableInteractiveSelection: true,
-                              widget.workOrder.client,
-                              style: _infoValueTextStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Telefone:",
-                          style: _infoKeyTextStyle,
-                        ),
-                      ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: SelectableText(
-                              enableInteractiveSelection: true,
-                              onTap: ((widget.workOrder.phone?.isNotEmpty ??
-                                          false) &&
-                                      (_phoneToolsOption !=
-                                          PhoneToolsOption.none))
-                                  ? _handlePhoneTapped
-                                  : null,
-                              (widget.workOrder.phone?.isNotEmpty ?? false)
-                                  ? widget.workOrder.phone!
-                                  : "-",
-                              style: ((widget.workOrder.phone?.isNotEmpty ??
-                                          false) &&
-                                      (_phoneToolsOption !=
-                                          PhoneToolsOption.none))
-                                  ? _infoValueTextStyle.copyWith(
-                                      color: Colors.blue,
-                                      decoration: TextDecoration.underline)
-                                  : _infoValueTextStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Veículo:",
-                          style: _infoKeyTextStyle,
-                        ),
-                      ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: SelectableText(
-                              enableInteractiveSelection: true,
-                              widget.workOrder.vehicle,
-                              style: _infoValueTextStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Placa:",
-                          style: _infoKeyTextStyle,
-                        ),
-                      ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: SelectableText(
-                              enableInteractiveSelection: true,
-                              (widget.workOrder.vehiclePlate?.isNotEmpty ??
-                                      false)
-                                  ? widget.workOrder.vehiclePlate!
-                                  : "-",
-                              style: _infoValueTextStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                        child: Text(
-                          "Descrição:",
-                          style: _infoKeyTextStyle,
-                        ),
-                      ),
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                          child: SelectableText(
-                              enableInteractiveSelection: true,
-                              widget.workOrder.clientRequest,
-                              style: _infoValueTextStyle)),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                          child:
-                              Text("Observações:", style: _infoKeyTextStyle)),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                        child: SelectableText(
-                          enableInteractiveSelection: true,
-                          (widget.workOrder.remarks?.isNotEmpty ?? false)
-                              ? widget.workOrder.remarks!
-                              : "-",
-                          style: _infoValueTextStyle,
-                        ),
-                      ),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                          child: Text("Criado em:", style: _infoKeyTextStyle)),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                        child: SelectableText(
-                          enableInteractiveSelection: true,
-                          widget.workOrder.orderOpeningDatetime,
-                          style: _infoValueTextStyle,
-                        ),
-                      ),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                          child:
-                              Text("Finalizado em:", style: _infoKeyTextStyle)),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 5.0),
-                        child: SelectableText(
-                          enableInteractiveSelection: true,
-                          (widget.workOrder.orderClosingDatetime?.isNotEmpty ??
-                                  false)
-                              ? widget.workOrder.orderClosingDatetime!
-                              : "-",
-                          style: _infoValueTextStyle,
-                        ),
-                      ),
-                    ]),
-                    TableRow(children: [
-                      Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 8.0, 4.0, 5.0),
-                          child: Text("Prazo:", style: _infoKeyTextStyle)),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(4.0, 8.0, 15.0, 15.0),
-                        child: SelectableText(
-                          enableInteractiveSelection: true,
-                          (widget.workOrder.deadline?.isNotEmpty ?? false)
-                              ? widget.workOrder.deadline!
-                              : "-",
-                          style: _infoValueTextStyle,
-                        ),
-                      ),
-                    ]),
-                  ]),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 15.0),
                     child: _buildButtons(),
@@ -269,17 +296,23 @@ class _WorkOrderInfoDialogUiState extends State<WorkOrderInfoDialogUi> {
     Color statusColor =
         WorkOrderStatusExtension.fromString(widget.workOrder.status)!
             .color(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          decoration: BoxDecoration(shape: BoxShape.circle, color: statusColor),
-          width: 20,
-          height: 20,
-        ),
-        const SizedBox(width: 8),
-        Text(_getTitleText(), style: Theme.of(context).textTheme.titleLarge),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: statusColor),
+            width: 20,
+            height: 20,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+              child: Text(_getTitleText(),
+                  style: Theme.of(context).textTheme.titleLarge)),
+        ],
+      ),
     );
   }
 

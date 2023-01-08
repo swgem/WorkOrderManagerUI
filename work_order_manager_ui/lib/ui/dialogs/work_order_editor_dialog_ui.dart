@@ -92,18 +92,23 @@ class _WorkOrderEditorDialogUiState extends State<WorkOrderEditorDialogUi> {
       Color statusColor =
           WorkOrderStatusExtension.fromString(widget.workOrder!.status)!
               .color(context);
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration:
-                BoxDecoration(shape: BoxShape.circle, color: statusColor),
-            width: 20,
-            height: 20,
-          ),
-          const SizedBox(width: 8),
-          Text(_getTitleText(), style: Theme.of(context).textTheme.titleLarge),
-        ],
+      return Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: statusColor),
+              width: 20,
+              height: 20,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+                child: Text(_getTitleText(),
+                    style: Theme.of(context).textTheme.titleLarge)),
+          ],
+        ),
       );
     }
   }
